@@ -1,0 +1,13 @@
+.todoapp h1 {
+    color: rgba(175, 47, 47, 0.15);
+    font-size: 100px;
+    top: -155px;
+}
+
+.info {
+    color: #bfbfbf;
+}
+
+.footer {
+    color: #777;
+}
