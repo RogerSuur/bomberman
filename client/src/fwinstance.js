@@ -2,13 +2,17 @@ import MiniFramework from "../framework/mini-framework.js";
 
 const fwConfig = {
   initialState: {
-        players: [],
-        bombs: [],
-        gameStatus: 'notStarted',
-        messages: [],
-        // ... other initial states
+    players: [],
+    bombs: [],
+    gameStatus: "notStarted",
+    messages: [],
   },
-  routes: {/* ... */}
+  routes: [
+    {
+      path: "/",
+      component: "game",
+    },
+  ],
 };
 
 const fw = new MiniFramework(fwConfig);
