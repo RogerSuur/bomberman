@@ -1,7 +1,19 @@
-// import fw from "./src/fwinstance.js";
+import fw from "./src/fwinstance.js";
 // import Chat from "./src/chat.js";
 // import BombermanGame from "./src/game.js";
+import { GameGrid } from "./src/components/gameGrid.js";
 
+const App = (attrs = {}, children = []) =>
+    fw.dom.createVirtualNode("section", {
+        attrs: {
+            ...attrs,
+        },
+        children,
+    });
+
+const myGameApp = App({ id: "app", class: "gameapp" }, GameGrid());
+
+fw.dom.mount(document.getElementById("app"), myGameApp);
 // //const socket = new WebSocket("ws://localhost:5173"); // Establish WebSocket connection
 
 // const gameConfig = {
