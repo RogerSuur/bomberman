@@ -4,16 +4,16 @@ import fw from "./src/fwinstance.js";
 import { GameGrid } from "./src/components/gameGrid.js";
 
 const App = (attrs = {}, children = []) =>
-    fw.dom.createVirtualNode("section", {
+    fw.dom.createVirtualNode("div", {
         attrs: {
             ...attrs,
         },
         children,
     });
 
-const myGameApp = App({ id: "app", class: "gameapp" }, GameGrid());
+const gameApp = App({ id: "app", class: "gameapp" }, GameGrid());
 
-fw.dom.mount(document.getElementById("app"), myGameApp);
+fw.dom.mount(document.getElementById("app"), gameApp);
 // //const socket = new WebSocket("ws://localhost:5173"); // Establish WebSocket connection
 
 // const gameConfig = {

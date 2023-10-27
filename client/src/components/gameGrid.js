@@ -1,12 +1,6 @@
-// const newMap = randomizer(templateMap);
-// buildMap();
-
 import fw from "../fwinstance.js";
 import { templateMap } from "../game/tilemap.js";
 import { randomizer } from "../game/init.js";
-
-// Render virtual grid nodes to real DOM nodes and append to the grid container
-const gridContainer = document.querySelector(".grid");
 
 export const GameGrid = () => {
     const newMap = randomizer(templateMap);
@@ -49,10 +43,3 @@ export const GameGrid = () => {
     }
     return gridVirtualNodes;
 };
-
-const virtualGridNodes = GameGrid();
-
-virtualGridNodes.forEach((virtualNode) => {
-    const realNode = fw.dom.render(virtualNode);
-    gridContainer.appendChild(realNode);
-});
