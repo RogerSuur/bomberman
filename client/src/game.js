@@ -1,4 +1,4 @@
-import Multiplayer from "./multiplayer";
+import { GameGrid } from "./components/gameGrid.js";
 
 export default class BombermanGame {
     constructor(fw, socket, config) {
@@ -7,34 +7,19 @@ export default class BombermanGame {
         this.state = fw.state;
         this.config = config;
 
-        this.multiplayer = new Multiplayer(socket, this.state);
-
+        //this.multiplayer = new Multiplayer(socket, this.state);
         // Initialize game elements like the grid, players,
         // bombs, etc.
     }
 
-    render() {
-        const gameNode = this.fw.dom.createVirtualNode(
-            "div",
-            {
-                attrs: { id: "game" },
-                children: [`Items left`],
-            } /* ... */
-        );
-        this.fw.dom.render(gameNode, document.body);
-        this.update();
-    }
+    generateLayout() {
+        const gridNodes = GameGrid();
 
-    update() {
-        // Use requestAnimationFrame for efficient rendering
-        requestAnimationFrame(() => {
-            // We use the stateManager to get the updated state
-            this.gameState = this.state.getState();
-
-            // Update game elements based on the current game state
-            // ...
-
-            this.render(); // Re-render the game
+        const gameNode = this.fw.dom.createVirtualNode("div", {
+            attrs: { id: "gamegrid" },
+            children: [...gridNodes],
         });
+
+        return gameNode;
     }
 }

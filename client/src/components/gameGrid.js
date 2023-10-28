@@ -4,7 +4,6 @@ import { randomizer } from "../game/init.js";
 
 export const GameGrid = () => {
     const newMap = randomizer(templateMap);
-
     const gridVirtualNodes = [];
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];
