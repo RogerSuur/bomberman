@@ -30,15 +30,17 @@
 import websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
-import http from "http";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
-const port = 8000;
+
+const port = process.env.PORT || 3000;
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, "client")));
 
@@ -46,7 +48,22 @@ app.get("/", (_, res) => {
   res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-const srvr = http.createServer(app);
-const server = srvr.listen(port);
-websocket(server);
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+
+  socket.on("stateUpdate", () => {
+    console.log("stateUpdate");
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
+
+httpServer.listen(port);
+
 console.debug(`Server listening on http://localhost:${port}/`);

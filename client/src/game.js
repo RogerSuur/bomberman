@@ -1,4 +1,4 @@
-import Multiplayer from "./multiplayer";
+import Multiplayer from "./multiplayer.js";
 
 export default class BombermanGame {
   constructor(fw, socket, config) {
@@ -16,10 +16,7 @@ export default class BombermanGame {
   render() {
     const gameNode = this.fw.dom.createVirtualNode(
       "div",
-      {
-        attrs: { id: "game" },
-        children: [`Items left`],
-      } /* ... */
+      { id: "game" } /* ... */
     );
     this.fw.dom.render(gameNode, document.body);
     this.update();
