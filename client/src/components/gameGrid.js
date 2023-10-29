@@ -2,7 +2,7 @@ import fw from "../fwinstance.js";
 import { templateMap } from "../game/tilemap.js";
 import { randomizer } from "../game/init.js";
 
-export const GameGrid = () => {
+export const gameGrid = () => {
     const newMap = randomizer(templateMap);
     const gridVirtualNodes = [];
     for (let i = 0; i < newMap.length; i++) {
@@ -28,7 +28,7 @@ export const GameGrid = () => {
                     tileClass = "tile-block";
                     break;
                 case "P":
-                    tileClass = "tile-grass";
+                    tileClass = "player";
                     break;
                 default:
                     break;

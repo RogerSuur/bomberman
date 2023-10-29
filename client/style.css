@@ -41,18 +41,35 @@ body {
       background-size: cover;
   }
   .tile-grey {
-      background-image: url("./public/images//map/grey-wall.png");
+      background-image: url("./public/images/map/grey-wall.png");
       background-size: cover;
   }
   .tile-grass {
-      background-image: url("./public/images//map/grass.png");
+      background-image: url("./public/images/map/grass.png");
       background-size: cover;
   }
   .tile-block {
-      background-image: url("./public/images//map/destroyable-block.png");
+      background-image: url("./public/images/map/destroyable-block.png");
       background-size: cover;
   }
   .player {
-      background-image: url("./public/images//pl-1.png");
+      background-image: url("./public/images/players/player-1/pl-1-still.png");
       background-size: cover;
+  }
+
+  .hud-2-pl {
+    background-image: url("./public/images/hud-2-pl.png");
+    background-size:contain;
+    height:80px;
+  }
+
+  .hud-3-pl {
+    background-image: url("./public/images/hud-3-pl.png");
+    background-size: contain;  
+    height:80px;
+  }
+  .hud-4-pl {
+    background-image: url("./public/images/hud-4-pl.png");
+    background-size: contain;  
+    height: 80px;
   }
