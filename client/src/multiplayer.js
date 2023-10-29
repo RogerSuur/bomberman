@@ -4,6 +4,7 @@ export default class Multiplayer {
         this.state = stateManager;
 
         this.socket.on("stateUpdate", (data) => {
+            console.log("State Updated");
             // The server sends back the updated state
             this.state.setState(data);
             this.reconcile();
