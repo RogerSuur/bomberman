@@ -49,19 +49,19 @@ app.get("/", (_, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
+    console.log("A user connected");
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
+    socket.on("chat message", (msg) => {
+        io.emit("chat message", msg);
+    });
 
-  socket.on("stateUpdate", () => {
-    console.log("stateUpdate");
-  });
+    socket.on("stateUpdate", () => {
+        console.log("stateUpdate");
+    });
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
+    socket.on("disconnect", () => {
+        console.log("A user disconnected");
+    });
 });
 
 httpServer.listen(port);

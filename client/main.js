@@ -1,7 +1,6 @@
 import fw from "./src/fwinstance.js";
 // import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
-import { gameHud } from "./src/components/gameHud.js";
 
 const App = (attrs = {}, children = []) =>
     fw.dom.createVirtualNode("div", {
