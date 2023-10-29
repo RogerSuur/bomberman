@@ -28,7 +28,7 @@ export const gameGrid = () => {
                     tileClass = "tile-block";
                     break;
                 case "P":
-                    tileClass = "player";
+                    tileClass = "tile-grass player";
                     break;
                 default:
                     break;
