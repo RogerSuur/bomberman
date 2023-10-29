@@ -13,6 +13,7 @@ export const gameGrid = () => {
         for (let i in row) {
             const tile = row[i];
             let tileClass = "";
+            let cellChildren = [];
             switch (tile) {
                 case " ":
                 case ".":
@@ -28,13 +29,18 @@ export const gameGrid = () => {
                     tileClass = "tile-block";
                     break;
                 case "P":
-                    tileClass = "tile-grass player";
+                    tileClass = "tile-grass";
+                    const playerNode = fw.dom.createVirtualNode("div", {
+                        attrs: { class: "player" },
+                    });
+                    cellChildren.push(playerNode);
                     break;
                 default:
                     break;
             }
             const cellVirtualNode = fw.dom.createVirtualNode("div", {
                 attrs: { class: `grid-cell ${tileClass}` },
+                children: cellChildren,
             });
             rowElementVirtualNode.children.push(cellVirtualNode);
         }
