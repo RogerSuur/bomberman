@@ -37,20 +37,20 @@ body {
     height: 36px;
     position: relative;
   }
-  .tile-wall {
+  .main-wall {
       background-image: url("./public/images/map/main-wall.png");
       background-size: cover;
   }
-  .tile-grey {
+  .grey-wall {
       background-image: url("./public/images/map/grey-wall.png");
       background-size: cover;
   }
-  .tile-grass {
+  .grass {
       background-image: url("./public/images/map/grass.png");
       background-size: cover;
   }
-  .tile-block {
-      background-image: url("./public/images/map/destroyable-block.png");
+  .soft-wall {
+      background-image: url("./public/images/map/soft-wall.png");
       background-size: cover;
   }
   .player {
@@ -64,18 +64,18 @@ body {
   }
 
   .hud-2-pl {
-    background-image: url("./public/images/hud-2-pl.png");
+    background-image: url("./public/images/map/hud-2-pl.png");
     background-size:contain;
     height:80px;
   }
 
   .hud-3-pl {
-    background-image: url("./public/images/hud-3-pl.png");
+    background-image: url("./public/images/map/hud-3-pl.png");
     background-size: contain;  
     height:80px;
   }
   .hud-4-pl {
-    background-image: url("./public/images/hud-4-pl.png");
+    background-image: url("./public/images/map/hud-4-pl.png");
     background-size: contain;  
     height: 80px;
   }

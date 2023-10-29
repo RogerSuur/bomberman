@@ -17,19 +17,19 @@ export const gameGrid = () => {
             switch (tile) {
                 case " ":
                 case ".":
-                    tileClass = "tile-grass";
+                    tileClass = "grass";
                     break;
                 case "#":
-                    tileClass = "tile-wall";
+                    tileClass = "main-wall";
                     break;
                 case "|":
-                    tileClass = "tile-grey";
+                    tileClass = "grey-wall";
                     break;
                 case "W":
-                    tileClass = "tile-block";
+                    tileClass = "soft-wall";
                     break;
                 case "P":
-                    tileClass = "tile-grass";
+                    tileClass = "grass";
                     const playerNode = fw.dom.createVirtualNode("div", {
                         attrs: { class: "player" },
                     });
