@@ -1,7 +1,7 @@
 export default class Multiplayer {
-  constructor(socket, stateManager) {
-    this.socket = socket;
-    this.state = stateManager;
+    constructor(socket, stateManager) {
+        this.socket = socket;
+        this.state = stateManager;
 
     this.socket.on("stateUpdate", (data) => {
       console.log("State Updated");
