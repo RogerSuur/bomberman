@@ -1,30 +1,37 @@
-import { WebSocketServer } from "ws";
+const GetUserlist = (sockets) => {
+  let userlist = [];
+  for (const socket of sockets) {
+    userlist.push(socket.data.username);
+  }
+  return userlist;
+};
 
-export default async (expressServer) => {
-  const websocketServer = new WebSocketServer({
-    noServer: true,
-    path: "/websocket",
-  });
+const Websocket = (io) => {
+  io.on("connection", (socket) => {
+    console.log("A user connected here");
 
-  expressServer.on("upgrade", (request, socket, head) => {
-    websocketServer.handleUpgrade(request, socket, head, (websocket) => {
-      websocketServer.emit("connection", websocket, request);
+    socket.on("chat message", (msg) => {
+      io.emit("chat message", msg);
+    });
+
+    socket.on("username", async (username) => {
+      socket.data.username = username;
+      console.log(socket.data.username);
+
+      const sockets = await io.fetchSockets();
+      io.emit("userlist", GetUserlist(sockets));
+    });
+
+    socket.on("stateUpdate", () => {
+      console.log("stateUpdate");
+    });
+
+    socket.on("disconnect", async () => {
+      console.log("A user disconnected");
+      const sockets = await io.fetchSockets();
+      io.emit("userlist", GetUserlist(sockets));
     });
   });
-
-  websocketServer.on(
-    "connection",
-    function connection(websocketConnection, connectionRequest) {
-      websocketConnection.on("message", (message) => {
-        const parsedMessage = JSON.parse(message);
-        console.log(parsedMessage);
-
-        websocketConnection.send(
-          JSON.stringify({ message: "There be gold in them thar hills." })
-        );
-      });
-    }
-  );
-
-  return websocketServer;
 };
+
+export default Websocket;

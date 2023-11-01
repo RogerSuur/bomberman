@@ -27,7 +27,7 @@
 // server.listen(port);
 // console.debug(`Server listening on http://localhost:${port}/`);
 
-import websocket from "./backend/websocket/websocket.js";
+import Websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
 import { createServer } from "http";
@@ -48,21 +48,7 @@ app.get("/", (_, res) => {
   res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-
-  socket.on("stateUpdate", () => {
-    console.log("stateUpdate");
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
+Websocket(io);
 
 httpServer.listen(port);
 

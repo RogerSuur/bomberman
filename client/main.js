@@ -4,6 +4,35 @@ import BombermanGame from "./src/game.js";
 
 const socket = io(); // Establish WebSocket connection
 
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const chat = document.getElementById("chat");
+const chatmessage = document.getElementById("chatmessage");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (input.value) {
+    socket.emit("username", input.value);
+    input.value = "";
+  }
+});
+
+chat.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (chatmessage.value) {
+    socket.emit("chat message", chatmessage.value);
+    chatmessage.value = "";
+  }
+});
+
+socket.on("userlist", (chatlist) => {
+  console.log(chatlist);
+});
+
+socket.on("joined", (msg) => {
+  console.log(msg);
+});
+
 const gameConfig = {
   gridSize: [10, 10],
   // Add more configs as needed
