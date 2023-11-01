@@ -1,6 +1,9 @@
+//import { Socket } from "socket.io";
 import fw from "./src/fwinstance.js";
 // import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
+
+const socket = io();
 
 const App = (attrs = {}, children = []) =>
     fw.dom.createVirtualNode("div", {
@@ -10,7 +13,7 @@ const App = (attrs = {}, children = []) =>
         children,
     });
 
-const gameInstance = new BombermanGame(fw, null, {});
+const gameInstance = new BombermanGame(fw, socket, {});
 const gameNode = gameInstance.generateLayout();
 
 const appNode = App({ id: "app", class: "gameapp" }, [gameNode]);
