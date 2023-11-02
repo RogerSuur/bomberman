@@ -1,35 +1,30 @@
-const GetUserlist = (sockets) => {
-  let userlist = [];
-  for (const socket of sockets) {
-    userlist.push(socket.data.username);
-  }
-  return userlist;
-};
+const users = new Set();
 
 const Websocket = (io) => {
-  io.on("connection", (socket) => {
-    console.log("A user connected here");
-
-    socket.on("chat message", (msg) => {
-      io.emit("chat message", msg);
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+  
+    // Add the new user to the users set
+    users.add(socket.id);
+  
+    // Notify all users about the new user count
+    io.emit('userCount', users.size);
+  
+    // Listen for chat messages
+    socket.on('chatMessage', (message) => {
+      // Broadcast the message to all connected users
+      io.emit('chatMessage', message);
     });
-
-    socket.on("username", async (username) => {
-      socket.data.username = username;
-      console.log(socket.data.username);
-
-      const sockets = await io.fetchSockets();
-      io.emit("userlist", GetUserlist(sockets));
-    });
-
-    socket.on("stateUpdate", () => {
-      console.log("stateUpdate");
-    });
-
-    socket.on("disconnect", async () => {
-      console.log("A user disconnected");
-      const sockets = await io.fetchSockets();
-      io.emit("userlist", GetUserlist(sockets));
+  
+    // Socket.io disconnect event
+    socket.on('disconnect', () => {
+      console.log('A user disconnected');
+  
+      // Remove the user from the users set
+      users.delete(socket.id);
+  
+      // Notify all users about the updated user count
+      io.emit('userCount', users.size);
     });
   });
 };
