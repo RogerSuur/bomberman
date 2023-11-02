@@ -1,32 +1,5 @@
-// const express from "express");
-// const path from "path");
-
-// const app = express();
-// const port = process.env.PORT || 3000;
-
-// // Serve static files from the 'public' directory
-// // app.use(express.static(path.join(__dirname, "public")));
-
-// app.listen(port, () => {
-//   console.log(`Server listening on http://localhost:${port}/`);
-// });
-
-// const http from "http");
-// const port = 8000;
-// const express from "express");
-
-// const path from "path");
-// const app = express();
-// app.use("/", express.static(path.join(__dirname, "public")));
-
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "index.html"));
-// });
-
-// const server = http.createServer(app);
-// server.listen(port);
-// console.debug(`Server listening on http://localhost:${port}/`);
-
+import { templateMap } from "./game/tilemap.js";
+import { randomizer } from "./client/src/game/init.js";
 import websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
@@ -50,6 +23,7 @@ app.get("/", (_, res) => {
 
 io.on("connection", (socket) => {
     console.log("A user connected");
+    startGame(socket);
 
     socket.on("chat message", (msg) => {
         io.emit("chat message", msg);
@@ -67,3 +41,10 @@ io.on("connection", (socket) => {
 httpServer.listen(port);
 
 console.debug(`Server listening on http://localhost:${port}/`);
+
+//creates tilemap with randomized elements and player characters
+function startGame(socket) {
+    //TODO: wants number of players
+    const randomizedMap = randomizer(templateMap);
+    socket.emit("startGame", randomizedMap);
+}

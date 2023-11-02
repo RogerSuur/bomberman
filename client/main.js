@@ -13,8 +13,6 @@ const App = (attrs = {}, children = []) =>
         children,
     });
 
-const gameInstance = new BombermanGame(fw, socket, {});
-const gameNode = gameInstance.generateLayout();
-
-const appNode = App({ id: "app", class: "gameapp" }, [gameNode]);
+export const gameInstance = new BombermanGame(fw, socket, {});
+export const appNode = App({ id: "app", class: "gameapp" }, []);
 fw.dom.mount(document.getElementById("app"), appNode);

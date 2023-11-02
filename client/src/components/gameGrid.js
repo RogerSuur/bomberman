@@ -1,9 +1,6 @@
 import fw from "../fwinstance.js";
-import { templateMap } from "../game/tilemap.js";
-import { randomizer } from "../game/init.js";
 
-export const gameGrid = () => {
-    const newMap = randomizer(templateMap);
+export const gameGrid = (newMap) => {
     const gridVirtualNodes = [];
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];
