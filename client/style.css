@@ -79,3 +79,18 @@ body {
     background-size: contain;  
     height: 80px;
   }
+
+  .power-up-bombs {
+    background-image: url("./public/images/power-ups/bombs-power-up.png");
+    background-size: cover;
+}
+
+.power-up-flames {
+  background-image: url("./public/images/power-ups/flames-power-up.png");
+  background-size: cover;
+}
+
+.power-up-speed {
+  background-image: url("./public/images/power-ups/speed-power-up.png");
+  background-size: cover;
+}

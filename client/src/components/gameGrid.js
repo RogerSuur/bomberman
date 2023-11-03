@@ -7,8 +7,8 @@ export const gameGrid = (newMap) => {
         const rowElementVirtualNode = fw.dom.createVirtualNode("div", {
             attrs: { class: "grid-row" },
         });
-        for (let i in row) {
-            const tile = row[i];
+        for (let j in row) {
+            const tile = row[j];
             let tileClass = "";
             let cellChildren = [];
             switch (tile) {
@@ -25,6 +25,16 @@ export const gameGrid = (newMap) => {
                 case "W":
                     tileClass = "soft-wall";
                     break;
+                case "S":
+                    tileClass = "power-up-speed";
+                    break;
+                case "F":
+                    tileClass = "power-up-flames";
+                    break;
+                case "B":
+                    tileClass = "power-up-bombs";
+                    break;
+
                 case "P":
                     tileClass = "grass";
                     const playerNode = fw.dom.createVirtualNode("div", {
@@ -36,7 +46,10 @@ export const gameGrid = (newMap) => {
                     break;
             }
             const cellVirtualNode = fw.dom.createVirtualNode("div", {
-                attrs: { class: `grid-cell ${tileClass}` },
+                attrs: {
+                    id: `row-${i}-cell-${j}`,
+                    class: `grid-cell ${tileClass}`,
+                },
                 children: cellChildren,
             });
             rowElementVirtualNode.children.push(cellVirtualNode);

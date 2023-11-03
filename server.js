@@ -1,5 +1,5 @@
 import { templateMap } from "./game/tilemap.js";
-import { randomizer } from "./client/src/game/init.js";
+import { randomizer } from "./game/init.js";
 import websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
@@ -45,6 +45,7 @@ console.debug(`Server listening on http://localhost:${port}/`);
 //creates tilemap with randomized elements and player characters
 function startGame(socket) {
     //TODO: wants number of players
-    const randomizedMap = randomizer(templateMap);
+    const playerCount = 4;
+    const randomizedMap = randomizer(templateMap, playerCount);
     socket.emit("startGame", randomizedMap);
 }
