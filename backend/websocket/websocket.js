@@ -6,31 +6,42 @@ const GetUserlist = (sockets) => {
   return userlist;
 };
 
+const MAX_CONNECTIONS = 4;
+
 const Websocket = (io) => {
-  io.on("connection", (socket) => {
-    console.log("A user connected here");
+  io.on("connection", async (socket) => {
+    const connections = await io.fetchSockets();
 
-    socket.on("chat message", (msg) => {
-      io.emit("chat message", msg);
-    });
+    if (connections.length <= MAX_CONNECTIONS) {
+      console.log("A user connected here");
 
-    socket.on("username", async (username) => {
-      socket.data.username = username;
-      console.log(socket.data.username);
+      socket.on("chat message", (msg) => {
+        io.emit("chat message", msg);
+      });
 
-      const sockets = await io.fetchSockets();
-      io.emit("userlist", GetUserlist(sockets));
-    });
+      socket.on("username", async (username) => {
+        socket.data.username = username;
+        console.log(socket.data.username);
+        io.emit("user joined", socket.data.username);
+      });
 
-    socket.on("stateUpdate", () => {
-      console.log("stateUpdate");
-    });
+      socket.on("stateUpdate", () => {
+        console.log("stateUpdate");
+      });
 
-    socket.on("disconnect", async () => {
-      console.log("A user disconnected");
-      const sockets = await io.fetchSockets();
-      io.emit("userlist", GetUserlist(sockets));
-    });
+      socket.on("disconnecting", () => {
+        console.log(`A user ${socket.data.username} disconnected`);
+        io.emit("user left", socket.data.username);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("A user disconnected");
+      });
+    } else {
+      console.log("Connection denied: Maximum clients reached");
+      socket.emit("game full");
+      socket.disconnect(true);
+    }
   });
 };
 
