@@ -1,32 +1,54 @@
-import { WebSocketServer } from "ws";
+import { templateMap } from "../game/tilemap.js";
+import { randomizer } from "../game/init.js";
 
-export default async (expressServer) => {
-    const websocketServer = new WebSocketServer({
-        noServer: true,
-        path: "/websocket",
-    });
-
-    expressServer.on("upgrade", (request, socket, head) => {
-        websocketServer.handleUpgrade(request, socket, head, (websocket) => {
-            websocketServer.emit("connection", websocket, request);
-        });
-    });
-
-    websocketServer.on(
-        "connection",
-        function connection(websocketConnection, connectionRequest) {
-            websocketConnection.on("message", (message) => {
-                const parsedMessage = JSON.parse(message);
-                console.log(parsedMessage);
-
-                websocketConnection.send(
-                    JSON.stringify({
-                        message: "There be gold in them thar hills.",
-                    })
-                );
-            });
-        }
-    );
-
-    return websocketServer;
+const GetUserlist = (sockets) => {
+  let userlist = [];
+  for (const socket of sockets) {
+    userlist.push(socket.data.username);
+  }
+  return userlist;
 };
+
+const Websocket = (io) => {
+  io.on("connection", (socket) => {
+    console.log("A user connected here");
+
+    socket.on("chat message", (msg) => {
+      io.emit("chat message", msg);
+    });
+
+    socket.on("username", async (username) => {
+      socket.data.username = username;
+      console.log(socket.data.username);
+
+      const sockets = await io.fetchSockets();
+      io.emit("userlist", GetUserlist(sockets));
+    });
+
+    socket.on("stateUpdate", () => {
+      console.log("stateUpdate");
+    });
+
+    socket.on("launch", () => {
+      console.log("launching game");
+      startGame(socket);
+    });
+
+    socket.on("disconnect", async () => {
+      console.log("A user disconnected");
+      const sockets = await io.fetchSockets();
+      io.emit("userlist", GetUserlist(sockets));
+    });
+  });
+};
+
+//creates tilemap with randomized elements and player characters
+function startGame(socket) {
+  //TODO: wants number of players
+  const playerCount = 4;
+  const randomizedMap = randomizer(templateMap, playerCount);
+  socket.emit("startGame", randomizedMap);
+}
+
+
+export default Websocket;

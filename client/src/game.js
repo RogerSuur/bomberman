@@ -36,4 +36,9 @@ export default class BombermanGame {
         });
         return gameLayout;
     }
+
+    render() {
+        // Render the game elements
+        console.log("Rendering game")
+    }
 }
