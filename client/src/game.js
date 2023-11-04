@@ -1,37 +1,44 @@
+import { gameGrid } from "./components/gameGrid.js";
+import { gameHud } from "./components/gameHud.js";
 import Multiplayer from "./multiplayer.js";
+import { appNode } from "../main.js";
 
 export default class BombermanGame {
-  constructor(fw, socket, config) {
-    this.fw = fw;
-    this.socket = socket;
-    this.state = fw.state;
-    this.config = config;
+    constructor(fw, socket, config) {
+        this.fw = fw;
+        this.socket = socket;
+        this.state = fw.state;
+        this.config = config;
+        this.gridNodes = [];
 
-    this.multiplayer = new Multiplayer(socket, this.state);
+        this.multiplayer = new Multiplayer(socket, this.state);
 
-    // Initialize game elements like the grid, players,
-    // bombs, etc.
-  }
+        socket.on("startGame", (newMap) => {
+            this.gridNodes = gameGrid(newMap);
+            const gameNode = this.generateLayout();
+            appNode.children.push(gameNode);
+            fw.dom.mount(document.getElementById("app"), appNode);
+        });
 
-  render() {
-    const gameNode = this.fw.dom.createVirtualNode(
-      "div",
-      { id: "game" } /* ... */
-    );
-    this.fw.dom.render(gameNode, document.body);
-    this.update();
-  }
+        // Initialize game elements like the grid, players,
+        // bombs, etc.
+    }
 
-  update() {
-    // Use requestAnimationFrame for efficient rendering
-    requestAnimationFrame(() => {
-      // We use the stateManager to get the updated state
-      this.gameState = this.state.getState();
+    generateLayout() {
+        const gameGridNode = this.fw.dom.createVirtualNode("div", {
+            attrs: { id: "gamegrid" },
+            children: [...this.gridNodes],
+        });
+        const hudNode = gameHud();
+        const gameLayout = this.fw.dom.createVirtualNode("div", {
+            attrs: { id: "gameapp" },
+            children: [hudNode, gameGridNode],
+        });
+        return gameLayout;
+    }
 
-      // Update game elements based on the current game state
-      // ...
-
-      this.render(); // Re-render the game
-    });
-  }
+    render() {
+        // Render the game elements
+        console.log("Rendering game")
+    }
 }
