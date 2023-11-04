@@ -18,6 +18,13 @@ const Websocket = (io) => {
       // Broadcast the message to all connected users
       io.emit('chatMessage', message);
     });
+    
+    socket.on("username", async (username) => {
+      socket.data.username = username;
+      console.log(socket.data.username);
+      const sockets = await io.fetchSockets();
+      io.emit("userlist", GetUserlist(sockets));
+    });
 
     socket.on("stateUpdate", () => {
       console.log("stateUpdate");
