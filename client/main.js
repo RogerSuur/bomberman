@@ -52,7 +52,7 @@ export const appNode = App({ id: "app", class: "gameapp" }, []);
 
 fw.dom.mount(document.getElementById("app"), appNode);
 
-game.render();
+gameInstance.render();
 
 //const chat = new Chat(socket, fw.state);
 
