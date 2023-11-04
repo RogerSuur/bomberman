@@ -10,17 +10,18 @@ const GetUserlist = (sockets) => {
 };
 
 const Websocket = (io) => {
-  io.on("connection", (socket) => {
-    console.log("A user connected here");
-
-    socket.on("chat message", (msg) => {
-      io.emit("chat message", msg);
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+  
+    // Listen for chat messages
+    socket.on('chatMessage', (message) => {
+      // Broadcast the message to all connected users
+      io.emit('chatMessage', message);
     });
-
+    
     socket.on("username", async (username) => {
       socket.data.username = username;
       console.log(socket.data.username);
-
       const sockets = await io.fetchSockets();
       io.emit("userlist", GetUserlist(sockets));
     });
