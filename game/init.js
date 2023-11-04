@@ -1,53 +1,96 @@
 const blockDensity = 0.6;
-const powerUpDensity = 0.2;
 
 const powerUps = {
     speed: "S",
     bombs: "B",
     flames: "F",
 };
-
-const randomPowerUp = () => {
-    const rnd = Math.random();
-    if (rnd < 0.33) {
-        return powerUps.speed;
-    } else if (rnd < 0.66) {
-        return powerUps.bombs;
-    } else {
-        return powerUps.flames;
-    }
-};
+var totalPowerUps;
 
 // //Insert random destroyable blocks
-//TODO: insert power ups and players
-export const randomizer = (templateMap, playerCount) => {
-    const totalPowerUps = {
-        [powerUps.speed]: 1 + playerCount,
-        [powerUps.bombs]: 2 + playerCount * 2,
-        [powerUps.flames]: 2 + playerCount * 2,
-    };
-
-    let placedPowerUps = {
-        [powerUps.speed]: 0,
-        [powerUps.bombs]: 0,
-        [powerUps.flames]: 0,
-    };
-
-    const updatedMap = templateMap.map((row) => {
-        return row.replace(/ /g, () => {
-            if (Math.random() < blockDensity) {
-                return "W";
-            } else if (Math.random() < powerUpDensity) {
-                console.log("a power up");
-                const powerUp = randomPowerUp();
-                if (placedPowerUps[powerUp] < totalPowerUps[powerUp]) {
-                    placedPowerUps[powerUp]++;
-                    return powerUp;
+//TODO: insert players by the numvers
+export const populateMapWithWallsAndPowerUps = (templateMap, playerCount) => {
+    totalPowerUps = calculateNumberOfPowerUps(playerCount);
+    const powerUpPositions = findPowerUpPositions(templateMap);
+    let updatedMap = [];
+    //replace the characters in map with powerups or grass
+    templateMap.forEach((row, rowIndex) => {
+        let newRow = "";
+        for (const colIndex in row) {
+            if (row.hasOwnProperty(colIndex)) {
+                const cell = row[colIndex];
+                if (
+                    cell === " " &&
+                    powerUpPositions.some(
+                        (pos) =>
+                            pos.rowIndex === rowIndex &&
+                            pos.colIndex == colIndex
+                    )
+                ) {
+                    newRow += randomPowerUp();
+                } else if (cell === " " && Math.random() < blockDensity) {
+                    newRow += "W";
+                } else {
+                    newRow += cell;
                 }
             }
-            return " ";
-        });
+        }
+        updatedMap.push(newRow);
     });
-    console.log("updatedMap", updatedMap);
     return updatedMap;
+};
+
+// select a random powerup from the pre-generated list
+const randomPowerUp = () => {
+    let powerUpTypes = [powerUps.speed, powerUps.bombs, powerUps.flames];
+    powerUpTypes = shufflePositions(powerUpTypes);
+
+    for (let i = 0; i < powerUpTypes.length; i++) {
+        if (totalPowerUps[powerUpTypes[i]] > 0) {
+            totalPowerUps[powerUpTypes[i]] -= 1;
+            return powerUpTypes[i];
+        }
+    }
+
+    return null;
+};
+
+const shufflePositions = (array) => {
+    let currentIndex = array.length,
+        randomIndex;
+    while (currentIndex > 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex],
+        ];
+    }
+    return array;
+};
+
+const calculateNumberOfPowerUps = (playerCount) => {
+    return {
+        [powerUps.speed]: playerCount + Math.floor(Math.random() * playerCount),
+        [powerUps.bombs]: playerCount + Math.floor(Math.random() * playerCount),
+        [powerUps.flames]:
+            playerCount + Math.floor(Math.random() * playerCount),
+    };
+};
+
+//return row-col index array for all powerup positions
+const findPowerUpPositions = (templateMap) => {
+    //find all possible positions for powerup
+    const grassPositions = templateMap
+        .flatMap((row, rowIndex) =>
+            [...row].map((cell, colIndex) =>
+                cell === " " ? { rowIndex, colIndex } : null
+            )
+        )
+        .filter(Boolean);
+    shufflePositions(grassPositions);
+    return grassPositions.slice(
+        0,
+        totalPowerUps.S + totalPowerUps.B + totalPowerUps.F
+    );
 };
