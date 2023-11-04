@@ -14,9 +14,14 @@
       <form id="form" action="">
         <input id="input" autocomplete="off" /><button>Send</button>
       </form>
-      <form id="chat" action="">
-        <input id="chatmessage" autocomplete="off" /><button>Send</button>
-      </form>
+      
+      <h1>Welcome to the Chat Room</h1>
+      <div id="chat">
+        <ul id="messages"></ul>
+      </div>
+      <input id="messageInput" autocomplete="off" />
+      <button onclick="sendMessage()">Send</button>
+
       <button id="start">Start</button>
     </main>
       <footer class="info">
@@ -26,7 +31,10 @@
           <a href="https://01.kood.tech/git/inquisitivetable">Inquisitive Table</a> &
           <a href="https://01.kood.tech/git/Jollyroger">JollyRoger</a></p>
       </footer>
-    <script src="/socket.io/socket.io.js"></script>
+    
+      <script src="/socket.io/socket.io.js"></script>
+      <script  type="module" src="./src/chat.js"></script>
+    
     <script type="module" src="main.js"></script>
   </body>
 </html>
