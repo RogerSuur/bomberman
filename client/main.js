@@ -8,7 +8,12 @@ const socket = io(); // Establish WebSocket connection
 const form = document.getElementById("form");
 const input = document.getElementById("input");
 const chat = document.getElementById("chat");
+const start = document.getElementById("start");
 const chatmessage = document.getElementById("chatmessage");
+
+start.addEventListener("click", () => {
+  socket.emit("launch");
+});
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();

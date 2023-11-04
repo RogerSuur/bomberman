@@ -1,3 +1,6 @@
+import { templateMap } from "../game/tilemap.js";
+import { randomizer } from "../game/init.js";
+
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
@@ -26,6 +29,11 @@ const Websocket = (io) => {
       console.log("stateUpdate");
     });
 
+    socket.on("launch", () => {
+      console.log("launching game");
+      startGame(socket);
+    });
+
     socket.on("disconnect", async () => {
       console.log("A user disconnected");
       const sockets = await io.fetchSockets();
@@ -33,5 +41,14 @@ const Websocket = (io) => {
     });
   });
 };
+
+//creates tilemap with randomized elements and player characters
+function startGame(socket) {
+  //TODO: wants number of players
+  const playerCount = 4;
+  const randomizedMap = randomizer(templateMap, playerCount);
+  socket.emit("startGame", randomizedMap);
+}
+
 
 export default Websocket;
