@@ -7,9 +7,10 @@ const socket = io(); // Establish WebSocket connection
 
 const form = document.getElementById("form");
 const input = document.getElementById("input");
-const chat = document.getElementById("chat");
 const start = document.getElementById("start");
+/* const chat = document.getElementById("chat");
 const chatmessage = document.getElementById("chatmessage");
+ */
 
 start.addEventListener("click", () => {
   socket.emit("launch");
@@ -23,13 +24,13 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-chat.addEventListener("submit", (e) => {
+/* chat.addEventListener("submit", (e) => {
   e.preventDefault();
   if (chatmessage.value) {
     socket.emit("chat message", chatmessage.value);
     chatmessage.value = "";
   }
-});
+}); */
 
 socket.on("userlist", (chatlist) => {
   console.log(chatlist);
