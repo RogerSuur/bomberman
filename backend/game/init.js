@@ -11,6 +11,7 @@ var totalPowerUps;
 //TODO: insert players by the numvers
 export const populateMapWithWallsAndPowerUps = (templateMap, playerCount) => {
     totalPowerUps = calculateNumberOfPowerUps(playerCount);
+    let amountOfPayers = playerCount;
     const powerUpPositions = findPowerUpPositions(templateMap);
     let updatedMap = [];
     //replace the characters in map with powerups or grass
@@ -30,6 +31,13 @@ export const populateMapWithWallsAndPowerUps = (templateMap, playerCount) => {
                     newRow += randomPowerUp();
                 } else if (cell === " " && Math.random() < blockDensity) {
                     newRow += "W";
+                } else if (cell === "P") {
+                    if (amountOfPayers > 0) {
+                        newRow += "P";
+                        amountOfPayers--;
+                    } else {
+                        newRow += " ";
+                    }
                 } else {
                     newRow += cell;
                 }

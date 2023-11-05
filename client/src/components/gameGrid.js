@@ -2,6 +2,7 @@ import fw from "../fwinstance.js";
 
 export const gameGrid = (newMap) => {
     const gridVirtualNodes = [];
+    let playerCount = 0;
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];
         const rowElementVirtualNode = fw.dom.createVirtualNode("div", {
