@@ -97,13 +97,40 @@ background-size: cover;
 
 /* <---------------Player 1 images-----------------------> */
 
-
-.player {
-  background-image: url("./public/images/players/player-1/pl-1-still.png");
+.player-1 {
+  background-image: url("./public/images/players/player-1/pl-1-down-still.png");
   background-size: cover;
 position: absolute;
-top: 0;
-left: 0;
+width: 36px;
+height: 36px;
+}
+
+/* <---------------Player 2 images-----------------------> */
+
+.player-2 {
+  background-image: url("./public/images/players/player-2/pl-2-down-still.png");
+  background-size: cover;
+position: absolute;
+width: 36px;
+height: 36px;
+}
+
+/* <---------------Player 3 images-----------------------> */
+
+.player-3 {
+  background-image: url("./public/images/players/player-3/pl-3-down-still.png");
+  background-size: cover;
+position: absolute;
+width: 36px;
+height: 36px;
+}
+
+/* <---------------Player 4 images-----------------------> */
+
+.player-4 {
+  background-image: url("./public/images/players/player-4/pl-4-down-still.png");
+  background-size: cover;
+position: absolute;
 width: 36px;
 height: 36px;
 }

@@ -2,7 +2,7 @@ import fw from "../fwinstance.js";
 
 export const gameGrid = (newMap) => {
     const gridVirtualNodes = [];
-    let playerCount = 0;
+    let playerCount = 1;
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];
         const rowElementVirtualNode = fw.dom.createVirtualNode("div", {
@@ -39,8 +39,9 @@ export const gameGrid = (newMap) => {
                 case "P":
                     tileClass = "grass";
                     const playerNode = fw.dom.createVirtualNode("div", {
-                        attrs: { class: "player" },
+                        attrs: { class: `player-${playerCount}` },
                     });
+                    playerCount++;
                     cellChildren.push(playerNode);
                     break;
                 default:

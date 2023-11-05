@@ -46,7 +46,7 @@ const Websocket = (io) => {
 //creates tilemap with randomized elements and player characters
 function startGame(socket) {
     //TODO: wants number of players
-    const playerCount = 2;
+    const playerCount = 4;
     const randomizedMap = populateMapWithWallsAndPowerUps(
         templateMap,
         playerCount
