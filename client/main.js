@@ -13,7 +13,6 @@ const chatmessage = document.getElementById("chatmessage");
  */
 
 start.addEventListener("click", () => {
-    console.log("launch game");
     socket.emit("launch");
 });
 
