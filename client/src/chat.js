@@ -1,3 +1,5 @@
+import fw from "./fwinstance.js";
+
 const socket = io();
 
 export default class ChatComponent {
@@ -7,26 +9,21 @@ export default class ChatComponent {
   }
 
   createChatElement() {
-    const chatDiv = document.createElement("div");
-    chatDiv.id = "chat";
-    
-    const messagesDiv = document.createElement("div");
-    messagesDiv.id = "messages";
-    chatDiv.appendChild(messagesDiv);
-    
-    const inputElement = document.createElement("input");
-    inputElement.id = "messageInput";
-    inputElement.autocomplete = "off";
-    inputElement.addEventListener("keyup", this.handleKeyUp.bind(this)); // Listen for keyup events
+    const chatDiv = fw.dom.createVirtualNode("div", {
+      attrs: { id: "chat" },
+      children: [
+        fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
+        fw.dom.createVirtualNode("input", {
+          attrs: { id: "messageInput", autocomplete: "off" },
+          listeners: { keydown: this.handleKeyDown.bind(this) },
+        }),
+        fw.dom.createVirtualNode("button", {
+          children: ["Send"],
+          listeners: { click: this.sendMessage.bind(this) },
+        }),
+      ],
+    });
 
-    const sendButton = document.createElement("button");
-    sendButton.textContent = "Send";
-    sendButton.addEventListener("click", this.sendMessage.bind(this));
-    
-    chatDiv.appendChild(messagesDiv);
-    chatDiv.appendChild(inputElement);
-    chatDiv.appendChild(sendButton);
-    
     return chatDiv;
   }
 
@@ -39,18 +36,23 @@ export default class ChatComponent {
     }
   }
 
-  handleKeyUp(event) {
+  handleKeyDown(event) {
     if (event.key === "Enter") {
+      event.preventDefault(); 
       this.sendMessage();
     }
   }
 
   attachEventListeners() {
     socket.on('chatMessage', (message) => {
+      const messagesContainer = document.getElementById('messages');
+      const li = fw.dom.createVirtualNode("li", { text: message });
+      const realDOM = fw.dom.render(li); 
+      const textNode = document.createTextNode(message); 
+      realDOM.appendChild(textNode); 
+      messagesContainer.appendChild(realDOM);
       const messages = document.getElementById('messages');
-      const li = document.createElement('li');
-      li.textContent = message;
-      messages.appendChild(li);
+      messages.scrollTop = messages.scrollHeight;
     });
   }
 
@@ -58,3 +60,5 @@ export default class ChatComponent {
     return this.chatElement;
   }
 }
+
+
