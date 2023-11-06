@@ -14,7 +14,6 @@ export default class BombermanGame {
         this.multiplayer = new Multiplayer(socket, this.state);
 
         socket.on("startGame", (newMap, playerCount) => {
-            console.log("PayerCount on clientside", playerCount);
             this.gridNodes = gameGrid(newMap);
             const gameNode = this.generateLayout(playerCount);
             appNode.children.push(gameNode);

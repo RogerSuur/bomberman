@@ -32,7 +32,7 @@ const Websocket = (io) => {
 
         socket.on("launch", () => {
             console.log("launching game");
-            startGame(socket);
+            startGame(io);
         });
 
         socket.on("disconnect", async () => {
@@ -44,14 +44,14 @@ const Websocket = (io) => {
 };
 
 //creates tilemap with randomized elements and player characters
-function startGame(socket) {
+function startGame(io) {
     //TODO: wants number of players
     const playerCount = 4;
     const randomizedMap = populateMapWithWallsAndPowerUps(
         templateMap,
         playerCount
     );
-    socket.emit("startGame", randomizedMap, playerCount);
+    io.emit("startGame", randomizedMap, playerCount);
 }
 
 export default Websocket;
