@@ -2,8 +2,13 @@
 import fw from "./src/fwinstance.js";
 // import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
-
+import ChatComponent from "./src/chat.js"; 
 const socket = io(); // Establish WebSocket connection
+const chatComponent = new ChatComponent(socket);
+const chatElement = chatComponent.getChatElement();
+
+// Add the chat element to the DOM
+//document.body.appendChild(chatElement);
 
 const form = document.getElementById("form");
 const input = document.getElementById("input");
@@ -54,7 +59,7 @@ const App = (attrs = {}, children = []) =>
 // const myApp = App({ id: "app" }, ["Cool"]);
 
 // // Mount the application to the DOM
-export const appNode = App({ id: "app", class: "gameapp" }, []);
+export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
 fw.dom.mount(document.getElementById("app"), appNode);
 
