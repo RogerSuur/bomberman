@@ -13,15 +13,16 @@ const chatmessage = document.getElementById("chatmessage");
  */
 
 start.addEventListener("click", () => {
-  socket.emit("launch");
+    console.log("launch game");
+    socket.emit("launch");
 });
 
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit("username", input.value);
-    input.value = "";
-  }
+    e.preventDefault();
+    if (input.value) {
+        socket.emit("username", input.value);
+        input.value = "";
+    }
 });
 
 /* chat.addEventListener("submit", (e) => {
@@ -33,22 +34,22 @@ form.addEventListener("submit", (e) => {
 }); */
 
 socket.on("userlist", (chatlist) => {
-  console.log(chatlist);
+    console.log(chatlist);
 });
 
 socket.on("joined", (msg) => {
-  console.log(msg);
+    console.log(msg);
 });
 
 export const gameInstance = new BombermanGame(fw, socket, {});
 
 const App = (attrs = {}, children = []) =>
-  fw.dom.createVirtualNode("div", {
-     attrs: {
-       ...attrs,
-     },
-     children,
-   });
+    fw.dom.createVirtualNode("div", {
+        attrs: {
+            ...attrs,
+        },
+        children,
+    });
 
 // // Set up the application with imported components
 // const myApp = App({ id: "app" }, ["Cool"]);
