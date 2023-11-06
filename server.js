@@ -1,4 +1,4 @@
-import Websocket from "./backend/websocket/websocket.js";
+import websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
 import { createServer } from "http";
@@ -19,7 +19,7 @@ app.get("/", (_, res) => {
     res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-Websocket(io);
+websocket(io);
 
 httpServer.listen(port);
 
