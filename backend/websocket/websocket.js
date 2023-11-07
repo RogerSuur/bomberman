@@ -1,6 +1,6 @@
 import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
-
+import Player from "../../client/src/player.js";
 const GetUserlist = (sockets) => {
     let userlist = [];
     for (const socket of sockets) {
@@ -42,16 +42,19 @@ const Websocket = (io) => {
         });
     });
 };
+const playerList = [];
 
-//creates tilemap with randomized elements and player characters
 function startGame(socket) {
     //TODO: wants number of players
-    const playerCount = 4;
+    const playerCount = playerList.length + 1;
+    const player = new Player(playerCount); // Create a new Player
+    playerList.push(player); // Add the player to the list
+
     const randomizedMap = populateMapWithWallsAndPowerUps(
         templateMap,
         playerCount
     );
-    socket.emit("startGame", randomizedMap, playerCount);
+    socket.emit("startGame", randomizedMap, player.className, playerCount);
 }
 
 export default Websocket;
