@@ -1,5 +1,3 @@
-import Timer from "../timer.js";
-
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
