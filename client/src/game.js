@@ -1,4 +1,3 @@
-import { gameGrid } from "./components/gameGrid.js";
 import { gameHud } from "./components/gameHud.js";
 import Multiplayer from "./multiplayer.js";
 import { appNode } from "../main.js";
@@ -20,7 +19,7 @@ export default class BombermanGame {
     generateLayout(playerCount, gridVirtualNodes) {
         this.gridNodes = gridVirtualNodes;
         const gameGridNode = this.fw.dom.createVirtualNode("div", {
-            attrs: { id: "gamegrid" },
+            attrs: { id: "gamegrid", class: "game-grid" },
             children: [...this.gridNodes],
         });
         const hudNode = gameHud(playerCount);

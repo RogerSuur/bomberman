@@ -63,8 +63,6 @@ socket.on("startGame", (newMap, playerCount) => {
     }
 });
 
-// export const gameInstance = new BombermanGame(fw, socket, {});
-
 const App = (attrs = {}, children = []) =>
     fw.dom.createVirtualNode("div", {
         attrs: {
@@ -76,5 +74,3 @@ const App = (attrs = {}, children = []) =>
 export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
 fw.dom.mount(document.getElementById("app"), appNode);
-
-//gameInstance.render();

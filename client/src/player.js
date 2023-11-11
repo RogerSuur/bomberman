@@ -26,10 +26,10 @@ export default class Player {
 
     startPosition() {
         const player = document.getElementById(`player-${this.playerId}`);
-        console.log(player);
-        console.log(this.currentPosition);
         player.style.left = `${this.currentPosition.x * 36}px`;
         player.style.top = `${this.currentPosition.y * 36}px`;
+        console.log(player);
+        console.log(this.currentPosition);
     }
 
     move(direction) {
