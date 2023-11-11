@@ -2,7 +2,8 @@
 import fw from "./src/fwinstance.js";
 // import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
-import ChatComponent from "./src/chat.js"; 
+import ChatComponent from "./src/chat.js";
+import Player from "./src/player.js";
 const socket = io(); // Establish WebSocket connection
 const chatComponent = new ChatComponent(socket);
 const chatElement = chatComponent.getChatElement();
@@ -45,7 +46,19 @@ socket.on("joined", (msg) => {
     console.log(msg);
 });
 
-export const gameInstance = new BombermanGame(fw, socket, {});
+socket.on("startGame", (newMap, playerCount) => {
+    console.log(socket);
+    const gameInstance = new BombermanGame(fw, socket, {});
+    const gameLayout = gameInstance.generateLayout(playerCount, newMap);
+    appNode.children.push(gameLayout);
+    fw.dom.mount(document.getElementById("app"), appNode);
+
+    for (let i = 0; i < playerCount; i++) {
+        new Player(`${i + 1}`, socket).createNode();
+    }
+});
+
+// export const gameInstance = new BombermanGame(fw, socket, {});
 
 const App = (attrs = {}, children = []) =>
     fw.dom.createVirtualNode("div", {
@@ -55,41 +68,8 @@ const App = (attrs = {}, children = []) =>
         children,
     });
 
-// // Set up the application with imported components
-// const myApp = App({ id: "app" }, ["Cool"]);
-
-// // Mount the application to the DOM
 export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
 fw.dom.mount(document.getElementById("app"), appNode);
 
-gameInstance.render();
-
-//const chat = new Chat(socket, fw.state);
-
-// const Span = (attrs = {}, children = [], listeners) =>
-//   fw.dom.createVirtualNode("span", {
-//     attrs: {
-//       ...attrs,
-//     },
-//     children,
-//     listeners,
-//   });
-
-// const newItemsToDo = Span({ id: "todo-count", class: "todo-count" }, [
-//   `Items left: 3`,
-// ]);
-
-// const App = (attrs = {}, children = []) =>
-//   fw.dom.createVirtualNode("section", {
-//     attrs: {
-//       ...attrs,
-//     },
-//     children,
-//   });
-
-// // Set up the application with imported components
-// const myApp = App({ id: "app", class: "todoapp" }, [game, newItemsToDo]);
-
-// // Mount the application to the DOM
-// fw.dom.mount(document.getElementById("app"), myApp);
+//gameInstance.render();
