@@ -43,6 +43,7 @@ const io = new Server(httpServer);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, "client")));
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 app.get("/", (_, res) => {
     res.sendFile(path.join(__dirname, "client", "index.html"));

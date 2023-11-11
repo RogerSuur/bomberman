@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Bomberman DOM</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    
+
+<head>
+  <meta charset="UTF-8">
+  <title>Bomberman DOM</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+
+<body>
+  <div id="page-container">
+    <div id="content-container" class="d-flex justify-content-center align-items-center">
       <div class="bomberman" id="app">
-        
       </div>
-      <footer class="info">
-        <p>Written by <a href="https://01.kood.tech/git/jrms">Jrms</a>,
-          <a href="https://01.kood.tech/git/KeitiN">KeitiN</a>,
-          <a href="https://01.kood.tech/git/lauriraus">Banana</a>,
-          <a href="https://01.kood.tech/git/inquisitivetable">Inquisitive Table</a> &
-          <a href="https://01.kood.tech/git/Jollyroger">JollyRoger</a></p>
-      </footer>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="main.js"></script>
-  </body>
+    </div>
+    <footer id="footer" class="d-flex flex-wrap justify-content-center align-items-center py-3 my-4 border-top">
+      <p>Written by <a href="https://01.kood.tech/git/jrms">Jrms</a>,
+        <a href="https://01.kood.tech/git/KeitiN">KeitiN</a>,
+        <a href="https://01.kood.tech/git/lauriraus">Banana</a>,
+        <a href="https://01.kood.tech/git/inquisitivetable">Inquisitive Table</a> &
+        <a href="https://01.kood.tech/git/Jollyroger">JollyRoger</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+
 </html>
