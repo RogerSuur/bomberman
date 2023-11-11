@@ -1,32 +1,3 @@
-// const express from "express");
-// const path from "path");
-
-// const app = express();
-// const port = process.env.PORT || 3000;
-
-// // Serve static files from the 'public' directory
-// // app.use(express.static(path.join(__dirname, "public")));
-
-// app.listen(port, () => {
-//   console.log(`Server listening on http://localhost:${port}/`);
-// });
-
-// const http from "http");
-// const port = 8000;
-// const express from "express");
-
-// const path from "path");
-// const app = express();
-// app.use("/", express.static(path.join(__dirname, "public")));
-
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "index.html"));
-// });
-
-// const server = http.createServer(app);
-// server.listen(port);
-// console.debug(`Server listening on http://localhost:${port}/`);
-
 import websocket from "./backend/websocket/websocket.js";
 
 import express from "express";
@@ -49,21 +20,7 @@ app.get("/", (_, res) => {
     res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-
-  socket.on("stateUpdate", () => {
-    console.log("stateUpdate");
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
+websocket(io);
 
 httpServer.listen(port);
 

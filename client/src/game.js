@@ -1,52 +1,44 @@
 import { gameGrid } from "./components/gameGrid.js";
 import { gameHud } from "./components/gameHud.js";
-import fw from "./fwinstance.js";
-// import Multiplayer from "./multiplayer.js";
-
+import Multiplayer from "./multiplayer.js";
+import { appNode } from "../main.js";
 
 export default class BombermanGame {
-  constructor(fw, socket, config) {
-    this.fw = fw;
-    this.socket = socket;
-    this.state = fw.state;
-    this.config = config;
+    constructor(fw, socket, config) {
+        this.fw = fw;
+        this.socket = socket;
+        this.state = fw.state;
+        this.config = config;
+        this.gridNodes = [];
 
-    //this.multiplayer = new Multiplayer(socket, this.state);
-    // Initialize game elements like the grid, players,
-    // bombs, etc.
-  }
+        this.multiplayer = new Multiplayer(socket, this.state);
 
-  // render() {
-  //   const gameNode = this.fw.dom.createVirtualNode(
-  //     "div",
-  //     { id: "game" } /* ... */
-  //   );
-  //   this.fw.dom.render(gameNode, document.body);
-  //   this.update();
-  // }
+        socket.on("startGame", (newMap, playerCount) => {
+            this.gridNodes = gameGrid(newMap);
+            const gameNode = this.generateLayout(playerCount);
+            appNode.children.push(gameNode);
+            fw.dom.mount(document.getElementById("app"), appNode);
+        });
 
-  // update() {
-  //   // Use requestAnimationFrame for efficient rendering
-  //   requestAnimationFrame(() => {
-  //     // We use the stateManager to get the updated state
-  //     this.gameState = this.state.getState();
+        // Initialize game elements like the grid, players,
+        // bombs, etc.
+    }
 
-  //     // Update game elements based on the current game state
-  //     // ...
+    generateLayout(playerCount) {
+        const gameGridNode = this.fw.dom.createVirtualNode("div", {
+            attrs: { id: "gamegrid" },
+            children: [...this.gridNodes],
+        });
+        const hudNode = gameHud(playerCount);
+        const gameLayout = this.fw.dom.createVirtualNode("div", {
+            attrs: { id: "gameapp" },
+            children: [hudNode, gameGridNode],
+        });
+        return gameLayout;
+    }
 
-  //     this.render(); // Re-render the game
-  //   });
-  // }
-
-  generateLayout() {
-    const gridNodes = gameGrid();
-    const hud = gameHud();
-
-    const gameNode = this.fw.dom.createVirtualNode("div", {
-      attrs: { id: "gamegrid" },
-      children: [hud, ...gridNodes],
-    });
-
-    return gameNode;
-  }
+    render() {
+        // Render the game elements
+        console.log("Rendering game");
+    }
 }

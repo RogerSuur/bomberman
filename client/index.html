@@ -6,6 +6,7 @@
   <title>Bomberman DOM</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="icon" href="public/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -14,6 +15,9 @@
       <div class="bomberman" id="app">
       </div>
     </div>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
     <footer id="footer" class="d-flex flex-wrap justify-content-center align-items-center py-3 my-4 border-top">
       <p>Written by <a href="https://01.kood.tech/git/jrms">Jrms</a>,
         <a href="https://01.kood.tech/git/KeitiN">KeitiN</a>,
@@ -26,6 +30,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="main.js"></script>
+  <script  type="module" src="./src/chat.js"></script>
 </body>
 
 </html>
