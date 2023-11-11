@@ -106,7 +106,7 @@ background-size: cover;
 .player-1 {
   background-image: url("./public/images/players/player-1/pl-1-down-still.png");
   background-size: cover;
-position: absolute;
+position: relative;
 width: 36px;
 height: 36px;
 }
@@ -116,7 +116,7 @@ height: 36px;
 .player-2 {
   background-image: url("./public/images/players/player-2/pl-2-down-still.png");
   background-size: cover;
-position: absolute;
+position: relative;
 width: 36px;
 height: 36px;
 }
@@ -126,7 +126,7 @@ height: 36px;
 .player-3 {
   background-image: url("./public/images/players/player-3/pl-3-down-still.png");
   background-size: cover;
-position: absolute;
+position: relative;
 width: 36px;
 height: 36px;
 }
@@ -136,7 +136,7 @@ height: 36px;
 .player-4 {
   background-image: url("./public/images/players/player-4/pl-4-down-still.png");
   background-size: cover;
-position: absolute;
+position: relative;
 width: 36px;
 height: 36px;
 }

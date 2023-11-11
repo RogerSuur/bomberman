@@ -37,7 +37,7 @@ export const gameGrid = (newMap) => {
 
                 case "P":
                     tileClass = "grass";
-                    playerPositions.push({ x: j, y: i });
+                    playerPositions.push({ x: parseInt(j), y: i });
                     break;
                 default:
                     break;

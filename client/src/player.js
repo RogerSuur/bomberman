@@ -27,14 +27,9 @@ export default class Player {
     startPosition() {
         const player = document.getElementById(`player-${this.playerId}`);
         console.log(player);
-
-        if (player.id === "player-1") {
-            player.style.left = `${position.x * 36}px`;
-            player.style.top = `${position.y * 36}px`;
-        } else if (player.id === "player-2") {
-            player.style.left = `${position.x + 78 * 36}px`;
-            player.style.top = `${position.y * 36}px`;
-        }
+        console.log(this.currentPosition);
+        player.style.left = `${this.currentPosition.x * 36}px`;
+        player.style.top = `${this.currentPosition.y * 36}px`;
     }
 
     move(direction) {
