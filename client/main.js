@@ -4,6 +4,7 @@ import fw from "./src/fwinstance.js";
 import BombermanGame from "./src/game.js";
 import ChatComponent from "./src/chat.js";
 import Player from "./src/player.js";
+import { gameGrid } from "./src/components/gameGrid.js";
 const socket = io(); // Establish WebSocket connection
 const chatComponent = new ChatComponent(socket);
 const chatElement = chatComponent.getChatElement();
@@ -47,14 +48,18 @@ socket.on("joined", (msg) => {
 });
 
 socket.on("startGame", (newMap, playerCount) => {
-    console.log(socket);
+    const { gridVirtualNodes, playerPositions } = gameGrid(newMap);
     const gameInstance = new BombermanGame(fw, socket, {});
-    const gameLayout = gameInstance.generateLayout(playerCount, newMap);
+    const gameLayout = gameInstance.generateLayout(
+        playerCount,
+        gridVirtualNodes
+    );
     appNode.children.push(gameLayout);
     fw.dom.mount(document.getElementById("app"), appNode);
 
+    console.log(playerPositions);
     for (let i = 0; i < playerCount; i++) {
-        new Player(`${i + 1}`, socket).createNode();
+        new Player(`${i + 1}`, socket, playerPositions[i]).createNode();
     }
 });
 

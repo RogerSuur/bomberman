@@ -1,7 +1,7 @@
 import fw from "../src/fwinstance.js";
 
 export default class Player {
-    constructor(playerId, socket) {
+    constructor(playerId, socket, startPosition) {
         this.playerId = playerId;
         this.socket = socket;
         this.actionQueue = []; // Action queue for client-side prediction
@@ -21,6 +21,20 @@ export default class Player {
 
         const grid = document.querySelector("#gamegrid");
         grid.appendChild(playerNode);
+        this.startPosition();
+    }
+
+    startPosition() {
+        const player = document.getElementById(`player-${this.playerId}`);
+        console.log(player);
+
+        if (player.id === "player-1") {
+            player.style.left = `${position.x * 36}px`;
+            player.style.top = `${position.y * 36}px`;
+        } else if (player.id === "player-2") {
+            player.style.left = `${position.x + 78 * 36}px`;
+            player.style.top = `${position.y * 36}px`;
+        }
     }
 
     move(direction) {

@@ -17,8 +17,8 @@ export default class BombermanGame {
         // bombs, etc.
     }
 
-    generateLayout(playerCount, newMap) {
-        this.gridNodes = gameGrid(newMap);
+    generateLayout(playerCount, gridVirtualNodes) {
+        this.gridNodes = gridVirtualNodes;
         const gameGridNode = this.fw.dom.createVirtualNode("div", {
             attrs: { id: "gamegrid" },
             children: [...this.gridNodes],
