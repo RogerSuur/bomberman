@@ -1,19 +1,45 @@
 import fw from "../src/fwinstance.js";
 
 export default class Player {
-    constructor(playerId, socket, startPosition) {
+    constructor(
+        playerId,
+        classCounter,
+        socket,
+        startPosition,
+        bombsPlaced,
+        lives,
+        powerUps,
+        userName
+    ) {
         this.playerId = playerId;
         this.socket = socket;
         this.actionQueue = []; // Action queue for client-side prediction
         // Initialize player properties
         this.currentPosition = startPosition;
+        this.lives = lives;
+        this.userName = userName;
+        this.bombs = powerUps.bombs;
+        this.flames = powerUps.flames;
+        this.speed = powerUps.speed;
+        this.bombsPlaced = bombsPlaced;
+        this.counter = classCounter;
+        console.log(
+            "client side",
+            this.playerId,
+            this.startPosition,
+            this.lives,
+            this.userName,
+            this.bombs,
+            this.flames,
+            this.speed
+        );
     }
 
     createNode() {
         const playerVirtualNode = fw.dom.createVirtualNode("div", {
             attrs: {
                 id: `player-${this.playerId}`,
-                class: `player-${this.playerId}`,
+                class: `player-${this.counter}`,
             },
         });
 
@@ -26,10 +52,8 @@ export default class Player {
 
     startPosition() {
         const player = document.getElementById(`player-${this.playerId}`);
-        player.style.left = `${this.currentPosition.x * 36}px`;
-        player.style.top = `${this.currentPosition.y * 36}px`;
-        console.log(player);
-        console.log(this.currentPosition);
+        player.style.left = `${this.currentPosition.x}px`;
+        player.style.top = `${this.currentPosition.y}px`;
     }
 
     move(direction) {
