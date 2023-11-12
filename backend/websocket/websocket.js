@@ -82,10 +82,10 @@ const GameStart = async (io) => {
   const connections = await io.fetchSockets();
   const players = [];
   const positions = [
-    [72, 36],
-    [504, 396],
-    [504, 36],
-    [72, 396],
+    { x: 72, y: 36 },
+    { x: 504, y: 396 },
+    { x: 504, y: 36 },
+    { x: 72, y: 396 },
   ];
 
   connections.forEach((conn, index) => {
