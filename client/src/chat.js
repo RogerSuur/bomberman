@@ -1,9 +1,8 @@
 import fw from "./fwinstance.js";
 
-const socket = io();
-
 export default class ChatComponent {
-  constructor() {
+  constructor(socket) {
+    this.socket = socket;
     this.chatElement = this.createChatElement();
     this.username = '';
     this.attachEventListeners();
@@ -53,7 +52,7 @@ export default class ChatComponent {
       const messageInput = document.getElementById("messageInput");
       const message = messageInput.value.trim();
       if (message) {
-        socket.emit('chatMessage', { username: this.username, message });
+        this.socket.emit('chatMessage', { username: this.username, message });
         messageInput.value = '';
       }
     }
@@ -76,7 +75,7 @@ export default class ChatComponent {
   }
 
   attachEventListeners() {
-    socket.on('chatMessage', (data) => {
+    this.socket.on('chatMessage', (data) => {
       const messagesContainer = document.getElementById('messages');
       const messageWithUsername = `${data.username}: ${data.message}`;
       const li = fw.dom.createVirtualNode("li", { text: messageWithUsername });
