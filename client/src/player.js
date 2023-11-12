@@ -1,8 +1,7 @@
 export default class Player {
   constructor(playerId, socket) {
-    this.socket = socket;
     this.playerId = playerId;
-    this.className = `player-${playerId}`;
+    this.socket = socket;
     this.actionQueue = []; // Action queue for client-side prediction
     // Initialize player properties
   }

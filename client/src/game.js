@@ -13,10 +13,9 @@ export default class BombermanGame {
 
         this.multiplayer = new Multiplayer(socket, this.state);
 
-        socket.on("startGame", (newMap, playerCount, playerClassName) => {
-            console.log("PayerCount on clientside", playerCount);
+        socket.on("startGame", (newMap, playerCount) => {
             this.gridNodes = gameGrid(newMap);
-            const gameNode = this.generateLayout(playerCount, playerClassName);
+            const gameNode = this.generateLayout(playerCount);
             appNode.children.push(gameNode);
             fw.dom.mount(document.getElementById("app"), appNode);
         });
@@ -25,20 +24,17 @@ export default class BombermanGame {
         // bombs, etc.
     }
 
-    generateLayout(playerCount, playerClassName) {
+    generateLayout(playerCount) {
         const gameGridNode = this.fw.dom.createVirtualNode("div", {
             attrs: { id: "gamegrid" },
             children: [...this.gridNodes],
         });
-        const hudNode = gameHud(playerCount, playerClassName);
-        console.log(playerClassName)
-        console.log(playerCount)
+        const hudNode = gameHud(playerCount);
         const gameLayout = this.fw.dom.createVirtualNode("div", {
             attrs: { id: "gameapp" },
             children: [hudNode, gameGridNode],
         });
         return gameLayout;
-        
     }
 
     render() {
