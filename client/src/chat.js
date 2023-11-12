@@ -1,9 +1,8 @@
 import fw from "./fwinstance.js";
 
-const socket = io();
-
 export default class ChatComponent {
-  constructor() {
+  constructor(socket) {
+    this.socket = socket;
     this.chatElement = this.createChatElement();
     this.attachEventListeners();
   }
@@ -31,27 +30,27 @@ export default class ChatComponent {
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
     if (message) {
-      socket.emit('chatMessage', message);
-      messageInput.value = '';
+      socket.emit("chatMessage", message);
+      messageInput.value = "";
     }
   }
 
   handleKeyDown(event) {
     if (event.key === "Enter") {
-      event.preventDefault(); 
+      event.preventDefault();
       this.sendMessage();
     }
   }
 
   attachEventListeners() {
-    socket.on('chatMessage', (message) => {
-      const messagesContainer = document.getElementById('messages');
+    socket.on("chatMessage", (message) => {
+      const messagesContainer = document.getElementById("messages");
       const li = fw.dom.createVirtualNode("li", { text: message });
-      const realDOM = fw.dom.render(li); 
-      const textNode = document.createTextNode(message); 
-      realDOM.appendChild(textNode); 
+      const realDOM = fw.dom.render(li);
+      const textNode = document.createTextNode(message);
+      realDOM.appendChild(textNode);
       messagesContainer.appendChild(realDOM);
-      const messages = document.getElementById('messages');
+      const messages = document.getElementById("messages");
       messages.scrollTop = messages.scrollHeight;
     });
   }
@@ -60,5 +59,3 @@ export default class ChatComponent {
     return this.chatElement;
   }
 }
-
-
