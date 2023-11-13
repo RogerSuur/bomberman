@@ -25,8 +25,6 @@ const fwConfig = {
     ],
 };
 
-debugger
-
 const fw = new MiniFramework(fwConfig);
 
 export default fw;
