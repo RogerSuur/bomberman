@@ -1,11 +1,12 @@
 export default class PreLobby {
-    constructor(fw) {
+    constructor(fw, errorPresent) {
         this.fw = fw;
         this.state = fw.state;
+        this.errorPresent = errorPresent;
     }
 
     handleClick = (e) => {
-        debugger
+        
         const input = document.getElementById("input-name");
         const userName = input.value
         let { players } = this.fw.state.getState();
@@ -22,7 +23,6 @@ export default class PreLobby {
 
     handleInput = (e) => {
         if ((e.code === "Enter" || e.code === "NumpadEnter") && e.target.value != "") {
-        debugger
 
             e.preventDefault();
             let userName = e.target.value;
@@ -40,7 +40,7 @@ export default class PreLobby {
         }
     };
 
-    render(error) {
+    render() {
         const label = this.fw.dom.createVirtualNode("label", {
             attrs: { for: "input-name", class: "px-4 py-1 row" },
             children: ["Insert username"]
@@ -85,7 +85,7 @@ export default class PreLobby {
             children: [],
         });
 
-        if (error) {
+        if (this.errorPresent ) {
             errorMsg.children.push("This username is already in use!") 
         }
 
@@ -103,8 +103,8 @@ export default class PreLobby {
         return preLobby;
     }
 
-    update(oldLobby, newData) {
-        const newLobby = this.render(newData);
+    update(oldLobby) {
+        const newLobby = this.render();
         const patch = this.fw.dom.diff(oldLobby, newLobby);
         const actualDOMNode = document.getElementById("pre-lobby");
         patch(actualDOMNode);

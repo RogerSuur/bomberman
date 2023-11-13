@@ -52,18 +52,21 @@ const gameNode = gameInstance.generateLayout();
 // gameInstance.render();
 
 //Lobby
-const preLobbyInstance = new PreLobby(fw);
-const preLobby = preLobbyInstance.render(false);
+const preLobbyInstance = new PreLobby(fw, false);
+const preLobby = preLobbyInstance.render();
 
 export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 
-fw.events.subscribe("userNameInUser",() =>{ preLobbyInstance.update(preLobby, true)})
+fw.events.subscribe("userNameInUser",() =>{ 
+    preLobbyInstance.errorPresent = true;
+    preLobbyInstance.update(preLobby)
+})
 
 //LOBBY
 fw.events.subscribe("userAdded",() =>{
-        const lobbyInstance = new Lobby(fw, socket);
+        const lobbyInstance = new Lobby(fw);
         const lobby = lobbyInstance.render();
         const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
         const patch = fw.dom.diff(appNode, newApp);
