@@ -52,12 +52,16 @@ fw.events.subscribe("userNameInUser",() =>{
 })
 
 //LOBBY
-fw.events.subscribe("userAdded",() =>{
-        const lobbyInstance = new Lobby(fw);
-        const lobby = lobbyInstance.render();
-        const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-        const patch = fw.dom.diff(appNode, newApp);
-        const actualDOMNode = document.getElementById("app");
-        patch(actualDOMNode);
+// fw.events.subscribe("userAdded",() =>{
+
         
-})
+// })
+
+socket.on("userlist", (info) => {
+    const lobbyInstance = new Lobby(fw, socket);
+    const lobby = lobbyInstance.render();
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
+});

@@ -21,6 +21,8 @@ export default class PreLobby {
         players.push(userName)
         this.fw.state.setState({ players });
         this.fw.events.notify("userAdded");
+        this.socket.emit("username", userName);
+
     }
 
     handleInput = (e) => {

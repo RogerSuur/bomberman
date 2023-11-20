@@ -42,11 +42,9 @@ export default class  Lobby {
         })
         
         const lobby = this.fw.dom.createVirtualNode("div", {
-            attrs: { class: "container", id:"pre-lobby" },
+            attrs: { class: "container", id:"lobby" },
             children: [headerRow, contentRow]
         });
-
-
 
         return lobby;
     }
