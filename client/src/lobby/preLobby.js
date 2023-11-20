@@ -1,8 +1,10 @@
 export default class PreLobby {
-    constructor(fw, errorPresent) {
+    constructor(fw, socket, errorPresent) {
         this.fw = fw;
         this.state = fw.state;
+        this.socket = socket;
         this.errorPresent = errorPresent;
+        this.content = this.render();
     }
 
     handleClick = (e) => {
@@ -36,7 +38,10 @@ export default class PreLobby {
             e.target.value = "";
             players.push(userName)
             this.fw.state.setState({ players });
+
+            // notify about added user
             this.fw.events.notify("userAdded");
+            this.socket.emit("username", userName);
         }
     };
 
@@ -100,12 +105,17 @@ export default class PreLobby {
             children: [col]
         });
 
+        const lobbyContainer = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "d-flex justify-content-center align-items-center", id:"content-container" },
+            children: [preLobby]
+        });
+
         return preLobby;
     }
 
-    update(oldLobby) {
+    update() {
         const newLobby = this.render();
-        const patch = this.fw.dom.diff(oldLobby, newLobby);
+        const patch = this.fw.dom.diff(this.content, newLobby);
         const actualDOMNode = document.getElementById("pre-lobby");
         patch(actualDOMNode);
     }
