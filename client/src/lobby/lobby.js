@@ -9,6 +9,7 @@ export default class  Lobby {
     }
 
     render() {
+        this.playerList = this.playerList.filter((player) => player !== null);
         var players = this.playerList.length;
         var str = `Waiting for players: ${players}/4`
         
@@ -56,24 +57,5 @@ export default class  Lobby {
 
         return lobby;
     }
-
-    createContainer(tagName, attributes = {}) {
-        const element = document.createElement(tagName);
-        Object.entries(attributes).forEach(([key, value]) => {
-            element.setAttribute(key, value);
-        });
-        return element;
-    }
-
-    update(oldElement) {
-        const playerList = oldElement.querySelector('#player-list');
-        playerList.innerHTML = '';
-        this.players.forEach(player => {
-            const li = document.createElement('li');
-            li.textContent = player;
-            playerList.appendChild(li);
-        });
-    }
-
 
 }
