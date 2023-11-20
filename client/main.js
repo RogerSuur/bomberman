@@ -57,8 +57,8 @@ fw.events.subscribe("userNameInUser",() =>{
         
 // })
 
-socket.on("userlist", (info) => {
-    const lobbyInstance = new Lobby(fw, socket);
+socket.on("userlist", (userList) => {
+    const lobbyInstance = new Lobby(fw, socket, userList);
     const lobby = lobbyInstance.render();
     const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
     const patch = fw.dom.diff(appNode, newApp);

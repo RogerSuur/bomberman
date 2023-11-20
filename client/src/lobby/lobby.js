@@ -1,17 +1,16 @@
 import ChatComponent from "../chat.js";
 
 export default class  Lobby {
-    constructor(fw,socket) {
+    constructor(fw,socket, playerList) {
         this.fw = fw;
         this.state = fw.state;
-        this.players = this.fw.state.getState();
+        this.playerList = playerList;
         this.socket = socket;
     }
 
     render() {
-        console.log(this.players)
-
-        var str = `Waiting for players: 0/4`
+        var players = this.playerList.length;
+        var str = `Waiting for players: ${players}/4`
         
         const header = this.fw.dom.createVirtualNode("h1", {
             attrs: { for: "input-name", class: "px-4 py-1 row" },
@@ -23,10 +22,19 @@ export default class  Lobby {
             children: [header]
         })
 
+
+
         const playerColumn = this.fw.dom.createVirtualNode("div",{
             attrs: { class: "col-4"},
-            children: ["players col"]
+            children: []
         })
+
+        for (const key in this.playerList) {
+            playerColumn.children.push(this.fw.dom.createVirtualNode("div",{
+                attrs: { class: "row"},
+                children: [this.playerList[key]]
+            }))
+        };
 
         const chatComponent = new ChatComponent(this.socket);
         const chatElement = chatComponent.getChatElement();
