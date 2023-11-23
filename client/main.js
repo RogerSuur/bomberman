@@ -1,7 +1,10 @@
 import fw from "./src/fwinstance.js";
-// import Chat from "./src/chat.js";
+//import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
+import PreLobby from "./src/lobby/preLobby.js";
+import Lobby from "./src/lobby/lobby.js";
 import ChatComponent from "./src/chat.js";
+
 import Player from "./src/player.js";
 import { gameGrid } from "./src/components/gameGrid.js";
 const socket = io(); // Establish WebSocket connection
@@ -11,12 +14,13 @@ const chatElement = chatComponent.getChatElement();
 // Add the chat element to the DOM
 //document.body.appendChild(chatElement);
 
+/* 
 const form = document.getElementById("form");
 const input = document.getElementById("input");
 const start = document.getElementById("start");
-/* const chat = document.getElementById("chat");
+const chat = document.getElementById("chat");
 const chatmessage = document.getElementById("chatmessage");
- */
+
 
 start.addEventListener("click", () => {
     socket.emit("launch");
@@ -30,7 +34,7 @@ form.addEventListener("submit", (e) => {
     }
 });
 
-/* chat.addEventListener("submit", (e) => {
+chat.addEventListener("submit", (e) => {
   e.preventDefault();
   if (chatmessage.value) {
     socket.emit("chat message", chatmessage.value);
@@ -42,9 +46,10 @@ socket.on("user left", (msg) => {
   console.log(`A user ${msg} disconnected`);
 });
 
-socket.on("joined", (msg) => {
-  console.log(`A user ${msg} disconnected`);
-});
+
+/* socket.on("joined", (msg) => {
+  console.log(`A user ${msg} connected`);
+}); */
 
 socket.on("startGame", (newMap, players) => {
     const gridVirtualNodes = gameGrid(newMap);
@@ -78,6 +83,32 @@ const App = (attrs = {}, children = []) =>
         children,
     });
 
-export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
+//export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
+//Lobby
+const preLobbyInstance = new PreLobby(fw, socket, false);
+const preLobby = preLobbyInstance.render();
+
+export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
+
+
+fw.events.subscribe("userNameInUser",() =>{ 
+    preLobbyInstance.errorPresent = true;
+    preLobbyInstance.update()
+})
+
+//LOBBY
+// fw.events.subscribe("userAdded",() =>{
+
+        
+// })
+
+socket.on("userlist", (userList) => {
+    const lobbyInstance = new Lobby(fw, socket, userList);
+    const lobby = lobbyInstance.render();
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
+});

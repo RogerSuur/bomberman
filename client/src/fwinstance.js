@@ -1,18 +1,18 @@
 import MiniFramework from "../framework/mini-framework.js";
 
 // Define the configuration for the application
-let items = [];
+let players = [];
 let currentRoute = {};
 
-let storedItems = JSON.parse(localStorage.getItem("items"));
+let storedPlayers = JSON.parse(localStorage.getItem("players"));
 
-if (storedItems != null && storedItems instanceof Array) {
-    items = storedItems;
+if (storedPlayers != null && storedPlayers instanceof Array) {
+    players = storedPlayers;
 }
 
 const fwConfig = {
     initialState: {
-        players: [],
+        players: players,
         bombs: [],
         gameStatus: "notStarted",
         messages: [],

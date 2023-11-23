@@ -12,8 +12,25 @@ body {
     color: #bfbfbf;
 }
 
-.footer {
-    color: #777;
+#page-container {
+  position: relative;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+#content-container {
+  min-height: 100vh;
+  min-width: 100vw;
+  padding-bottom: 4rem;    /* Footer height */
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: #777;
+  height: 2.5rem;   
+           /* Footer height */
 }
 #messages{
   background-color: rgb(131, 120, 120);
