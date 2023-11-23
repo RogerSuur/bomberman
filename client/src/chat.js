@@ -88,9 +88,7 @@ export default class ChatComponent {
     });
   }
 
-  getChatElement() {
-    return this.chatElement;
-  }
+    getChatElement() {
+        return this.chatElement;
+    }
 }
-
-

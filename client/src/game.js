@@ -1,4 +1,3 @@
-import { gameGrid } from "./components/gameGrid.js";
 import { gameHud } from "./components/gameHud.js";
 import Multiplayer from "./multiplayer.js";
 import { appNode } from "../main.js";
@@ -12,21 +11,15 @@ export default class BombermanGame {
         this.gridNodes = [];
 
         this.multiplayer = new Multiplayer(socket, this.state);
-
-        socket.on("startGame", (newMap, playerCount) => {
-            this.gridNodes = gameGrid(newMap);
-            const gameNode = this.generateLayout(playerCount);
-            appNode.children.push(gameNode);
-            fw.dom.mount(document.getElementById("app"), appNode);
-        });
-
+        console.log("initializing BombermanGame class");
         // Initialize game elements like the grid, players,
         // bombs, etc.
     }
 
-    generateLayout(playerCount) {
+    generateLayout(playerCount, gridVirtualNodes) {
+        this.gridNodes = gridVirtualNodes;
         const gameGridNode = this.fw.dom.createVirtualNode("div", {
-            attrs: { id: "gamegrid" },
+            attrs: { id: "gamegrid", class: "game-grid" },
             children: [...this.gridNodes],
         });
         const hudNode = gameHud(playerCount);

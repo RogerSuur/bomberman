@@ -1,12 +1,13 @@
 import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
+import Player from "../game/player.js";
 
 const GetUserlist = (sockets) => {
-    let userlist = [];
-    for (const socket of sockets) {
-        userlist.push(socket.data.username);
-    }
-    return userlist;
+  let userlist = [];
+  for (const socket of sockets) {
+    userlist.push(socket.data.username);
+  }
+  return userlist;
 };
 
 const MAX_CONNECTIONS = 4;
@@ -28,10 +29,6 @@ const gameCountdown = (io) => {
   }, 10000);
   clearTimeout(timeoutId);
   timeoutId = gameStartTimer;
-};
-
-const GameStart = (io) => {
-  io.emit("start");
 };
 
 const connectionsCount = (io, conns) =>
@@ -80,14 +77,31 @@ const Websocket = (io) => {
 };
 
 //creates tilemap with randomized elements and player characters
-function startGame(io) {
-    //TODO: wants number of players
-    const playerCount = 4;
-    const randomizedMap = populateMapWithWallsAndPowerUps(
-        templateMap,
-        playerCount
+const GameStart = async (io) => {
+  //TODO: wants number of players
+  const connections = await io.fetchSockets();
+  const players = [];
+  const positions = [
+    { x: 72, y: 36 },
+    { x: 504, y: 396 },
+    { x: 504, y: 36 },
+    { x: 72, y: 396 },
+  ];
+
+  connections.forEach((conn, index) => {
+    console.log("PLAYER:", conn.data);
+    const player = new Player(
+      conn.data.id,
+      conn.data.username,
+      positions[index]
     );
-    io.emit("startGame", randomizedMap, playerCount);
-}
+    players.push(player);
+  });
+  const randomizedMap = populateMapWithWallsAndPowerUps(
+    templateMap,
+    players.length
+  );
+  io.emit("startGame", randomizedMap, players);
+};
 
 export default Websocket;
