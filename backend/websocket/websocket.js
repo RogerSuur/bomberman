@@ -31,10 +31,6 @@ const gameCountdown = (io) => {
   timeoutId = gameStartTimer;
 };
 
-const GameStart = (io) => {
-  io.emit("start");
-};
-
 const connectionsCount = (io, conns) =>
   conns === 4 ? gameCountdown(io) : conns === 2 && menuCountdown(io);
 
