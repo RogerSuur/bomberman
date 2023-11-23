@@ -1,37 +1,64 @@
-export default class Chat {
-  constructor(socket, stateManager) {
-    this.socket = socket;
-    this.state = stateManager;
-    // ... rest of the initialization
-    this.messages = [];
+import fw from "./fwinstance.js";
 
-    this.socket.on("message", (message) => {
-      this.messages.push(message);
-      this.renderMessages();
+const socket = io();
+
+export default class ChatComponent {
+  constructor() {
+    this.chatElement = this.createChatElement();
+    this.attachEventListeners();
+  }
+
+  createChatElement() {
+    const chatDiv = fw.dom.createVirtualNode("div", {
+      attrs: { id: "chat" },
+      children: [
+        fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
+        fw.dom.createVirtualNode("input", {
+          attrs: { id: "messageInput", autocomplete: "off" },
+          listeners: { keydown: this.handleKeyDown.bind(this) },
+        }),
+        fw.dom.createVirtualNode("button", {
+          children: ["Send"],
+          listeners: { click: this.sendMessage.bind(this) },
+        }),
+      ],
+    });
+
+    return chatDiv;
+  }
+
+  sendMessage() {
+    const messageInput = document.getElementById("messageInput");
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.emit('chatMessage', message);
+      messageInput.value = '';
+    }
+  }
+
+  handleKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); 
+      this.sendMessage();
+    }
+  }
+
+  attachEventListeners() {
+    socket.on('chatMessage', (message) => {
+      const messagesContainer = document.getElementById('messages');
+      const li = fw.dom.createVirtualNode("li", { text: message });
+      const realDOM = fw.dom.render(li); 
+      const textNode = document.createTextNode(message); 
+      realDOM.appendChild(textNode); 
+      messagesContainer.appendChild(realDOM);
+      const messages = document.getElementById('messages');
+      messages.scrollTop = messages.scrollHeight;
     });
   }
 
-  sendMessage(message) {
-    if (this.canSendMessage()) {
-      this.socket.emit("message", message);
-    }
-    // Handle state updates when the server confirms,
-    // for consistency
-
-    // Update the local state with the new message
-    const currentState = this.state.getState();
-    const updatedState = {}; /* logic to add the new message to the state */
-    this.state.setState(updatedState);
-  }
-
-  canSendMessage() {
-    // Implement rate limiting logic here
-    return true; // Replace with actual logic
-  }
-
-  renderMessages() {
-    // Use the framework to update the chat UI with
-    // the new messages
-    // ...
+  getChatElement() {
+    return this.chatElement;
   }
 }
+
+

@@ -1,29 +1,41 @@
+//import { Socket } from "socket.io";
 import fw from "./src/fwinstance.js";
-//import Chat from "./src/chat.js";
+// import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
-
+import ChatComponent from "./src/chat.js"; 
 const socket = io(); // Establish WebSocket connection
+const chatComponent = new ChatComponent(socket);
+const chatElement = chatComponent.getChatElement();
+
+// Add the chat element to the DOM
+//document.body.appendChild(chatElement);
 
 const form = document.getElementById("form");
 const input = document.getElementById("input");
-const chat = document.getElementById("chat");
+const start = document.getElementById("start");
+/* const chat = document.getElementById("chat");
 const chatmessage = document.getElementById("chatmessage");
+ */
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit("username", input.value);
-    input.value = "";
-  }
+start.addEventListener("click", () => {
+    socket.emit("launch");
 });
 
-chat.addEventListener("submit", (e) => {
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (input.value) {
+        socket.emit("username", input.value);
+        input.value = "";
+    }
+});
+
+/* chat.addEventListener("submit", (e) => {
   e.preventDefault();
   if (chatmessage.value) {
     socket.emit("chat message", chatmessage.value);
     chatmessage.value = "";
   }
-});
+}); */
 
 socket.on("user left", (msg) => {
   console.log(`A user ${msg} disconnected`);
@@ -33,28 +45,25 @@ socket.on("joined", (msg) => {
   console.log(`A user ${msg} disconnected`);
 });
 
-const gameConfig = {
-  gridSize: [10, 10],
-  // Add more configs as needed
-};
+export const gameInstance = new BombermanGame(fw, socket, {});
 
-const game = new BombermanGame(fw, socket, gameConfig);
-
-// const App = (attrs = {}, children = []) =>
-//   fw.dom.createVirtualNode("span", {
-//     attrs: {
-//       ...attrs,
-//     },
-//     children,
-//   });
+const App = (attrs = {}, children = []) =>
+    fw.dom.createVirtualNode("div", {
+        attrs: {
+            ...attrs,
+        },
+        children,
+    });
 
 // // Set up the application with imported components
 // const myApp = App({ id: "app" }, ["Cool"]);
 
 // // Mount the application to the DOM
-fw.dom.mount(document.getElementById("app"), game);
+export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
-game.render();
+fw.dom.mount(document.getElementById("app"), appNode);
+
+gameInstance.render();
 
 //const chat = new Chat(socket, fw.state);
 

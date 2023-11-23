@@ -1,9 +1,12 @@
+import { templateMap } from "../game/tilemap.js";
+import { populateMapWithWallsAndPowerUps } from "../game/init.js";
+
 const GetUserlist = (sockets) => {
-  let userlist = [];
-  for (const socket of sockets) {
-    userlist.push(socket.data.username);
-  }
-  return userlist;
+    let userlist = [];
+    for (const socket of sockets) {
+        userlist.push(socket.data.username);
+    }
+    return userlist;
 };
 
 const MAX_CONNECTIONS = 4;
@@ -41,9 +44,11 @@ const Websocket = (io) => {
     if (connections.length <= MAX_CONNECTIONS) {
       connectionsCount(io, connections.length);
 
-      socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
-      });
+        // Listen for chat messages
+        socket.on("chatMessage", (message) => {
+            // Broadcast the message to all connected users
+            io.emit("chatMessage", message);
+        });
 
       socket.on("username", async (username) => {
         socket.data.username = username;
@@ -73,5 +78,16 @@ const Websocket = (io) => {
     }
   });
 };
+
+//creates tilemap with randomized elements and player characters
+function startGame(io) {
+    //TODO: wants number of players
+    const playerCount = 4;
+    const randomizedMap = populateMapWithWallsAndPowerUps(
+        templateMap,
+        playerCount
+    );
+    io.emit("startGame", randomizedMap, playerCount);
+}
 
 export default Websocket;
