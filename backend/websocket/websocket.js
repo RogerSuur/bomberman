@@ -39,6 +39,7 @@ const Websocket = (io) => {
     const connections = await io.fetchSockets();
 
     if (connections.length <= MAX_CONNECTIONS) {
+      socket.data.id = socket.id;
       connectionsCount(io, connections.length);
 
         // Listen for chat messages
