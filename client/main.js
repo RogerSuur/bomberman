@@ -37,12 +37,12 @@ form.addEventListener("submit", (e) => {
   }
 }); */
 
-socket.on("userlist", (chatlist) => {
-    console.log(chatlist);
+socket.on("user left", (msg) => {
+  console.log(`A user ${msg} disconnected`);
 });
 
 socket.on("joined", (msg) => {
-    console.log(msg);
+  console.log(`A user ${msg} disconnected`);
 });
 
 export const gameInstance = new BombermanGame(fw, socket, {});
