@@ -31,6 +31,10 @@ const gameCountdown = (io) => {
   timeoutId = gameStartTimer;
 };
 
+const GameStart = (io) => {
+  io.emit("start");
+};
+
 const connectionsCount = (io, conns) =>
   conns === 4 ? gameCountdown(io) : conns === 2 && menuCountdown(io);
 
@@ -39,13 +43,13 @@ const Websocket = (io) => {
     const connections = await io.fetchSockets();
 
     if (connections.length <= MAX_CONNECTIONS) {
-      socket.data.id = socket.id;
-      console.log("LENGTH: ", connections.length);
       connectionsCount(io, connections.length);
 
-      socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
-      });
+        // Listen for chat messages
+        socket.on("chatMessage", (message) => {
+            // Broadcast the message to all connected users
+            io.emit("chatMessage", message);
+        });
 
       socket.on("username", async (username) => {
         socket.data.username = username;
