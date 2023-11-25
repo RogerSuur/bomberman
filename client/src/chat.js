@@ -1,59 +1,92 @@
 import fw from "./fwinstance.js";
 
 export default class ChatComponent {
-    constructor(socket) {
-        this.socket = socket;
-        this.chatElement = this.createChatElement();
-        this.attachEventListeners();
-    }
+  constructor(socket) {
+    this.socket = socket;
+    this.chatElement = this.createChatElement();
+    this.username = '';
+    this.attachEventListeners();
+  }
 
-    createChatElement() {
-        const chatDiv = fw.dom.createVirtualNode("div", {
-            attrs: { id: "chat" },
-            children: [
-                fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
-                fw.dom.createVirtualNode("input", {
-                    attrs: { id: "messageInput", autocomplete: "off" },
-                    listeners: { keydown: this.handleKeyDown.bind(this) },
-                }),
-                fw.dom.createVirtualNode("button", {
-                    children: ["Send"],
-                    listeners: { click: this.sendMessage.bind(this) },
-                }),
-            ],
-        });
+  createChatElement() {
+    const chatDiv = fw.dom.createVirtualNode("div", {
+      attrs: { id: "chat" },
+      children: [
+        fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
+        fw.dom.createVirtualNode("input", {
+          attrs: { id: "usernameInput", placeholder: "Enter your username" },
+          listeners: { keydown: this.handleUsernameKeyDown.bind(this) },
+        }),
+        fw.dom.createVirtualNode("div", {
+          attrs: { id: "messageInputContainer", style: "display: none" },
+          children: [
+            fw.dom.createVirtualNode("input", {
+              attrs: { id: "messageInput", autocomplete: "off", placeholder: "Type a message..." },
+              listeners: { keydown: this.handleKeyDown.bind(this) },
+              props: { disabled: true },
+            }),
+            fw.dom.createVirtualNode("button", {
+              children: ["Send"],
+              listeners: { click: this.sendMessage.bind(this) },
+              props: { disabled: true },
+            }),
+          ],
+        }),
+      ],
+    });
+  
+    return chatDiv;
+  }
 
-        return chatDiv;
-    }
+  showChat() {
+    const chatDiv = document.getElementById("chat");
+    chatDiv.style.display = "block"; 
+  }
+  showChatInput() {
+    const messageInputContainer = document.getElementById("messageInputContainer");
+    messageInputContainer.style.display = "block";
+  }
 
-    sendMessage() {
-        const messageInput = document.getElementById("messageInput");
-        const message = messageInput.value.trim();
-        if (message) {
-            socket.emit("chatMessage", message);
-            messageInput.value = "";
-        }
+  sendMessage() {
+    if (this.username) {
+      const messageInput = document.getElementById("messageInput");
+      const message = messageInput.value.trim();
+      if (message) {
+        this.socket.emit('chatMessage', { username: this.username, message });
+        messageInput.value = '';
+      }
     }
+  }
 
-    handleKeyDown(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            this.sendMessage();
-        }
+  handleUsernameKeyDown(event) {
+    if (event.key === "Enter") {
+      const usernameInput = document.getElementById("usernameInput");
+      this.username = usernameInput.value.trim();
+      usernameInput.disabled = true;
+      this.showChatInput(); 
     }
+  }
 
-    attachEventListeners() {
-        this.socket.on("chatMessage", (message) => {
-            const messagesContainer = document.getElementById("messages");
-            const li = fw.dom.createVirtualNode("li", { text: message });
-            const realDOM = fw.dom.render(li);
-            const textNode = document.createTextNode(message);
-            realDOM.appendChild(textNode);
-            messagesContainer.appendChild(realDOM);
-            const messages = document.getElementById("messages");
-            messages.scrollTop = messages.scrollHeight;
-        });
+  handleKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.sendMessage();
     }
+  }
+
+  attachEventListeners() {
+    this.socket.on('chatMessage', (data) => {
+      const messagesContainer = document.getElementById('messages');
+      const messageWithUsername = `${data.username}: ${data.message}`;
+      const li = fw.dom.createVirtualNode("li", { text: messageWithUsername });
+      const realDOM = fw.dom.render(li);
+      const textNode = document.createTextNode(messageWithUsername);
+      realDOM.appendChild(textNode);
+      messagesContainer.appendChild(realDOM);
+      const messages = document.getElementById('messages');
+      messages.scrollTop = messages.scrollHeight;
+    });
+  }
 
     getChatElement() {
         return this.chatElement;
