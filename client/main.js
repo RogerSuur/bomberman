@@ -44,6 +44,7 @@ socket.on("joined", (msg) => {
 
 socket.on("startGame", (newMap, players) => {
     const gridVirtualNodes = gameGrid(newMap);
+    console.log(socket);
     const gameInstance = new BombermanGame(fw, socket, {});
     const gameLayout = gameInstance.generateLayout(
         players.length,
@@ -52,7 +53,15 @@ socket.on("startGame", (newMap, players) => {
     appNode.children.push(gameLayout);
     fw.dom.mount(document.getElementById("app"), appNode);
 
+    //subscribe appNode
+
     for (let i = 0; i < players.length; i++) {
+        console.log(socket.id, players[i].id);
+
+        if (players[i].id === socket.id) {
+            localStorage.setItem("localPlayerId", players[i].id);
+        }
+
         new Player(
             `${players[i].id}`,
             i + 1,
