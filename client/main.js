@@ -39,11 +39,11 @@ form.addEventListener("submit", (e) => {
 }); */
 
 socket.on("user left", (msg) => {
-  console.log(`A user ${msg} disconnected`);
+    console.log(`A user ${msg} disconnected`);
 });
 
 socket.on("joined", (msg) => {
-  console.log(`A user ${msg} disconnected`);
+    console.log(`A user ${msg} disconnected`);
 });
 
 socket.on("startGame", (newMap, players) => {

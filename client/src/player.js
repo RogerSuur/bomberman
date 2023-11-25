@@ -1,5 +1,4 @@
 import fw from "../src/fwinstance.js";
-
 export default class Player {
     constructor(
         playerId,
@@ -13,7 +12,8 @@ export default class Player {
     ) {
         this.playerId = playerId;
         this.socket = socket;
-        this.actionQueue = [];
+        this.actionQueue = []; // Action queue for client-side prediction
+        // Initialize player properties
         this.currentPosition = startPosition;
         this.lives = lives;
         this.userName = userName;
@@ -35,9 +35,7 @@ export default class Player {
                 class: `player-${this.counter}`,
             },
         });
-
         const playerNode = fw.dom.render(playerVirtualNode);
-
         const grid = document.querySelector("#gamegrid");
         grid.appendChild(playerNode);
         if (this.isLocalPlayer()) {
@@ -45,13 +43,11 @@ export default class Player {
         }
         this.startPosition();
     }
-
     startPosition() {
         const player = document.getElementById(`player-${this.playerId}`);
         player.style.left = `${this.currentPosition.x}px`;
         player.style.top = `${this.currentPosition.y}px`;
     }
-
     move(direction) {
         // Sends a move request to the server
         this.socket.emit("move", {
@@ -62,7 +58,6 @@ export default class Player {
         // Optionally handle optimistic UI updates or wait for
         // server confirmation
     }
-
     predictMovement(direction) {
         // Apply the movement immediately on the client-side for
         // smoother user experience:
@@ -72,12 +67,10 @@ export default class Player {
             this.currentPosition,
             direction
         );
-
         // Check if the new position is a valid move locally
         if (isPositionValid(tempNewPosition)) {
             // Update the local state with the new position
             this.currentPosition = tempNewPosition;
-
             // Add the move to the actionQueue for later reconciliation
             this.actionQueue.push({
                 action: "move",
@@ -85,11 +78,54 @@ export default class Player {
             });
         }
     }
-
     placeBomb() {
         // Sends a bomb placement request to the server
         this.socket.emit("placeBomb", { playerId: this.playerId });
         this.actionQueue.push("placeBomb"); // Add to action queue
     }
     // ... other player methods
+    addMovementListeners() {
+        //saada socketisse
+        document.addEventListener("keydown", (event) => {
+            console.log(event.key);
+            switch (event.key) {
+                case "ArrowUp":
+                    this.move("up");
+                    break;
+                case "ArrowDown":
+                    this.move("down");
+                    break;
+                case "ArrowLeft":
+                    this.move("left");
+                    break;
+                case "ArrowRight":
+                    this.move("right");
+                    break;
+            }
+        });
+    }
+
+    move(direction) {
+        switch (direction) {
+            case "up":
+                this.currentPosition.y -= this.speed;
+                break;
+            case "down":
+                this.currentPosition.y += this.speed;
+                break;
+            case "left":
+                this.currentPosition.x -= this.speed;
+                break;
+            case "right":
+                this.currentPosition.x += this.speed;
+                break;
+        }
+        requestAnimationFrame(() => this.updatePosition());
+    }
+
+    updatePosition() {
+        const player = document.getElementById(`player-${this.playerId}`);
+        player.style.left = `${this.currentPosition.x}px`;
+        player.style.top = `${this.currentPosition.y}px`;
+    }
 }
