@@ -2,16 +2,16 @@ export default class Multiplayer {
     constructor(socket, stateManager) {
         this.socket = socket;
         this.state = stateManager;
-
-        this.socket.on("stateUpdate", (data) => {
-            console.log("State Updated");
-            // The server sends back the updated state
-            this.state.setState(data);
-            this.reconcile();
-        });
+        this.players = {};
     }
-    reconcile() {
-        // Compare server state with client-side predicted state
-        // and correct any discrepancies
+
+    addPlayer(player) {
+        console.log(player);
+        this.players[player.playerId] = player;
+    }
+
+    updatePlayerPosition(playerId, direction) {
+        console.log("PLayer" + playerId + "moves for players" + this.players);
+        this.players[playerId].move(direction);
     }
 }

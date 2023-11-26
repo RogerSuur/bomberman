@@ -1,6 +1,4 @@
 import { gameHud } from "./components/gameHud.js";
-import Multiplayer from "./multiplayer.js";
-import { appNode } from "../main.js";
 
 export default class BombermanGame {
     constructor(fw, socket, config) {
@@ -10,8 +8,6 @@ export default class BombermanGame {
         this.config = config;
         this.gridNodes = [];
 
-        this.multiplayer = new Multiplayer(socket, this.state);
-        console.log("initializing BombermanGame class");
         // Initialize game elements like the grid, players,
         // bombs, etc.
     }

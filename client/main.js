@@ -1,12 +1,15 @@
 import fw from "./src/fwinstance.js";
-// import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
 import ChatComponent from "./src/chat.js";
 import Player from "./src/player.js";
+import SocketManager from "./src/socketManager.js";
 import { gameGrid } from "./src/components/gameGrid.js";
+import Multiplayer from "./src/multiplayer.js";
 const socket = io(); // Establish WebSocket connection
 const chatComponent = new ChatComponent(socket);
+const multiplayer = new Multiplayer(socket);
 const chatElement = chatComponent.getChatElement();
+const socketManager = new SocketManager(socket, multiplayer);
 
 // Add the chat element to the DOM
 //document.body.appendChild(chatElement);
@@ -48,7 +51,6 @@ socket.on("joined", (msg) => {
 
 socket.on("startGame", (newMap, players) => {
     const gridVirtualNodes = gameGrid(newMap);
-    console.log(socket);
     const gameInstance = new BombermanGame(fw, socket, {});
     const gameLayout = gameInstance.generateLayout(
         players.length,
@@ -57,16 +59,11 @@ socket.on("startGame", (newMap, players) => {
     appNode.children.push(gameLayout);
     fw.dom.mount(document.getElementById("app"), appNode);
 
-    //subscribe appNode
-
     for (let i = 0; i < players.length; i++) {
-        console.log(socket.id, players[i].id);
-
         if (players[i].id === socket.id) {
-            localStorage.setItem("localPlayerId", players[i].id);
+            sessionStorage.setItem("localPlayerId", players[i].id);
         }
-
-        new Player(
+        let newPlayer = new Player(
             `${players[i].id}`,
             i + 1,
             socket,
@@ -75,7 +72,9 @@ socket.on("startGame", (newMap, players) => {
             players[i].lives,
             players[i].powerUps,
             players[i].userName
-        ).createNode();
+        );
+        newPlayer.createNode();
+        multiplayer.addPlayer(newPlayer);
     }
 });
 

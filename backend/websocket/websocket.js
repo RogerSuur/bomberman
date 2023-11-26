@@ -57,6 +57,10 @@ const Websocket = (io) => {
                 console.log("stateUpdate");
             });
 
+            socket.on("move", (data) => {
+                socket.broadcast.emit("broadcastMovement", data);
+            });
+
             socket.on("disconnecting", () => {
                 console.log(`A user ${socket.data.username} disconnected`);
                 socket.broadcast.emit("user left", socket.data.username);
