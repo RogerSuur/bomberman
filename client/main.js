@@ -14,7 +14,7 @@ const chatElement = chatComponent.getChatElement();
 // Add the chat element to the DOM
 //document.body.appendChild(chatElement);
 
-/* 
+/*
 const form = document.getElementById("form");
 const input = document.getElementById("input");
 const start = document.getElementById("start");
@@ -95,17 +95,18 @@ export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 
-fw.events.subscribe("userNameInUser",() =>{ 
+fw.events.subscribe("userNameInUser",() =>{
     preLobbyInstance.errorPresent = true;
     preLobbyInstance.update()
 })
 
-socket.on("userlist", (userList) => {
-    debugger
-    const lobbyInstance = new Lobby(fw, socket, userList);
-    const lobby = lobbyInstance.render();
-    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
+socket.on("userlist", (data) => {
+    if (data.userName != undefined) {
+        const lobbyInstance = new Lobby(fw, socket, data.userList);
+        const lobby = lobbyInstance.render();
+        const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+        const patch = fw.dom.diff(appNode, newApp);
+        const actualDOMNode = document.getElementById("app");
+        patch(actualDOMNode);
+    }
 });
