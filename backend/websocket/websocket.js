@@ -50,8 +50,8 @@ const Websocket = (io) => {
 
       socket.on("username", async (username) => {
         socket.data.username = username;
-        socket.broadcast.emit("user joined", socket.data.username);
-        socket.boradcast.emit("userlist", GetUserlist(connections)); // added for compatibility
+        socket.emit("user joined", socket.data.username);
+        socket.emit("userlist", GetUserlist(connections)); // added for compatibility
       });
 
       socket.on("stateUpdate", () => {
@@ -60,8 +60,8 @@ const Websocket = (io) => {
 
       socket.on("disconnecting", () => {
         console.log(`A user ${socket.data.username} disconnected`);
-        socket.broadcast.emit("user left", socket.data.username);
-        socket.boradcast.emit("userlist", GetUserlist(connections)); // added for compatibility
+        socket.emit("user left", socket.data.username);
+        socket.emit("userlist", GetUserlist(connections)); // added for compatibility
       });
 
       socket.on("disconnect", () => {
