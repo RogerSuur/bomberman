@@ -13,12 +13,8 @@ export default class ChatComponent {
       attrs: { id: "chat" },
       children: [
         fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
-        fw.dom.createVirtualNode("input", {
-          attrs: { id: "usernameInput", placeholder: "Enter your username" },
-          listeners: { keydown: this.handleUsernameKeyDown.bind(this) },
-        }),
         fw.dom.createVirtualNode("div", {
-          attrs: { id: "messageInputContainer", style: "display: none" },
+          attrs: { id: "messageInputContainer" },
           children: [
             fw.dom.createVirtualNode("input", {
               attrs: { id: "messageInput", autocomplete: "off", placeholder: "Type a message..." },
@@ -38,14 +34,6 @@ export default class ChatComponent {
     return chatDiv;
   }
 
-  showChat() {
-    const chatDiv = document.getElementById("chat");
-    chatDiv.style.display = "block"; 
-  }
-  showChatInput() {
-    const messageInputContainer = document.getElementById("messageInputContainer");
-    messageInputContainer.style.display = "block";
-  }
 
   sendMessage() {
     if (this.username) {
@@ -55,15 +43,6 @@ export default class ChatComponent {
         this.socket.emit('chatMessage', { username: this.username, message });
         messageInput.value = '';
       }
-    }
-  }
-
-  handleUsernameKeyDown(event) {
-    if (event.key === "Enter") {
-      const usernameInput = document.getElementById("usernameInput");
-      this.username = usernameInput.value.trim();
-      usernameInput.disabled = true;
-      this.showChatInput(); 
     }
   }
 
