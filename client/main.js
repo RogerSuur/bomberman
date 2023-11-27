@@ -58,8 +58,10 @@ socket.on("startGame", (newMap, players) => {
         players.length,
         gridVirtualNodes
     );
-    appNode.children.push(gameLayout);
-    fw.dom.mount(document.getElementById("app"), appNode);
+    const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
 
     for (let i = 0; i < players.length; i++) {
         new Player(
@@ -98,13 +100,8 @@ fw.events.subscribe("userNameInUser",() =>{
     preLobbyInstance.update()
 })
 
-//LOBBY
-// fw.events.subscribe("userAdded",() =>{
-
-        
-// })
-
 socket.on("userlist", (userList) => {
+    debugger
     const lobbyInstance = new Lobby(fw, socket, userList);
     const lobby = lobbyInstance.render();
     const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
