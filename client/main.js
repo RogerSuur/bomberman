@@ -6,10 +6,14 @@ import Lobby from "./src/lobby/lobby.js";
 import ChatComponent from "./src/chat.js";
 
 import Player from "./src/player.js";
+import SocketManager from "./src/socketManager.js";
 import { gameGrid } from "./src/components/gameGrid.js";
+import Multiplayer from "./src/multiplayer.js";
 const socket = io(); // Establish WebSocket connection
 const chatComponent = new ChatComponent(socket);
+const multiplayer = new Multiplayer(socket);
 const chatElement = chatComponent.getChatElement();
+const socketManager = new SocketManager(socket, multiplayer);
 
 // Add the chat element to the DOM
 //document.body.appendChild(chatElement);
@@ -43,7 +47,7 @@ chat.addEventListener("submit", (e) => {
 }); */
 
 socket.on("user left", (msg) => {
-  console.log(`A user ${msg} disconnected`);
+    console.log(`A user ${msg} disconnected`);
 });
 
 
@@ -64,7 +68,10 @@ socket.on("startGame", (newMap, players) => {
     patch(actualDOMNode);
 
     for (let i = 0; i < players.length; i++) {
-        new Player(
+        if (players[i].id === socket.id) {
+            sessionStorage.setItem("localPlayerId", players[i].id);
+        }
+        let newPlayer = new Player(
             `${players[i].id}`,
             i + 1,
             socket,
@@ -73,7 +80,9 @@ socket.on("startGame", (newMap, players) => {
             players[i].lives,
             players[i].powerUps,
             players[i].userName
-        ).createNode();
+        );
+        newPlayer.createNode();
+        multiplayer.addPlayer(newPlayer);
     }
 });
 
