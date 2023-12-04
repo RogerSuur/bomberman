@@ -8,20 +8,13 @@ export default class PreLobby {
     }
 
     handleClick = (e) => {
-        
         const input = document.getElementById("input-name");
         const userName = input.value
-        let { players } = this.fw.state.getState();
+        // e.target.value = "";
 
-        if (players.includes(userName)) {
-             this.fw.events.notify("userNameInUser");
-            return
+        if ( userName!= "") {
+            this.socket.emit("username", userName);
         }
-        e.target.value = "";
-        players.push(userName)
-        this.fw.state.setState({ players });
-        this.fw.events.notify("userAdded");
-        this.socket.emit("username", userName);
 
     }
 
@@ -30,19 +23,7 @@ export default class PreLobby {
 
             e.preventDefault();
             let userName = e.target.value;
-
-            let { players } = this.fw.state.getState();
-
-            if (players.includes(userName)) {
-                this.fw.events.notify("userNameInUser");
-                return
-            }
-            e.target.value = "";
-            players.push(userName)
-            this.fw.state.setState({ players });
-
-            // notify about added user
-            this.fw.events.notify("userAdded");
+            // e.target.value = "";
             this.socket.emit("username", userName);
         }
     };

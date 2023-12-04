@@ -2,10 +2,12 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
+
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
-    userlist.push(socket.data.username);
+    if (socket.data != undefined)
+      userlist.push(socket.data.username);
   }
   return userlist;
 };
@@ -49,14 +51,23 @@ const Websocket = (io) => {
         });
 
       socket.on("username", async (username) => {
-        socket.data.username = username;
-        socket.emit("user joined", socket.data.username);
-        var myName = io.sockets.sockets.get(socket.id).data.username;
-        var data = {
-          userName: myName,
-          userList: GetUserlist(connections)
+        socket.join(socket.id);
+        var conList = await io.fetchSockets();
+
+        var userList = GetUserlist(conList);
+
+        if (userList.includes(username)) {
+          io.to(socket.id).emit("username taken");
+        } else {
+          socket.join("lobby");
+
+          socket.data.username = username;
+          userList.push(username);
+
+          io.to("lobby").emit("userlist", userList);
         }
-        io.emit("userlist", data); // added for compatibility
+
+
       });
 
       socket.on("stateUpdate", () => {
@@ -65,21 +76,16 @@ const Websocket = (io) => {
 
       socket.on("disconnecting", () => {
         console.log(`A user ${socket.data.username} disconnected`);
-        socket.emit("user left", socket.data.username);
-        var myName = io.sockets.sockets.get(socket.id).data.username;
-        var data = {
-          userName: myName,
-          userList: GetUserlist(connections)
-        }
-        io.emit("userlist", data); // added for compatibility
+        // socket.emit("user left", socket.data.username);
       });
 
-      socket.on("disconnect", () => {
-        connections.length < 3 &&
-          timeoutId &&
-          socket.emit("countdown stopped") &&
-          clearTimeout(timeoutId);
+      socket.on("disconnect", async () => {
+        connections.length < 3 && timeoutId && socket.emit("countdown stopped") && clearTimeout(timeoutId);
+        // console.log(socket.data);
         console.log("A user disconnected");
+        var conList = await io.fetchSockets();
+        var userList = GetUserlist(conList);
+        io.to("lobby").emit("userlist", userList);
       });
     } else {
       console.log("Connection denied: Maximum clients reached");
@@ -102,7 +108,7 @@ const GameStart = async (io) => {
   ];
 
   connections.forEach((conn, index) => {
-    console.log("PLAYER:", conn.data);
+    // console.log("PLAYER:", conn.data);
     const player = new Player(
       conn.data.id,
       conn.data.username,
