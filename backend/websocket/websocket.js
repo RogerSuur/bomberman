@@ -12,15 +12,35 @@ const GetUserlist = (sockets) => {
   return userlist;
 };
 
+const Tick = (io, secondsLeft) => {
+  io.to("lobby").emit("tick", secondsLeft);
+}
+
 const MAX_CONNECTIONS = 4;
 
 let timeoutId;
 
-const menuCountdown = (io) => {
+const menuCountdown = async (io) => {
   io.emit("menu countdown");
-  const menuCountdownTimer = setTimeout(() => {
-    gameCountdown(io);
-  }, 20000);
+  let secondsLeft = 30; // 20 seconds for menu countdown
+
+
+  const menuCountdownTimer = setInterval(async () => {  
+    if (secondsLeft <= 0) {
+      clearInterval(menuCountdownTimer);
+      gameCountdown(io);
+    } else {
+      var conList = await io.fetchSockets();
+      var users = GetUserlist(conList);
+      
+      var data = {
+        users: users,
+        seconds: secondsLeft
+      }
+      Tick(io, data);
+      secondsLeft--;
+    }
+  }, 1000);
   timeoutId = menuCountdownTimer;
 };
 
@@ -33,16 +53,17 @@ const gameCountdown = (io) => {
   timeoutId = gameStartTimer;
 };
 
-const connectionsCount = (io, conns) =>
-  conns === 4 ? gameCountdown(io) : conns === 2 && menuCountdown(io);
+const connectionsCount = async (io, conns) =>
+  conns === 4 ? gameCountdown(io) : conns === 2 && await menuCountdown(io);
 
 const Websocket = (io) => {
   io.on("connection", async (socket) => {
     const connections = await io.fetchSockets();
+    const roomUsers = await io.in("lobby").allSockets();
 
-    if (connections.length <= MAX_CONNECTIONS) {
+
+    if (roomUsers.size <= MAX_CONNECTIONS) {
       socket.data.id = socket.id;
-      connectionsCount(io, connections.length);
 
         // Listen for chat messages
         socket.on("chatMessage", (message) => {
@@ -63,6 +84,12 @@ const Websocket = (io) => {
 
           socket.data.username = username;
           userList.push(username);
+
+          //count lobby connections and start countdown
+          const roomUsers = await io.in("lobby").allSockets();
+          console.log('connections', roomUsers);
+          await connectionsCount(io, roomUsers.size);
+
 
           io.to("lobby").emit("userlist", userList);
         }

@@ -102,7 +102,7 @@ socket.on("username taken", () => {
 
 socket.on("userlist", (data) => {
 
-        const lobbyInstance = new Lobby(fw, socket, data);
+        const lobbyInstance = new Lobby(fw, socket, data, 0);
         const lobby = lobbyInstance.render();
         const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
         const patch = fw.dom.diff(appNode, newApp);
@@ -110,3 +110,13 @@ socket.on("userlist", (data) => {
         patch(actualDOMNode);
 
 });
+
+socket.on("tick", (data) => {
+    const lobbyInstance = new Lobby(fw, socket, data.users, data.seconds);
+    const lobby = lobbyInstance.render();
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
+});
+
