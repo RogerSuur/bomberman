@@ -2,24 +2,46 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
+
 const GetUserlist = (sockets) => {
-    let userlist = [];
-    for (const socket of sockets) {
-        userlist.push(socket.data.username);
-    }
-    return userlist;
+  let userlist = [];
+  for (const socket of sockets) {
+    if (socket.data != undefined)
+      userlist.push(socket.data.username);
+  }
+  return userlist;
 };
+
+const Tick = (io, secondsLeft) => {
+  io.to("lobby").emit("tick", secondsLeft);
+}
 
 const MAX_CONNECTIONS = 4;
 
 let timeoutId;
 
-const menuCountdown = (io) => {
-    io.emit("menu countdown");
-    const menuCountdownTimer = setTimeout(() => {
-        gameCountdown(io);
-    }, 20000);
-    timeoutId = menuCountdownTimer;
+const menuCountdown = async (io) => {
+  io.emit("menu countdown");
+  let secondsLeft = 30; // 20 seconds for menu countdown
+
+
+  const menuCountdownTimer = setInterval(async () => {  
+    if (secondsLeft <= 0) {
+      clearInterval(menuCountdownTimer);
+      gameCountdown(io);
+    } else {
+      var conList = await io.fetchSockets();
+      var users = GetUserlist(conList);
+      
+      var data = {
+        users: users,
+        seconds: secondsLeft
+      }
+      Tick(io, data);
+      secondsLeft--;
+    }
+  }, 1000);
+  timeoutId = menuCountdownTimer;
 };
 
 const gameCountdown = (io) => {
@@ -31,16 +53,17 @@ const gameCountdown = (io) => {
     timeoutId = gameStartTimer;
 };
 
-const connectionsCount = (io, conns) =>
-    conns === 4 ? gameCountdown(io) : conns === 2 && menuCountdown(io);
+const connectionsCount = async (io, conns) =>
+  conns === 4 ? gameCountdown(io) : conns === 2 && await menuCountdown(io);
 
 const Websocket = (io) => {
-    io.on("connection", async (socket) => {
-        const connections = await io.fetchSockets();
+  io.on("connection", async (socket) => {
+    const connections = await io.fetchSockets();
+    const roomUsers = await io.in("lobby").allSockets();
 
-        if (connections.length <= MAX_CONNECTIONS) {
-            socket.data.id = socket.id;
-            connectionsCount(io, connections.length);
+
+    if (roomUsers.size <= MAX_CONNECTIONS) {
+      socket.data.id = socket.id;
 
             // Listen for chat messages
             socket.on("chatMessage", (message) => {
@@ -48,15 +71,30 @@ const Websocket = (io) => {
                 io.emit("chatMessage", message);
             });
 
-            socket.on("username", async (username) => {
-                socket.data.username = username;
-                socket.emit("user joined", socket.data.username);
-              var myName = io.sockets.sockets.get(socket.id).data.username;
-        var data = {
-          userName: myName,
-          userList: GetUserlist(connections)
+      socket.on("username", async (username) => {
+        socket.join(socket.id);
+        var conList = await io.fetchSockets();
+
+        var userList = GetUserlist(conList);
+
+        if (userList.includes(username)) {
+          io.to(socket.id).emit("username taken");
+        } else {
+          socket.join("lobby");
+
+          socket.data.username = username;
+          userList.push(username);
+
+          //count lobby connections and start countdown
+          const roomUsers = await io.in("lobby").allSockets();
+          console.log('connections', roomUsers);
+          await connectionsCount(io, roomUsers.size);
+
+
+          io.to("lobby").emit("userlist", userList);
         }
-        io.emit("userlist", data); // added for compatibility
+
+
       });
 
             socket.on("stateUpdate", () => {
@@ -67,24 +105,29 @@ const Websocket = (io) => {
             socket.broadcast.emit("broadcastMovement", data);
         });
 
+            socket.on("move", (data) => {
+            socket.broadcast.emit("broadcastMovement", data);
+        });
+
       socket.on("disconnecting", () => {
         console.log(`A user ${socket.data.username} disconnected`);
         socket.broadcast.emit("user left", socket.data.username);
       });
 
-            socket.on("disconnect", () => {
-                connections.length < 3 &&
-                    timeoutId &&
-                    socket.emit("countdown stopped") &&
-                    clearTimeout(timeoutId);
-                console.log("A user disconnected");
-            });
-        } else {
-            console.log("Connection denied: Maximum clients reached");
-            io.emit("game full");
-            socket.disconnect(true);
-        }
-    });
+      socket.on("disconnect", async () => {
+        connections.length < 3 && timeoutId && socket.emit("countdown stopped") && clearTimeout(timeoutId);
+        // console.log(socket.data);
+        console.log("A user disconnected");
+        var conList = await io.fetchSockets();
+        var userList = GetUserlist(conList);
+        io.to("lobby").emit("userlist", userList);
+      });
+    } else {
+      console.log("Connection denied: Maximum clients reached");
+      io.emit("game full");
+      socket.disconnect(true);
+    }
+  });
 };
 
 //creates tilemap with randomized elements and player characters

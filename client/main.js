@@ -104,18 +104,28 @@ export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 
-fw.events.subscribe("userNameInUser",() =>{
+socket.on("username taken", () => {
     preLobbyInstance.errorPresent = true;
     preLobbyInstance.update()
-})
+});
 
 socket.on("userlist", (data) => {
-    if (data.userName != undefined) {
-        const lobbyInstance = new Lobby(fw, socket, data.userList);
+
+        const lobbyInstance = new Lobby(fw, socket, data, 0);
         const lobby = lobbyInstance.render();
         const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
         const patch = fw.dom.diff(appNode, newApp);
         const actualDOMNode = document.getElementById("app");
         patch(actualDOMNode);
-    }
+
 });
+
+socket.on("tick", (data) => {
+    const lobbyInstance = new Lobby(fw, socket, data.users, data.seconds);
+    const lobby = lobbyInstance.render();
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
+});
+
