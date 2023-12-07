@@ -11,9 +11,18 @@ const GetUserlist = (sockets) => {
   }
   return userlist;
 };
+const GetUsers = (sockets) => {
+  let users = [];
+  for (const socket of sockets) {
+    if (socket.data != undefined)
+      users.push(socket.data);
+  }
+  return users;
+};
 
-const Tick = (io, secondsLeft) => {
-  io.to("lobby").emit("tick", secondsLeft);
+
+const Tick = (io, data) => {
+  io.to("lobby").emit("tick", data);
 }
 
 const MAX_CONNECTIONS = 4;
@@ -31,13 +40,15 @@ const menuCountdown = async (io) => {
       gameCountdown(io);
     } else {
       var conList = await io.fetchSockets();
-      var users = GetUserlist(conList);
+      var userNameList = GetUserlist(conList);
+      var users = GetUsers(conList);
       
       var data = {
+        userNameList: userNameList,
         users: users,
         seconds: secondsLeft
       }
-      Tick(io, data);
+       Tick(io, data);
       secondsLeft--;
     }
   }, 1000);
@@ -60,7 +71,6 @@ const Websocket = (io) => {
   io.on("connection", async (socket) => {
     const connections = await io.fetchSockets();
     const roomUsers = await io.in("lobby").allSockets();
-
 
     if (roomUsers.size <= MAX_CONNECTIONS) {
       socket.data.id = socket.id;
@@ -87,11 +97,16 @@ const Websocket = (io) => {
 
           //count lobby connections and start countdown
           const roomUsers = await io.in("lobby").allSockets();
-          console.log('connections', roomUsers);
           await connectionsCount(io, roomUsers.size);
 
 
-          io.to("lobby").emit("userlist", userList);
+          let data = {
+            users: GetUsers(conList),
+            userNameList: userList
+          }
+
+
+          io.to("lobby").emit("userlist", data);
         }
 
 

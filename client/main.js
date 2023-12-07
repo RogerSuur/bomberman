@@ -1,5 +1,4 @@
 import fw from "./src/fwinstance.js";
-//import Chat from "./src/chat.js";
 import BombermanGame from "./src/game.js";
 import PreLobby from "./src/lobby/preLobby.js";
 import Lobby from "./src/lobby/lobby.js";
@@ -10,7 +9,7 @@ import SocketManager from "./src/socketManager.js";
 import { gameGrid } from "./src/components/gameGrid.js";
 import Multiplayer from "./src/multiplayer.js";
 const socket = io(); // Establish WebSocket connection
-const chatComponent = new ChatComponent(socket);
+const chatComponent = new ChatComponent(socket, "lala");
 const multiplayer = new Multiplayer(socket);
 const chatElement = chatComponent.getChatElement();
 const socketManager = new SocketManager(socket, multiplayer);
@@ -110,9 +109,10 @@ socket.on("username taken", () => {
 });
 
 socket.on("userlist", (data) => {
+    const name = GetMyUserName(data.users, socket.id);
 
-        const lobbyInstance = new Lobby(fw, socket, data, 0);
-        const lobby = lobbyInstance.render();
+        const lobbyInstance = new Lobby(fw, socket, data.userNameList, 0, name);
+        const lobby = lobbyInstance.content;
         const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
         const patch = fw.dom.diff(appNode, newApp);
         const actualDOMNode = document.getElementById("app");
@@ -121,11 +121,25 @@ socket.on("userlist", (data) => {
 });
 
 socket.on("tick", (data) => {
-    const lobbyInstance = new Lobby(fw, socket, data.users, data.seconds);
-    const lobby = lobbyInstance.render();
+    let name = GetMyUserName(data.users, socket.id);
+
+    const lobbyInstance = new Lobby(fw, socket, data.userNameList, data.seconds, name);
+    const lobby = lobbyInstance.content;
     const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
     const patch = fw.dom.diff(appNode, newApp);
     const actualDOMNode = document.getElementById("app");
     patch(actualDOMNode);
 });
+
+
+
+const GetMyUserName = (userList, id) => {
+    const user = userList.find(user => user.id === id);
+
+    if (user) {
+        return user.username;
+    }
+
+    return "";
+};
 

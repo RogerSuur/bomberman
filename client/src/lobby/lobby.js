@@ -1,10 +1,11 @@
 import ChatComponent from "../chat.js";
 
 export default class  Lobby {
-    constructor(fw,socket, playerList, timer) {
+    constructor(fw,socket, playerList, timer, myUserName) {
         this.fw = fw;
         this.state = fw.state;
         this.playerList = playerList;
+        this.myUserName = myUserName;
         this.socket = socket;
         this.timer = timer;
         this.content = this.render();
@@ -50,7 +51,7 @@ export default class  Lobby {
             }))
         };
 
-        const chatComponent = new ChatComponent(this.socket);
+        const chatComponent = new ChatComponent(this.socket, this.myUserName);
         const chatElement = chatComponent.getChatElement();
 
         const chatArea = this.fw.dom.createVirtualNode("div",{
