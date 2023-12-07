@@ -6,12 +6,10 @@ export default class Multiplayer {
     }
 
     addPlayer(player) {
-        console.log(player);
         this.players[player.playerId] = player;
     }
 
     updatePlayerPosition(playerId, direction) {
-        console.log("PLayer" + playerId + "moves for players" + this.players);
         this.players[playerId].move(direction);
     }
 }

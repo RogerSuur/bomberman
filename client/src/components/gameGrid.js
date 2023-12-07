@@ -1,10 +1,8 @@
 import fw from "../fwinstance.js";
-
-export let obstacles = [];
-const cellSize = 36;
+import { cellSize, obstacles } from "../config.js";
 
 export const gameGrid = (newMap) => {
-    obstacles = [];
+    // obstacles = [];
     const gridVirtualNodes = [];
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];

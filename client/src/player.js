@@ -1,7 +1,6 @@
 import fw from "../src/fwinstance.js";
-import { obstacles } from "./components/gameGrid.js";
-
-const cellSize = 36;
+import { CollisionDetector } from "./collision.js";
+import { cellSize, obstacles, playerSize } from "./config.js";
 
 export default class Player {
     constructor(
@@ -76,9 +75,14 @@ export default class Player {
         });
     }
 
-    //TODO: INSERT COLLISIONDETECTOR
     move(direction) {
-        if (!this.performWallCheck(direction)) {
+        if (
+            !CollisionDetector.performWallCheck(
+                this.currentPosition,
+                direction,
+                this.speed
+            )
+        ) {
             switch (direction) {
                 case "up":
                     this.currentPosition.y -= this.speed;
@@ -102,37 +106,6 @@ export default class Player {
                 });
             }
         }
-    }
-
-    performWallCheck(direction) {
-        const futurePosition = { ...this.currentPosition };
-        switch (direction) {
-            case "up":
-                futurePosition.y -= this.speed;
-                break;
-            case "down":
-                futurePosition.y += this.speed;
-                break;
-            case "left":
-                futurePosition.x -= this.speed;
-                break;
-            case "right":
-                futurePosition.x += this.speed;
-                break;
-        }
-
-        const playerSize = 36;
-        for (let obstacle of obstacles) {
-            if (
-                futurePosition.x < obstacle.x + cellSize &&
-                futurePosition.x + playerSize > obstacle.x &&
-                futurePosition.y < obstacle.y + cellSize &&
-                futurePosition.y + playerSize > obstacle.y
-            ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     updatePosition() {
