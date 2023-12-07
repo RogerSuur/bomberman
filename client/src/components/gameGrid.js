@@ -1,6 +1,10 @@
 import fw from "../fwinstance.js";
 
+export let obstacles = [];
+const cellSize = 36;
+
 export const gameGrid = (newMap) => {
+    obstacles = [];
     const gridVirtualNodes = [];
     for (let i = 0; i < newMap.length; i++) {
         const row = newMap[i];
@@ -41,6 +45,15 @@ export const gameGrid = (newMap) => {
                 default:
                     break;
             }
+
+            if (tile === "#" || tile === "|" || tile === "W") {
+                obstacles.push({
+                    x: parseInt(j) * cellSize,
+                    y: parseInt(i) * cellSize,
+                    type: tile,
+                });
+            }
+
             const cellVirtualNode = fw.dom.createVirtualNode("div", {
                 attrs: {
                     id: `row-${i}-cell-${j}`,

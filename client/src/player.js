@@ -1,4 +1,8 @@
 import fw from "../src/fwinstance.js";
+import { obstacles } from "./components/gameGrid.js";
+
+const cellSize = 36;
+
 export default class Player {
     constructor(
         playerId,
@@ -74,28 +78,61 @@ export default class Player {
 
     //TODO: INSERT COLLISIONDETECTOR
     move(direction) {
+        if (!this.performWallCheck(direction)) {
+            switch (direction) {
+                case "up":
+                    this.currentPosition.y -= this.speed;
+                    break;
+                case "down":
+                    this.currentPosition.y += this.speed;
+                    break;
+                case "left":
+                    this.currentPosition.x -= this.speed;
+                    break;
+                case "right":
+                    this.currentPosition.x += this.speed;
+                    break;
+            }
+            requestAnimationFrame(() => this.updatePosition());
+
+            if (this.isLocalPlayer()) {
+                this.socket.emit("move", {
+                    playerId: this.playerId,
+                    direction,
+                });
+            }
+        }
+    }
+
+    performWallCheck(direction) {
+        const futurePosition = { ...this.currentPosition };
         switch (direction) {
             case "up":
-                this.currentPosition.y -= this.speed;
+                futurePosition.y -= this.speed;
                 break;
             case "down":
-                this.currentPosition.y += this.speed;
+                futurePosition.y += this.speed;
                 break;
             case "left":
-                this.currentPosition.x -= this.speed;
+                futurePosition.x -= this.speed;
                 break;
             case "right":
-                this.currentPosition.x += this.speed;
+                futurePosition.x += this.speed;
                 break;
         }
-        requestAnimationFrame(() => this.updatePosition());
 
-        if (this.isLocalPlayer()) {
-            this.socket.emit("move", {
-                playerId: this.playerId,
-                direction,
-            });
+        const playerSize = 36;
+        for (let obstacle of obstacles) {
+            if (
+                futurePosition.x < obstacle.x + cellSize &&
+                futurePosition.x + playerSize > obstacle.x &&
+                futurePosition.y < obstacle.y + cellSize &&
+                futurePosition.y + playerSize > obstacle.y
+            ) {
+                return true;
+            }
         }
+        return false;
     }
 
     updatePosition() {
