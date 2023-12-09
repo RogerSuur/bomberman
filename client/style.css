@@ -161,3 +161,120 @@ position: absolute;
 width: 36px;
 height: 36px;
 }
+
+/* <---------------Bomb images-----------------------> */
+
+.bomb-1 {
+  background-image: url("./public/images/bombs/bomb-1.png");
+  background-size: cover;
+  position: absolute;
+  width: 36px;
+  height: 36px;
+}
+
+.bomb-2 {
+  background-image: url("./public/images/bombs/bomb-2.png");
+  background-size: cover;
+  position: absolute;
+  width: 36px;
+  height: 36px;
+}
+
+.bomb-3 {
+  background-image: url("./public/images/bombs/bomb-3.png");
+  background-size: cover;
+  position: absolute;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-center-1 {
+  background-image: url("./public/images/bombs/expl-center-1.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-center-2 {
+  background-image: url("./public/images/bombs/expl-center-2.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-center-3 {
+  background-image: url("./public/images/bombs/expl-center-3.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-center-4 {
+  background-image: url("./public/images/bombs/expl-center-4.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-center-5 {
+  background-image: url("./public/images/bombs/expl-center-5.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-wing-1 {
+  background-image: url("./public/images/bombs/expl-wing-1.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-wing-2 {
+  background-image: url("./public/images/bombs/expl-wing-2.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-wing-3 {
+  background-image: url("./public/images/bombs/expl-wing-3.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-wing-4 {
+  background-image: url("./public/images/bombs/expl-wing-4.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-side-1 {
+  background-image: url("./public/images/bombs/expl-side-1.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-side-2 {
+  background-image: url("./public/images/bombs/expl-side-2.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-side-3 {
+  background-image: url("./public/images/bombs/expl-side-3.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}
+
+.expl-side-4 {
+  background-image: url("./public/images/bombs/expl-side-4.png");
+  background-size: cover;
+  width: 36px;
+  height: 36px;
+}

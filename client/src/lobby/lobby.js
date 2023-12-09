@@ -1,7 +1,7 @@
 import ChatComponent from "../chat.js";
 
-export default class  Lobby {
-    constructor(fw,socket, playerList, timer) {
+export default class Lobby {
+    constructor(fw, socket, playerList, timer) {
         this.fw = fw;
         this.state = fw.state;
         this.playerList = playerList;
@@ -13,64 +13,64 @@ export default class  Lobby {
     render() {
         this.playerList = this.playerList.filter((player) => player !== null);
         var players = this.playerList.length;
-        var str = `Waiting for players: ${players}/4`
-        
+        var str = `Waiting for players: ${players}/4`;
+
         const header = this.fw.dom.createVirtualNode("h1", {
             attrs: { class: "px-4 py-1" },
-            children: [str]
-        })
+            children: [str],
+        });
 
-
-        const headerRow = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "row"},
-            children: [header]
-        })
+        const headerRow = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "row" },
+            children: [header],
+        });
 
         if (this.timer >= 0) {
-             console.log(this.timer)
-            var timerStr = `Game starts in: ${this.timer}`
+            console.log(this.timer);
+            var timerStr = `Game starts in: ${this.timer}`;
 
             const timer = this.fw.dom.createVirtualNode("p", {
                 attrs: { for: "input-name", class: "" },
-                children: [timerStr]
-            })
+                children: [timerStr],
+            });
 
-            headerRow.children.push(timer)  
+            headerRow.children.push(timer);
         }
 
-        const playerColumn = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "col-4"},
-            children: []
-        })
+        const playerColumn = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "col-4" },
+            children: [],
+        });
 
         for (const key in this.playerList) {
-            playerColumn.children.push(this.fw.dom.createVirtualNode("div",{
-                attrs: { class: "row"},
-                children: [this.playerList[key]]
-            }))
-        };
+            playerColumn.children.push(
+                this.fw.dom.createVirtualNode("div", {
+                    attrs: { class: "row" },
+                    children: [this.playerList[key]],
+                })
+            );
+        }
 
         const chatComponent = new ChatComponent(this.socket);
         const chatElement = chatComponent.getChatElement();
 
-        const chatArea = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "col-8"},
-            children: [chatElement]
-        })
+        const chatArea = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "col-8" },
+            children: [chatElement],
+        });
 
-        const contentRow = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "row"},
-            children: [playerColumn, chatArea]
-        })
-        
+        const contentRow = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "row" },
+            children: [playerColumn, chatArea],
+        });
+
         const lobby = this.fw.dom.createVirtualNode("div", {
-            attrs: { class: "container", id:"lobby" },
-            children: [headerRow, contentRow]
+            attrs: { class: "container", id: "lobby" },
+            children: [headerRow, contentRow],
         });
 
         return lobby;
     }
-
 
     update() {
         const newLobby = this.render();

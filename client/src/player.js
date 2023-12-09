@@ -1,6 +1,6 @@
 import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
-import { cellSize, obstacles, playerSize } from "./config.js";
+import { newBomb } from "./bomb.js";
 
 export default class Player {
     constructor(
@@ -52,10 +52,6 @@ export default class Player {
         player.style.top = `${this.currentPosition.y}px`;
     }
 
-    placeBomb() {
-        this.socket.emit("placeBomb", { playerId: this.playerId });
-        this.actionQueue.push("placeBomb"); // Add to action queue
-    }
     addMovementListeners() {
         document.addEventListener("keydown", (event) => {
             switch (event.key) {
@@ -70,6 +66,9 @@ export default class Player {
                     break;
                 case "ArrowRight":
                     this.move("right");
+                    break;
+                case " ":
+                    this.placeBomb();
                     break;
             }
         });
@@ -114,5 +113,11 @@ export default class Player {
         player.style.left = `${this.currentPosition.x}px`;
         player.style.top = `${this.currentPosition.y}px`;
     }
-    // ... other player methods
+
+    placeBomb() {
+        newBomb(this.currentPosition);
+        // TODO: Send to WS placeBomb
+        // this.socket.emit("placeBomb", { playerId: this.playerId });
+        // this.actionQueue.push("placeBomb"); // Add to action queue
+    }
 }

@@ -2,68 +2,64 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
-
 const GetUserlist = (sockets) => {
-  let userlist = [];
-  for (const socket of sockets) {
-    if (socket.data != undefined)
-      userlist.push(socket.data.username);
-  }
-  return userlist;
+    let userlist = [];
+    for (const socket of sockets) {
+        if (socket.data != undefined) userlist.push(socket.data.username);
+    }
+    return userlist;
 };
 
 const Tick = (io, secondsLeft) => {
-  io.to("lobby").emit("tick", secondsLeft);
-}
+    io.to("lobby").emit("tick", secondsLeft);
+};
 
 const MAX_CONNECTIONS = 4;
 
 let timeoutId;
 
 const menuCountdown = async (io) => {
-  io.emit("menu countdown");
-  let secondsLeft = 30; // 20 seconds for menu countdown
+    io.emit("menu countdown");
+    let secondsLeft = 3; // 20 seconds for menu countdown
 
+    const menuCountdownTimer = setInterval(async () => {
+        if (secondsLeft <= 0) {
+            clearInterval(menuCountdownTimer);
+            gameCountdown(io);
+        } else {
+            var conList = await io.fetchSockets();
+            var users = GetUserlist(conList);
 
-  const menuCountdownTimer = setInterval(async () => {  
-    if (secondsLeft <= 0) {
-      clearInterval(menuCountdownTimer);
-      gameCountdown(io);
-    } else {
-      var conList = await io.fetchSockets();
-      var users = GetUserlist(conList);
-      
-      var data = {
-        users: users,
-        seconds: secondsLeft
-      }
-      Tick(io, data);
-      secondsLeft--;
-    }
-  }, 1000);
-  timeoutId = menuCountdownTimer;
+            var data = {
+                users: users,
+                seconds: secondsLeft,
+            };
+            Tick(io, data);
+            secondsLeft--;
+        }
+    }, 1000);
+    timeoutId = menuCountdownTimer;
 };
 
 const gameCountdown = (io) => {
     io.emit("game countdown");
     const gameStartTimer = setTimeout(() => {
         GameStart(io);
-    }, 10000);
+    }, 1000);
     clearTimeout(timeoutId);
     timeoutId = gameStartTimer;
 };
 
 const connectionsCount = async (io, conns) =>
-  conns === 4 ? gameCountdown(io) : conns === 2 && await menuCountdown(io);
+    conns === 4 ? gameCountdown(io) : conns === 2 && (await menuCountdown(io));
 
 const Websocket = (io) => {
-  io.on("connection", async (socket) => {
-    const connections = await io.fetchSockets();
-    const roomUsers = await io.in("lobby").allSockets();
+    io.on("connection", async (socket) => {
+        const connections = await io.fetchSockets();
+        const roomUsers = await io.in("lobby").allSockets();
 
-
-    if (roomUsers.size <= MAX_CONNECTIONS) {
-      socket.data.id = socket.id;
+        if (roomUsers.size <= MAX_CONNECTIONS) {
+            socket.data.id = socket.id;
 
             // Listen for chat messages
             socket.on("chatMessage", (message) => {
@@ -71,63 +67,63 @@ const Websocket = (io) => {
                 io.emit("chatMessage", message);
             });
 
-      socket.on("username", async (username) => {
-        socket.join(socket.id);
-        var conList = await io.fetchSockets();
+            socket.on("username", async (username) => {
+                socket.join(socket.id);
+                var conList = await io.fetchSockets();
 
-        var userList = GetUserlist(conList);
+                var userList = GetUserlist(conList);
 
-        if (userList.includes(username)) {
-          io.to(socket.id).emit("username taken");
-        } else {
-          socket.join("lobby");
+                if (userList.includes(username)) {
+                    io.to(socket.id).emit("username taken");
+                } else {
+                    socket.join("lobby");
 
-          socket.data.username = username;
-          userList.push(username);
+                    socket.data.username = username;
+                    userList.push(username);
 
-          //count lobby connections and start countdown
-          const roomUsers = await io.in("lobby").allSockets();
-          console.log('connections', roomUsers);
-          await connectionsCount(io, roomUsers.size);
+                    //count lobby connections and start countdown
+                    const roomUsers = await io.in("lobby").allSockets();
+                    console.log("connections", roomUsers);
+                    await connectionsCount(io, roomUsers.size);
 
-
-          io.to("lobby").emit("userlist", userList);
-        }
-
-
-      });
+                    io.to("lobby").emit("userlist", userList);
+                }
+            });
 
             socket.on("stateUpdate", () => {
                 console.log("stateUpdate");
             });
 
             socket.on("move", (data) => {
-            socket.broadcast.emit("broadcastMovement", data);
-        });
+                socket.broadcast.emit("broadcastMovement", data);
+            });
 
             socket.on("move", (data) => {
-            socket.broadcast.emit("broadcastMovement", data);
-        });
+                socket.broadcast.emit("broadcastMovement", data);
+            });
 
-      socket.on("disconnecting", () => {
-        console.log(`A user ${socket.data.username} disconnected`);
-        socket.broadcast.emit("user left", socket.data.username);
-      });
+            socket.on("disconnecting", () => {
+                console.log(`A user ${socket.data.username} disconnected`);
+                socket.broadcast.emit("user left", socket.data.username);
+            });
 
-      socket.on("disconnect", async () => {
-        connections.length < 3 && timeoutId && socket.emit("countdown stopped") && clearTimeout(timeoutId);
-        // console.log(socket.data);
-        console.log("A user disconnected");
-        var conList = await io.fetchSockets();
-        var userList = GetUserlist(conList);
-        io.to("lobby").emit("userlist", userList);
-      });
-    } else {
-      console.log("Connection denied: Maximum clients reached");
-      io.emit("game full");
-      socket.disconnect(true);
-    }
-  });
+            socket.on("disconnect", async () => {
+                connections.length < 3 &&
+                    timeoutId &&
+                    socket.emit("countdown stopped") &&
+                    clearTimeout(timeoutId);
+                // console.log(socket.data);
+                console.log("A user disconnected");
+                var conList = await io.fetchSockets();
+                var userList = GetUserlist(conList);
+                io.to("lobby").emit("userlist", userList);
+            });
+        } else {
+            console.log("Connection denied: Maximum clients reached");
+            io.emit("game full");
+            socket.disconnect(true);
+        }
+    });
 };
 
 //creates tilemap with randomized elements and player characters
