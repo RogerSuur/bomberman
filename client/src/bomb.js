@@ -62,10 +62,11 @@ export function newBomb(playerPosition) {
         flames: 1,
     };
 
+    const realBombElement = fw.dom.render(bombElement);
     const cellId = `row-${row}-cell-${col}`;
     const gridCell = document.getElementById(cellId);
     if (gridCell) {
-        gridCell.children.push(bombElement);
+        gridCell.appendChild(realBombElement);
     }
 
     console.log("start bomb", bombsData[bombId]);
@@ -168,11 +169,12 @@ function applyExplosionEffect(positions, direction, explosionStageCounter) {
         );
 
         if (!adjacentCell.hasChildNodes()) {
-            adjacentCell.appendChild(explosion);
+            const realExplosionElement = fw.dom.render(explosion);
+            adjacentCell.appendChild(realExplosionElement);
         } else {
             updateCellClass(
                 adjacentCell.firstChild,
-                adjacentCell.firstChild.attrs.class,
+                adjacentCell.firstChild.className,
                 explosion.attrs.class
             );
         }
@@ -182,7 +184,7 @@ function applyExplosionEffect(positions, direction, explosionStageCounter) {
 //chooses correct explosion stage and rotates it to necessary direction
 function constructExplosionElement(key, explosionStageCounter, isWing) {
     var explosion = fw.dom.createVirtualNode("div", {
-        attrs: { class: "" },
+        attrs: { class: "", style: `` },
         children: [],
     });
     //Bomb center explosion order: 1,3,4,5,4,3,2
@@ -196,7 +198,8 @@ function constructExplosionElement(key, explosionStageCounter, isWing) {
         explosion.attrs.class = sideExplosionStages[explosionStageCounter];
     }
     if (key !== "center") {
-        explosion.attrs.style.transform = `rotate(${explosionRotatingDirections[key]}deg)`;
+        explosion.attrs.style = `transform: rotate(${explosionRotatingDirections[key]}deg)`;
+        console.log(explosion.attrs);
     }
     return explosion;
 }
@@ -216,7 +219,7 @@ function clearExplosionEffect(bombId) {
             }
 
             const explosionElement = Array.from(cell.children).find((child) =>
-                child.attrs.class.startsWith("expl-")
+                child.className.startsWith("expl-")
             );
             if (explosionElement) {
                 cell.removeChild(explosionElement);
@@ -226,7 +229,7 @@ function clearExplosionEffect(bombId) {
 
             // TODO: Implement bomb-bomb collision handling logic
 
-            cell.attrs.class = "grid-cell grass";
+            cell.className = "grid-cell grass";
         }
     });
     bombsData[bombId].affectedCells = [];
@@ -241,19 +244,19 @@ function destroySoftWall(cell) {
 
 function getTileType(r, c) {
     const cell = document.getElementById(`row-${r}-cell-${c}`);
-    return cell.attrs.class;
+    return cell.className;
 }
 
 function updateCellClass(cell, oldClass, newClass) {
-    cell.attrs.class.remove(oldClass);
-    cell.attrs.class.add(newClass);
+    cell.classList.remove(oldClass);
+    cell.classList.add(newClass);
 }
 
 //animates the bomb ticking
 function bombTickingAnimation(bombId) {
     const bomb = document.getElementById(bombId);
     let currentIndex = bombsData[bombId].currentIndex;
-    bomb.attrs.class = bombTickingStage[currentIndex];
+    bomb.className = bombTickingStage[currentIndex];
     bombsData[bombId].currentIndex =
         (currentIndex + 1) % bombTickingStage.length;
 }
