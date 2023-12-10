@@ -1,16 +1,15 @@
 import fw from "../fwinstance.js";
-import { cellSize, obstacles } from "../config.js";
+import { cellSize, obstacles, powerUps } from "../config.js";
 
 export const gameGrid = (newMap) => {
-    // obstacles = [];
     const gridVirtualNodes = [];
-    for (let i = 0; i < newMap.length; i++) {
-        const row = newMap[i];
+    for (let rowIndex = 0; rowIndex < newMap.length; rowIndex++) {
+        const row = newMap[rowIndex];
         const rowElementVirtualNode = fw.dom.createVirtualNode("div", {
             attrs: { class: "grid-row" },
         });
-        for (let j in row) {
-            const tile = row[j];
+        for (let colIndex in row) {
+            const tile = row[colIndex];
             let tileClass = "";
             switch (tile) {
                 case " ":
@@ -38,7 +37,7 @@ export const gameGrid = (newMap) => {
 
                 case "P":
                     tileClass = "grass";
-                    // playerPositions.push({ x: parseInt(j), y: i });
+                    // playerPositions.push({ x: parseInt(colIndex), y: i });
                     break;
                 default:
                     break;
@@ -46,15 +45,23 @@ export const gameGrid = (newMap) => {
 
             if (tile === "#" || tile === "|" || tile === "W") {
                 obstacles.push({
-                    x: parseInt(j) * cellSize,
-                    y: parseInt(i) * cellSize,
+                    x: parseInt(colIndex),
+                    y: parseInt(rowIndex),
+                    type: tile,
+                });
+            }
+
+            if (tile === "S" || tile === "F" || tile === "B") {
+                powerUps.push({
+                    x: parseInt(colIndex),
+                    y: parseInt(rowIndex),
                     type: tile,
                 });
             }
 
             const cellVirtualNode = fw.dom.createVirtualNode("div", {
                 attrs: {
-                    id: `row-${i}-cell-${j}`,
+                    id: `row-${rowIndex}-cell-${colIndex}`,
                     class: `grid-cell ${tileClass}`,
                 },
             });

@@ -98,8 +98,8 @@ const Websocket = (io) => {
                 socket.broadcast.emit("broadcastMovement", data);
             });
 
-            socket.on("move", (data) => {
-                socket.broadcast.emit("broadcastMovement", data);
+            socket.on("placeBomb", (data) => {
+                socket.broadcast.emit("broadcastBomb", data);
             });
 
             socket.on("disconnecting", () => {

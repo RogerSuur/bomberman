@@ -68,7 +68,7 @@ export default class Player {
                     this.move("right");
                     break;
                 case " ":
-                    this.placeBomb();
+                    this.placeBomb(this.currentPosition);
                     break;
             }
         });
@@ -114,10 +114,15 @@ export default class Player {
         player.style.top = `${this.currentPosition.y}px`;
     }
 
-    placeBomb() {
-        newBomb(this.currentPosition);
-        // TODO: Send to WS placeBomb
-        // this.socket.emit("placeBomb", { playerId: this.playerId });
+    placeBomb(position) {
+        newBomb(position);
+        if (this.isLocalPlayer()) {
+            this.socket.emit("placeBomb", {
+                playerId: this.playerId,
+                position: this.currentPosition,
+            });
+        }
+
         // this.actionQueue.push("placeBomb"); // Add to action queue
     }
 }

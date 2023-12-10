@@ -1,4 +1,4 @@
-import { cellSize } from "./config.js";
+import { cellSize, obstacles } from "./config.js";
 import fw from "../src/fwinstance.js";
 var bombsData = {};
 
@@ -68,8 +68,6 @@ export function newBomb(playerPosition) {
     if (gridCell) {
         gridCell.appendChild(realBombElement);
     }
-
-    console.log("start bomb", bombsData[bombId]);
 }
 
 //clears the ticking animations and starts explosion animation
@@ -139,6 +137,7 @@ function setExplosionEffect(row, col, explosionStageCounter, flames, bombId) {
             if (!arrayContains(bombsData[bombId].affectedCells, [r, c])) {
                 bombsData[bombId].affectedCells.push([r, c]);
             }
+
             if (tileType === "grid-cell soft-wall") break;
         }
         applyExplosionEffect(positions, direction, explosionStageCounter);
@@ -199,7 +198,6 @@ function constructExplosionElement(key, explosionStageCounter, isWing) {
     }
     if (key !== "center") {
         explosion.attrs.style = `transform: rotate(${explosionRotatingDirections[key]}deg)`;
-        console.log(explosion.attrs);
     }
     return explosion;
 }
@@ -215,7 +213,7 @@ function clearExplosionEffect(bombId) {
         const cell = document.getElementById(`row-${r}-cell-${c}`);
         if (cell) {
             if (cell.classList.contains("soft-wall")) {
-                destroySoftWall(cell);
+                destroySoftWall(cell, r, c);
             }
 
             const explosionElement = Array.from(cell.children).find((child) =>
@@ -236,10 +234,14 @@ function clearExplosionEffect(bombId) {
     delete bombsData[bombId];
 }
 
-function destroySoftWall(cell) {
+function destroySoftWall(cell, row, col) {
     //TODO: Display wall destroction animation
     //TODO: Remove it from obstacles array
-    console.log("destroy cell", cell);
+    console.log("destroying cell at", row, col);
+    const index = obstacles.findIndex((obj) => obj.y === row && obj.x === col);
+    if (index !== -1) {
+        obstacles.splice(index, 1);
+    }
 }
 
 function getTileType(r, c) {
