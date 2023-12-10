@@ -1,6 +1,6 @@
 import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
-import { newBomb } from "./bomb.js";
+import { Bomb } from "./bomb.js";
 
 export default class Player {
     constructor(
@@ -115,7 +115,7 @@ export default class Player {
     }
 
     placeBomb(position) {
-        newBomb(position);
+        Bomb.newBomb(position);
         if (this.isLocalPlayer()) {
             this.socket.emit("placeBomb", {
                 playerId: this.playerId,
