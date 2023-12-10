@@ -10,6 +10,7 @@ export const gameGrid = (newMap) => {
         });
         for (let colIndex in row) {
             const tile = row[colIndex];
+            let powerUpClass;
             let tileClass = "";
             switch (tile) {
                 case " ":
@@ -26,13 +27,16 @@ export const gameGrid = (newMap) => {
                     tileClass = "soft-wall";
                     break;
                 case "S":
-                    tileClass = "power-up-speed";
+                    tileClass = "soft-wall";
+                    powerUpClass = "power-up-speed";
                     break;
                 case "F":
-                    tileClass = "power-up-flames";
+                    tileClass = "soft-wall";
+                    powerUpClass = "power-up-flames";
                     break;
                 case "B":
-                    tileClass = "power-up-bombs";
+                    tileClass = "soft-wall";
+                    powerUpClass = "power-up-bombs";
                     break;
 
                 case "P":
@@ -43,7 +47,8 @@ export const gameGrid = (newMap) => {
                     break;
             }
 
-            if (tile === "#" || tile === "|" || tile === "W") {
+            // if (tile === "#" || tile === "|" || tile === "W") {
+            if (tile !== " " && tile !== "." && tile !== "P") {
                 obstacles.push({
                     x: parseInt(colIndex),
                     y: parseInt(rowIndex),
@@ -51,11 +56,12 @@ export const gameGrid = (newMap) => {
                 });
             }
 
+            //reverse the row and col index x: row, y: col
             if (tile === "S" || tile === "F" || tile === "B") {
                 powerUps.push({
                     x: parseInt(colIndex),
                     y: parseInt(rowIndex),
-                    type: tile,
+                    type: `grid-cell ` + powerUpClass,
                 });
             }
 

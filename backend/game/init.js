@@ -1,4 +1,4 @@
-const blockDensity = 0.6;
+const blockDensity = 0.1;
 
 const powerUps = {
     speed: "S",
@@ -79,10 +79,9 @@ const shufflePositions = (array) => {
 
 const calculateNumberOfPowerUps = (playerCount) => {
     return {
-        [powerUps.speed]: playerCount + Math.floor(Math.random() * playerCount),
-        [powerUps.bombs]: playerCount + Math.floor(Math.random() * playerCount),
-        [powerUps.flames]:
-            playerCount + Math.floor(Math.random() * playerCount),
+        [powerUps.speed]: playerCount + Math.floor(Math.random() * 6),
+        [powerUps.bombs]: playerCount + Math.floor(Math.random() * 6),
+        [powerUps.flames]: playerCount + Math.floor(Math.random() * 6),
     };
 };
 

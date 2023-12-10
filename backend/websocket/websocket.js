@@ -151,6 +151,7 @@ const GameStart = async (io) => {
         templateMap,
         players.length
     );
+    console.log(randomizedMap);
     io.emit("startGame", randomizedMap, players);
 };
 

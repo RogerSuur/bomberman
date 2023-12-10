@@ -16,4 +16,8 @@ export default class Multiplayer {
     updatePlacedBomb(playerId, position) {
         this.players[playerId].placeBomb(position);
     }
+
+    applyPowerUp(playerId, powerUp) {
+        this.players[playerId].powerUp += 1;
+    }
 }

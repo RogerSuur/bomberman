@@ -1,5 +1,6 @@
 import { cellSize, obstacles } from "./config.js";
 import fw from "../src/fwinstance.js";
+import { PowerUp } from "./powerup.js";
 
 export class Bomb {
     static bombsData = {};
@@ -236,6 +237,7 @@ export class Bomb {
         this.bombsData[bombId].affectedCells.forEach(([r, c]) => {
             const cell = document.getElementById(`row-${r}-cell-${c}`);
             if (cell) {
+                let powerUpEl = PowerUp.findPowerUp(r, c);
                 if (cell.classList.contains("soft-wall")) {
                     this.destroySoftWall(cell, r, c);
                 }
@@ -247,11 +249,11 @@ export class Bomb {
                     cell.removeChild(explosionElement);
                 }
 
-                // TODO: Implement explosion-player collision handling logic
-
-                // TODO: Implement bomb-bomb collision handling logic
-
-                cell.className = "grid-cell grass";
+                if (powerUpEl) {
+                    cell.className = powerUpEl;
+                } else {
+                    cell.className = "grid-cell grass";
+                }
             }
         });
         this.bombsData[bombId].affectedCells = [];
@@ -260,7 +262,6 @@ export class Bomb {
 
     static destroySoftWall(cell, row, col) {
         //TODO: Display wall destroction animation
-        console.log("destroying cell at", row, col);
         const index = obstacles.findIndex(
             (obj) => obj.y === row && obj.x === col
         );

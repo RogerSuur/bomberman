@@ -1,6 +1,7 @@
 import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
 import { Bomb } from "./bomb.js";
+import { PowerUp } from "./powerup.js";
 
 export default class Player {
     constructor(
@@ -97,6 +98,12 @@ export default class Player {
                     break;
             }
             requestAnimationFrame(() => this.updatePosition());
+
+            if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
+                console.log("PowerUp collision detected");
+                // Handle power-up collision
+                PowerUp.applyPowerUp(this.playerId, this.currentPosition);
+            }
 
             if (this.isLocalPlayer()) {
                 this.socket.emit("move", {

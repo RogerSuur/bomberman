@@ -50,7 +50,6 @@ socket.on("user left", (msg) => {
     console.log(`A user ${msg} disconnected`);
 });
 
-
 /* socket.on("joined", (msg) => {
   console.log(`A user ${msg} connected`);
 }); */
@@ -103,21 +102,18 @@ const preLobby = preLobbyInstance.render();
 export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
-
 socket.on("username taken", () => {
     preLobbyInstance.errorPresent = true;
-    preLobbyInstance.update()
+    preLobbyInstance.update();
 });
 
 socket.on("userlist", (data) => {
-
-        const lobbyInstance = new Lobby(fw, socket, data, 0);
-        const lobby = lobbyInstance.render();
-        const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-        const patch = fw.dom.diff(appNode, newApp);
-        const actualDOMNode = document.getElementById("app");
-        patch(actualDOMNode);
-
+    const lobbyInstance = new Lobby(fw, socket, data, 0);
+    const lobby = lobbyInstance.render();
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode);
 });
 
 socket.on("tick", (data) => {
@@ -128,4 +124,3 @@ socket.on("tick", (data) => {
     const actualDOMNode = document.getElementById("app");
     patch(actualDOMNode);
 });
-
