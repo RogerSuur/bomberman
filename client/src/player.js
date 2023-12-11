@@ -100,9 +100,15 @@ export default class Player {
             requestAnimationFrame(() => this.updatePosition());
 
             if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
-                console.log("PowerUp collision detected");
-                // Handle power-up collision
-                PowerUp.applyPowerUp(this.playerId, this.currentPosition);
+                let powerUpEffect = PowerUp.getPowerUp(this.currentPosition);
+                this.applyPowerUp(powerUpEffect);
+                if (this.isLocalPlayer()) {
+                    this.socket.emit("powerUp", {
+                        playerId: this.playerId,
+                        powerUp: powerUpEffect,
+                    });
+                }
+                //send to ws
             }
 
             if (this.isLocalPlayer()) {
@@ -131,5 +137,22 @@ export default class Player {
         }
 
         // this.actionQueue.push("placeBomb"); // Add to action queue
+    }
+
+    applyPowerUp(powerUp) {
+        switch (powerUp) {
+            case "speed":
+                this.speed += 2;
+                break;
+            case "flames":
+                this.flames += 1;
+                break;
+            case "bombs":
+                this.bombs += 1;
+                break;
+            default:
+                console.log("no match for powerUp:", powerUp, typeof powerUp);
+                break;
+        }
     }
 }

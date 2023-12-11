@@ -102,6 +102,10 @@ const Websocket = (io) => {
                 socket.broadcast.emit("broadcastBomb", data);
             });
 
+            socket.on("powerUp", (data) => {
+                socket.broadcast.emit("broadcastPowerUp", data);
+            });
+
             socket.on("disconnecting", () => {
                 console.log(`A user ${socket.data.username} disconnected`);
                 socket.broadcast.emit("user left", socket.data.username);

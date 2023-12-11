@@ -12,6 +12,10 @@ export default class SocketManager {
         );
 
         this.socket.on("broadcastBomb", (data) => this.handlePlacedBomb(data));
+
+        this.socket.on("broadcastPowerUp", (data) =>
+            this.handlePlayerPowerUp(data)
+        );
     }
 
     handlePlayerMoved(data) {
@@ -20,6 +24,10 @@ export default class SocketManager {
 
     handlePlacedBomb(data) {
         this.multiplayer.updatePlacedBomb(data.playerId, data.position);
+    }
+
+    handlePlayerPowerUp(data) {
+        this.multiplayer.updatePlayerPowerUp(data.playerId, data.powerUp);
     }
 
     // TODO: different socket events

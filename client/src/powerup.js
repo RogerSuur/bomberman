@@ -1,4 +1,5 @@
 import { powerUps, cellSize } from "./config.js";
+import { Bomb } from "./bomb.js";
 
 export class PowerUp {
     static findPowerUp(row, col) {
@@ -14,28 +15,15 @@ export class PowerUp {
         }
     }
 
-    static applyPowerUp(playerId, position) {
-        console.log("applying powerup to player");
+    static getPowerUp(position) {
         const row = Math.floor(position.y / cellSize);
         const col = Math.floor(position.x / cellSize);
 
         let powerUpEffect = this.findPowerUp(row, col);
         if (powerUpEffect) {
             this.removePowerUp(row, col);
-            switch (powerUpEffect) {
-                case "grid-cell power-up-speed":
-                    console.log(playerId.speed);
-                    playerId.speed += 1; // Increase player's speed
-                    break;
-                case "grid-cell power-up-flames":
-                    console.log(playerId.flames);
-                    playerId.flames += 1; // Increase player's flames
-                    break;
-                case "grid-cell power-up-bombs":
-                    console.log(playerId.bombs);
-                    playerId.bombs += 1; // Increase player's bombs
-                    break;
-            }
+            const powerUpType = powerUpEffect.split("power-up-")[1];
+            return powerUpType;
         }
     }
 
@@ -45,6 +33,11 @@ export class PowerUp {
             powerUps.splice(index, 1);
         }
 
+        console.log("remove powerup from display");
+        const powerUpNode = document.getElementById(`row-${row}-cell-${col}`);
+        if (powerUpNode) {
+            powerUpNode.className = "grid-cell grass";
+        }
         //TODO:Remove it from the map
     }
 }
