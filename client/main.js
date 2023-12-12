@@ -47,7 +47,7 @@ chat.addEventListener("submit", (e) => {
 }); */
 
 socket.on("user left", (msg) => {
-    console.log(`A user ${msg} disconnected`);
+  console.log(`A user ${msg} disconnected`);
 });
 
 /* socket.on("joined", (msg) => {
@@ -55,43 +55,44 @@ socket.on("user left", (msg) => {
 }); */
 
 socket.on("startGame", (newMap, players) => {
-    const gridVirtualNodes = gameGrid(newMap);
-    const gameInstance = new BombermanGame(fw, socket, {});
-    const gameLayout = gameInstance.generateLayout(
-        players.length,
-        gridVirtualNodes
-    );
-    const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
+  const gridVirtualNodes = gameGrid(newMap);
+  const gameInstance = new BombermanGame(fw, socket, {});
+  const gameLayout = gameInstance.generateLayout(
+    players.length,
+    gridVirtualNodes
+  );
+  const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+  const patch = fw.dom.diff(appNode, newApp);
+  const actualDOMNode = document.getElementById("app");
+  patch(actualDOMNode);
 
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].id === socket.id) {
-            sessionStorage.setItem("localPlayerId", players[i].id);
-        }
-        let newPlayer = new Player(
-            `${players[i].id}`,
-            i + 1,
-            socket,
-            players[i].position,
-            players[i].bombsPlaced,
-            players[i].lives,
-            players[i].powerUps,
-            players[i].userName
-        );
-        newPlayer.createNode();
-        multiplayer.addPlayer(newPlayer);
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].id === socket.id) {
+      sessionStorage.setItem("localPlayerId", players[i].id);
     }
+    let newPlayer = new Player(
+      `${players[i].id}`,
+      i + 1,
+      socket,
+      players[i].position,
+      players[i].bombsPlaced,
+      players[i].lives,
+      players[i].powerUps,
+      players[i].userName,
+      multiplayer
+    );
+    newPlayer.createNode();
+    multiplayer.addPlayer(newPlayer);
+  }
 });
 
 const App = (attrs = {}, children = []) =>
-    fw.dom.createVirtualNode("div", {
-        attrs: {
-            ...attrs,
-        },
-        children,
-    });
+  fw.dom.createVirtualNode("div", {
+    attrs: {
+      ...attrs,
+    },
+    children,
+  });
 
 //export const appNode = App({ id: "app", class: "gameapp" }, [chatElement]);
 
@@ -103,24 +104,24 @@ export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 socket.on("username taken", () => {
-    preLobbyInstance.errorPresent = true;
-    preLobbyInstance.update();
+  preLobbyInstance.errorPresent = true;
+  preLobbyInstance.update();
 });
 
 socket.on("userlist", (data) => {
-    const lobbyInstance = new Lobby(fw, socket, data, 0);
-    const lobby = lobbyInstance.render();
-    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
+  const lobbyInstance = new Lobby(fw, socket, data, 0);
+  const lobby = lobbyInstance.render();
+  const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+  const patch = fw.dom.diff(appNode, newApp);
+  const actualDOMNode = document.getElementById("app");
+  patch(actualDOMNode);
 });
 
 socket.on("tick", (data) => {
-    const lobbyInstance = new Lobby(fw, socket, data.users, data.seconds);
-    const lobby = lobbyInstance.render();
-    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
+  const lobbyInstance = new Lobby(fw, socket, data.users, data.seconds);
+  const lobby = lobbyInstance.render();
+  const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+  const patch = fw.dom.diff(appNode, newApp);
+  const actualDOMNode = document.getElementById("app");
+  patch(actualDOMNode);
 });
