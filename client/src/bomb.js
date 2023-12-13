@@ -132,13 +132,10 @@ export class Bomb {
     const directions = ["center", "up", "down", "left", "right"];
     directions.forEach((direction) => {
       let positions = [];
-      for (let i = 1; i <= flames; i++) {
+      for (let i = direction === "center" ? 0 : 1; i <= flames; i++) {
         let r = parseInt(row),
           c = parseInt(col);
         switch (direction) {
-          case "center":
-            i++;
-            break;
           case "up":
             r -= i;
             break;
@@ -154,13 +151,20 @@ export class Bomb {
         }
         const tileType = this.getTileType(r, c);
         if (tileType === "grid-cell main-wall") break;
-        positions.push([r, c]);
-
-        if (!this.arrayContains(this.bombsData[bombId].affectedCells, [r, c])) {
-          this.bombsData[bombId].affectedCells.push([r, c]);
+        // Check for other bombs
+        const otherBombId = this.findBombInCell(r, c);
+        if (otherBombId && otherBombId !== bombId) {
+          this.explode(otherBombId);
+        } else {
+          //CHeck for existing flames
+          if (this.findFlamesInCell(r, c) && direction !== "center") break;
+          positions.push([r, c]);
+          if (
+            !this.arrayContains(this.bombsData[bombId].affectedCells, [r, c])
+          ) {
+            this.bombsData[bombId].affectedCells.push([r, c]);
+          }
         }
-
-        // if (tileType === "grid-cell soft-wall") break;
       }
       this.applyExplosionEffect(positions, direction, explosionStageCounter);
     });
@@ -204,8 +208,6 @@ export class Bomb {
       attrs: { class: "", style: `` },
       children: [],
     });
-    //Bomb center explosion order: 1,3,4,5,4,3,2
-    //                      sides: 1,2,3,4,3,2,1
 
     if (key === "center") {
       explosion.attrs.class = this.centerExplosionStages[explosionStageCounter];
@@ -279,5 +281,23 @@ export class Bomb {
 
   static arrayContains(arr, target) {
     return arr.some(([x, y]) => x === target[0] && y === target[1]);
+  }
+
+  static findBombInCell(row, col) {
+    const cell = document.getElementById(`row-${row}-cell-${col}`);
+    if (cell) {
+      const bomb = cell.querySelector("div[class^='bomb']");
+      return bomb ? bomb.id : null;
+    }
+    return null;
+  }
+
+  static findFlamesInCell(row, col) {
+    const cell = document.getElementById(`row-${row}-cell-${col}`);
+    if (cell) {
+      const hasFlames = cell.querySelector("div[class^='expl-center']");
+      if (hasFlames) return true;
+    }
+    return false;
   }
 }
