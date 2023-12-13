@@ -3,6 +3,7 @@ import fw from "../src/fwinstance.js";
 import { PowerUp } from "./powerup.js";
 import Multiplayer from "./multiplayer.js";
 import SocketManager from "./socketManager.js";
+import { CollisionDetector } from "./collision.js";
 
 export class Bomb {
   static bombsData = {};
@@ -152,12 +153,25 @@ export class Bomb {
         const tileType = this.getTileType(r, c);
         if (tileType === "grid-cell main-wall") break;
         // Check for other bombs
-        const otherBombId = this.findBombInCell(r, c);
+        const otherBombId = CollisionDetector.performBombVsBombCheck(r, c);
         if (otherBombId && otherBombId !== bombId) {
           this.explode(otherBombId);
         } else {
           //CHeck for existing flames
-          if (this.findFlamesInCell(r, c) && direction !== "center") break;
+          if (
+            CollisionDetector.findFlamesInCell(r, c) &&
+            direction !== "center"
+          )
+            break;
+          // if (
+          //   CollisionDetector.isPlayerInFlames(
+          //     playerPosition,
+          //     bombData.affectedCells
+          //   )
+          // )
+          // {
+          // Handle player collision with flames
+          // }
           positions.push([r, c]);
           if (
             !this.arrayContains(this.bombsData[bombId].affectedCells, [r, c])
@@ -257,6 +271,11 @@ export class Bomb {
       bombData.multiplayer.updatePlayerBombsPlaced(bombData.playerId);
     }
 
+    const multiplayer = this.bombsData[bombId].multiplayer;
+    if (multiplayer) {
+      multiplayer.checkPlayersInFlames(this.bombsData);
+    }
+
     this.bombsData[bombId].affectedCells = [];
     delete this.bombsData[bombId];
   }
@@ -281,23 +300,5 @@ export class Bomb {
 
   static arrayContains(arr, target) {
     return arr.some(([x, y]) => x === target[0] && y === target[1]);
-  }
-
-  static findBombInCell(row, col) {
-    const cell = document.getElementById(`row-${row}-cell-${col}`);
-    if (cell) {
-      const bomb = cell.querySelector("div[class^='bomb']");
-      return bomb ? bomb.id : null;
-    }
-    return null;
-  }
-
-  static findFlamesInCell(row, col) {
-    const cell = document.getElementById(`row-${row}-cell-${col}`);
-    if (cell) {
-      const hasFlames = cell.querySelector("div[class^='expl-center']");
-      if (hasFlames) return true;
-    }
-    return false;
   }
 }

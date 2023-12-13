@@ -1,3 +1,5 @@
+import { CollisionDetector } from "./collision.js";
+
 export default class Multiplayer {
   constructor(socket, stateManager) {
     this.socket = socket;
@@ -24,5 +26,21 @@ export default class Multiplayer {
 
   updatePlayerBombsPlaced(playerId) {
     this.players[playerId].bombsPlaced--;
+  }
+
+  checkPlayersInFlames(bombsData) {
+    Object.keys(this.players).forEach((playerId) => {
+      const player = this.players[playerId];
+      const playerPosition = player.currentPosition;
+
+      Object.keys(bombsData).forEach((bombId) => {
+        const bomb = bombsData[bombId];
+        if (
+          CollisionDetector.isPlayerInFlames(playerPosition, bomb.affectedCells)
+        ) {
+          player.handlePlayerHit(playerId);
+        }
+      });
+    });
   }
 }

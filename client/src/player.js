@@ -20,7 +20,8 @@ export default class Player {
     this.socket = socket;
     this.actionQueue = []; // Action queue for client-side prediction
     // Initialize player properties
-    this.currentPosition = startPosition;
+    this.spawnPosition = { ...startPosition };
+    this.currentPosition = { ...startPosition };
     this.lives = lives;
     this.userName = userName;
     this.bombs = powerUps.bombs;
@@ -48,12 +49,12 @@ export default class Player {
     if (this.isLocalPlayer()) {
       this.addMovementListeners();
     }
-    this.startPosition();
+    this.startingPosition(this.playerId, this.currentPosition);
   }
-  startPosition() {
-    const player = document.getElementById(`player-${this.playerId}`);
-    player.style.left = `${this.currentPosition.x}px`;
-    player.style.top = `${this.currentPosition.y}px`;
+  startingPosition(playerId, position) {
+    const player = document.getElementById(`player-${playerId}`);
+    player.style.left = `${position.x}px`;
+    player.style.top = `${position.y}px`;
   }
 
   addMovementListeners() {
@@ -177,5 +178,12 @@ export default class Player {
 
   removePowerUpRemotely(row, col) {
     PowerUp.removePowerUp(row, col);
+  }
+
+  handlePlayerHit(playerId) {
+    this.lives -= 1;
+    this.startingPosition(playerId, this.spawnPosition);
+    this.currentPosition = { ...this.spawnPosition };
+    //TODO:make player dies animation
   }
 }
