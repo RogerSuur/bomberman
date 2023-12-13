@@ -137,7 +137,6 @@ export default class Player {
   }
 
   placeBomb(position) {
-    console.log("player:", this.playerId, "bombsPLaced:", this.bombsPlaced);
     //CHeck if there are bombs available to place
     if (this.bombs - this.bombsPlaced > 0) {
       Bomb.newBomb(
