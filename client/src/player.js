@@ -194,7 +194,6 @@ export default class Player {
       //TODO: Display lives on the game-HUD
     }
     //TODO:make player dies animation
-    console.log("player", playerId, "lives", this.lives);
   }
 
   handlePlayerDeath(playerId) {
@@ -204,6 +203,6 @@ export default class Player {
     }
 
     this.isAlive = false;
-    // this.multiplayer.removePlayer(playerId);
+    this.multiplayer.removePlayer(playerId);
   }
 }
