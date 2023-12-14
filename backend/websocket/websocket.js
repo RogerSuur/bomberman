@@ -20,7 +20,7 @@ let timeoutId;
 
 const menuCountdown = async (io) => {
   io.emit("menu countdown");
-  let secondsLeft = 3; // 20 seconds for menu countdown
+  let secondsLeft = 30; // 20 seconds for menu countdown
 
   const menuCountdownTimer = setInterval(async () => {
     if (secondsLeft <= 0) {
@@ -45,7 +45,7 @@ const gameCountdown = (io) => {
   io.emit("game countdown");
   const gameStartTimer = setTimeout(() => {
     GameStart(io);
-  }, 1000);
+  }, 3000);
   clearTimeout(timeoutId);
   timeoutId = gameStartTimer;
 };
