@@ -11,6 +11,13 @@ export default class Multiplayer {
     this.players[player.playerId] = player;
   }
 
+  removePlayer(playerId) {
+    if (this.players[playerId]) {
+      delete this.players[playerId];
+    }
+    console.log(this.players);
+  }
+
   updatePlayerPosition(playerId, direction) {
     this.players[playerId].move(direction);
   }

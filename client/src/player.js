@@ -30,6 +30,7 @@ export default class Player {
     this.bombsPlaced = bombsPlaced;
     this.counter = classCounter;
     this.multiplayer = multiplayer;
+    this.isAlive = true;
   }
 
   isLocalPlayer() {
@@ -80,6 +81,7 @@ export default class Player {
   }
 
   move(direction) {
+    if (!this.isAlive) return;
     if (
       !CollisionDetector.performWallCheck(
         this.currentPosition,
@@ -138,6 +140,7 @@ export default class Player {
   }
 
   placeBomb(position) {
+    if (!this.isAlive) return;
     //CHeck if there are bombs available to place
     if (this.bombs - this.bombsPlaced > 0) {
       Bomb.newBomb(
@@ -182,8 +185,25 @@ export default class Player {
 
   handlePlayerHit(playerId) {
     this.lives -= 1;
-    this.startingPosition(playerId, this.spawnPosition);
-    this.currentPosition = { ...this.spawnPosition };
+    if (this.lives <= 0) {
+      console.log("game over for player", playerId);
+      this.handlePlayerDeath(playerId);
+    } else {
+      this.startingPosition(playerId, this.spawnPosition);
+      this.currentPosition = { ...this.spawnPosition };
+      //TODO: Display lives on the game-HUD
+    }
     //TODO:make player dies animation
+    console.log("player", playerId, "lives", this.lives);
+  }
+
+  handlePlayerDeath(playerId) {
+    const player = document.getElementById(`player-${playerId}`);
+    if (player) {
+      player.parentNode.removeChild(player);
+    }
+
+    this.isAlive = false;
+    // this.multiplayer.removePlayer(playerId);
   }
 }
