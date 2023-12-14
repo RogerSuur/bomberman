@@ -2,16 +2,16 @@ import fw from "./src/fwinstance.js";
 import BombermanGame from "./src/game.js";
 import PreLobby from "./src/lobby/preLobby.js";
 import Lobby from "./src/lobby/lobby.js";
-import ChatComponent from "./src/chat.js";
+//import ChatComponent from "./src/chat.js";
 
 import Player from "./src/player.js";
 import SocketManager from "./src/socketManager.js";
 import { gameGrid } from "./src/components/gameGrid.js";
 import Multiplayer from "./src/multiplayer.js";
 const socket = io(); // Establish WebSocket connection
-const chatComponent = new ChatComponent(socket, "lala");
+//const chatComponent = new ChatComponent(socket, "lala");
 const multiplayer = new Multiplayer(socket);
-const chatElement = chatComponent.getChatElement();
+//const chatElement = chatComponent.getChatElement();
 const socketManager = new SocketManager(socket, multiplayer);
 
 // Add the chat element to the DOM
@@ -122,15 +122,14 @@ socket.on("userlist", (data) => {
 
 socket.on("tick", (data) => {
     let name = GetMyUserName(data.users, socket.id);
-
     const lobbyInstance = new Lobby(fw, socket, data.userNameList, data.seconds, name);
     const lobby = lobbyInstance.content;
     const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
     const patch = fw.dom.diff(appNode, newApp);
     const actualDOMNode = document.getElementById("app");
     patch(actualDOMNode);
-});
-
+  });
+  
 
 
 const GetMyUserName = (userList, id) => {
