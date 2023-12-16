@@ -42,12 +42,13 @@ export class CollisionDetector {
 
     for (let index = 0; index < currentPowerUps.length; index++) {
       const powerUp = currentPowerUps[index];
-      if (
-        playerPosition.x + playerSize / 2 < powerUp.x * cellSize + cellSize &&
-        playerPosition.x + playerSize / 2 > powerUp.x * cellSize &&
-        playerPosition.y + playerOffset + playerSize / 2 < powerUp.y * cellSize + cellSize &&
-        playerPosition.y + playerOffset + playerSize / 2 > powerUp.y * cellSize
-      ) {
+
+      const posXAgainstPowerUpMax = playerPosition.x + playerSize / 2 < powerUp.x * cellSize + cellSize;
+      const posXAgainstPowerUpMin = playerPosition.x + playerSize / 2 > powerUp.x * cellSize;
+      const posYAgainstPowerUpMax = playerPosition.y + playerOffset + playerSize / 2 < powerUp.y * cellSize + cellSize;
+      const posYAgainstPowerUpMin = playerPosition.y + playerOffset + playerSize / 2 > powerUp.y * cellSize;
+
+      if (posXAgainstPowerUpMax && posXAgainstPowerUpMin && posYAgainstPowerUpMax && posYAgainstPowerUpMin) {
         return true;
       }
     }
@@ -73,7 +74,7 @@ export class CollisionDetector {
   }
 
   static isPlayerInFlames(playerPosition, affectedCells) {
-    const playerRow = Math.floor(playerPosition.y / cellSize);
+    const playerRow = Math.floor((playerPosition.y + playerOffset) / cellSize);
     const playerCol = Math.floor(playerPosition.x / cellSize);
 
     return affectedCells.some(

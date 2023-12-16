@@ -2,7 +2,7 @@ import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
 import { Bomb } from "./bomb.js";
 import { PowerUp } from "./powerup.js";
-import { cellSize } from "./config.js";
+import { cellSize, playerOffset } from "./config.js";
 
 export default class Player {
   constructor(
@@ -107,7 +107,7 @@ export default class Player {
 
       if (this.isLocalPlayer()) {
         if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
-          const row = Math.floor(this.currentPosition.y / cellSize);
+          const row = Math.floor((this.currentPosition.y + playerOffset) / cellSize);
           const col = Math.floor(this.currentPosition.x / cellSize);
           let powerUpEffect = PowerUp.getPowerUp(row, col);
 
