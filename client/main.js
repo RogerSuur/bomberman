@@ -98,6 +98,7 @@ const App = (attrs = {}, children = []) =>
 //Lobby
 const preLobbyInstance = new PreLobby(fw, socket, false);
 const preLobby = preLobbyInstance.render();
+const lobbyInstance = new Lobby(fw, socket, 0);
 
 export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
@@ -110,24 +111,25 @@ socket.on("username taken", () => {
 
 socket.on("userlist", (data) => {
     const name = GetMyUserName(data.users, socket.id);
-
-        const lobbyInstance = new Lobby(fw, socket, data.userNameList, 0, name);
-        const lobby = lobbyInstance.content;
-        const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-        const patch = fw.dom.diff(appNode, newApp);
-        const actualDOMNode = document.getElementById("app");
-        patch(actualDOMNode);
-
-});
-
-socket.on("tick", (data) => {
-    let name = GetMyUserName(data.users, socket.id);
-    const lobbyInstance = new Lobby(fw, socket, data.userNameList, data.seconds, name);
+    lobbyInstance.addPlayer(data.userNameList, name);
     const lobby = lobbyInstance.content;
     const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
     const patch = fw.dom.diff(appNode, newApp);
     const actualDOMNode = document.getElementById("app");
     patch(actualDOMNode);
+    lobbyInstance.update(0);
+
+});
+
+socket.on("tick", (data) => {
+    /* let name = GetMyUserName(data.users, socket.id);
+    lobbyInstance.addPlayer(data.userNameList, name);
+    const lobby = lobbyInstance.content;
+    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
+    const patch = fw.dom.diff(appNode, newApp);
+    const actualDOMNode = document.getElementById("app");
+    patch(actualDOMNode); */
+    lobbyInstance.update(data.seconds);
   });
   
 

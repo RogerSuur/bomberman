@@ -1,14 +1,19 @@
 import ChatComponent from "../chat.js";
 
-export default class  Lobby {
-    constructor(fw,socket, playerList, timer, myUserName) {
+export default class Lobby {
+    constructor(fw, socket, timer) {
         this.fw = fw;
         this.state = fw.state;
-        this.playerList = playerList;
-        this.myUserName = myUserName;
+        this.playerList = [];
+        this.myUserName = "";
         this.socket = socket;
         this.timer = timer;
         this.content = this.render();
+    }
+
+    addPlayer(playerList, myUserName) {
+        this.playerList = playerList;
+        this.myUserName = myUserName;
     }
 
     render() {
@@ -28,7 +33,7 @@ export default class  Lobby {
         })
 
         if (this.timer >= 0) {
-             console.log(this.timer)
+            // console.log(this.timer)
             var timerStr = `Game starts in: ${this.timer}`
 
             const timer = this.fw.dom.createVirtualNode("p", {
@@ -72,8 +77,8 @@ export default class  Lobby {
         return lobby;
     }
 
-
-    update() {
+    update(seconds) {
+        this.timer = seconds;
         const newLobby = this.render();
         const patch = this.fw.dom.diff(this.content, newLobby);
         const actualDOMNode = document.getElementById("lobby");
