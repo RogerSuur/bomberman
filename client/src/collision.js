@@ -1,4 +1,4 @@
-import { obstacles, cellSize, playerSize, powerUps } from "./config.js";
+import { obstacles, cellSize, playerSize, powerUps, playerOffset } from "./config.js";
 
 export class CollisionDetector {
   static performWallCheck(playerPosition, direction, speed) {
@@ -23,12 +23,13 @@ export class CollisionDetector {
     for (let index = 0; index < currentObstacles.length; index++) {
       const obstacle = currentObstacles[index];
       // console.log(`Checking obstacle at index ${index}:`, obstacle);
-      if (
-        futurePosition.x < obstacle.x * cellSize + cellSize &&
-        futurePosition.x + playerSize > obstacle.x * cellSize &&
-        futurePosition.y < obstacle.y * cellSize + cellSize &&
-        futurePosition.y + playerSize > obstacle.y * cellSize
-      ) {
+      
+      const posXAgainstObstacle = futurePosition.x < obstacle.x * cellSize + cellSize;
+      const posXAgainstPlayerSize = futurePosition.x + playerSize > obstacle.x * cellSize;
+      const posYAgainstObstacle = futurePosition.y + playerOffset < obstacle.y * cellSize + cellSize;
+      const posYAgainstPlayerSize = futurePosition.y + playerOffset + playerSize > obstacle.y * cellSize;
+
+      if (posXAgainstObstacle && posXAgainstPlayerSize && posYAgainstObstacle && posYAgainstPlayerSize) {
         return true;
       }
     }
@@ -44,8 +45,8 @@ export class CollisionDetector {
       if (
         playerPosition.x + playerSize / 2 < powerUp.x * cellSize + cellSize &&
         playerPosition.x + playerSize / 2 > powerUp.x * cellSize &&
-        playerPosition.y + playerSize / 2 < powerUp.y * cellSize + cellSize &&
-        playerPosition.y + playerSize / 2 > powerUp.y * cellSize
+        playerPosition.y + playerOffset + playerSize / 2 < powerUp.y * cellSize + cellSize &&
+        playerPosition.y + playerOffset + playerSize / 2 > powerUp.y * cellSize
       ) {
         return true;
       }

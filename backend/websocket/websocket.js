@@ -2,6 +2,9 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
+const LOBBY_COUNTDOWN_SECONDS = 5;
+const PRE_GAME_WAITING_MILLISECONDS = 1500;
+
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
@@ -20,7 +23,7 @@ let timeoutId;
 
 const menuCountdown = async (io) => {
   io.emit("menu countdown");
-  let secondsLeft = 30; // 20 seconds for menu countdown
+  let secondsLeft = LOBBY_COUNTDOWN_SECONDS;
 
   const menuCountdownTimer = setInterval(async () => {
     if (secondsLeft <= 0) {
@@ -45,7 +48,7 @@ const gameCountdown = (io) => {
   io.emit("game countdown");
   const gameStartTimer = setTimeout(() => {
     GameStart(io);
-  }, 3000);
+  }, PRE_GAME_WAITING_MILLISECONDS);
   clearTimeout(timeoutId);
   timeoutId = gameStartTimer;
 };
@@ -136,10 +139,10 @@ const GameStart = async (io) => {
   const connections = await io.fetchSockets();
   const players = [];
   const positions = [
-    { x: 72, y: 36 },
-    { x: 504, y: 396 },
-    { x: 504, y: 36 },
-    { x: 72, y: 396 },
+    { x: 72, y: 24 },
+    { x: 504, y: 384 },
+    { x: 504, y: 24 },
+    { x: 72, y: 384 },
   ];
 
   connections.forEach((conn, index) => {
