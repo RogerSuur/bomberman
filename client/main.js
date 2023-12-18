@@ -61,7 +61,9 @@ socket.on("startGame", (newMap, players) => {
     players.length,
     gridVirtualNodes
   );
+  console.log(gameLayout);
   const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+  console.log(newApp);
   const patch = fw.dom.diff(appNode, newApp);
   const actualDOMNode = document.getElementById("app");
   patch(actualDOMNode);

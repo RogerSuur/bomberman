@@ -1,15 +1,15 @@
 body {
-    color: blue;
+  color: blue;
 }
 
 .todoapp h1 {
-    color: rgba(175, 47, 47, 0.15);
-    font-size: 100px;
-    top: -155px;
+  color: rgba(175, 47, 47, 0.15);
+  font-size: 100px;
+  top: -155px;
 }
 
 .info {
-    color: #bfbfbf;
+  color: #bfbfbf;
 }
 
 #page-container {
@@ -21,7 +21,7 @@ body {
 #content-container {
   min-height: 100vh;
   min-width: 100vw;
-  padding-bottom: 4rem;    /* Footer height */
+  padding-bottom: 4rem; /* Footer height */
 }
 
 #footer {
@@ -29,10 +29,10 @@ body {
   bottom: 0;
   width: 100%;
   color: #777;
-  height: 2.5rem;   
-           /* Footer height */
+  height: 2.5rem;
+  /* Footer height */
 }
-#messages{
+#messages {
   background-color: rgb(131, 120, 120);
   width: 60vw;
   height: 20vh;
@@ -50,7 +50,7 @@ body {
   width: 100vw;
 }
 .grid-row {
-display: flex;
+  display: flex;
 }
 .container {
   /* width: 620px;
@@ -65,45 +65,71 @@ display: flex;
   position: relative;
 }
 
-
 /* <---------------GridMap images-----------------------> */
 .main-wall {
-    background-image: url("./public/images/map/main-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/main-wall.png");
+  background-size: cover;
 }
 .grey-wall {
-    background-image: url("./public/images/map/grey-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/grey-wall.png");
+  background-size: cover;
 }
 .grass {
-    background-image: url("./public/images/map/grass.png");
-    background-size: cover;
+  background-image: url("./public/images/map/grass.png");
+  background-size: cover;
 }
 .soft-wall {
-    background-image: url("./public/images/map/soft-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/soft-wall.png");
+  background-size: cover;
 }
 
 .hud-2-pl {
   background-image: url("./public/images/map/hud-2-pl.png");
-  background-size:contain;
-  height:80px;
+  background-size: contain;
+  height: 80px;
 }
 
 .hud-3-pl {
   background-image: url("./public/images/map/hud-3-pl.png");
-  background-size: contain;  
-  height:80px;
+  background-size: contain;
+  height: 80px;
 }
 .hud-4-pl {
   background-image: url("./public/images/map/hud-4-pl.png");
-  background-size: contain;  
+  background-size: contain;
   height: 80px;
 }
 
+.lives-0 {
+  background-image: url("./public/images/map/0.png");
+  background-size: contain;
+  height: 15px;
+  width: 15px;
+}
+
+.lives-1 {
+  background-image: url("./public/images/map/1.png");
+  background-size: contain;
+  height: 15px;
+  width: 15px;
+}
+
+.lives-2 {
+  background-image: url("./public/images/map/2.png");
+  background-size: contain;
+  height: 15px;
+  width: 15px;
+}
+
+.lives-3 {
+  background-image: url("./public/images/map/3.png");
+  background-size: contain;
+  position: absolute;
+  height: 15px;
+  width: 15px;
+}
 
 /* <---------------PowerUp images-----------------------> */
-
 
 .power-up-bombs {
   background-image: url("./public/images/power-ups/bombs-power-up.png");
@@ -111,25 +137,23 @@ display: flex;
 }
 
 .power-up-flames {
-background-image: url("./public/images/power-ups/flames-power-up.png");
-background-size: cover;
+  background-image: url("./public/images/power-ups/flames-power-up.png");
+  background-size: cover;
 }
 
 .power-up-speed {
-background-image: url("./public/images/power-ups/speed-power-up.png");
-background-size: cover;
+  background-image: url("./public/images/power-ups/speed-power-up.png");
+  background-size: cover;
 }
-
 
 /* <---------------Player 1 images-----------------------> */
 
 .player-1 {
   background-image: url("./public/images/players/player-1/pl-1-down-still.png");
   background-size: cover;
-position: absolute;
-width: 36px;
-height: 36px;
-
+  position: absolute;
+  width: 36px;
+  height: 36px;
 }
 
 /* <---------------Player 2 images-----------------------> */
@@ -137,9 +161,9 @@ height: 36px;
 .player-2 {
   background-image: url("./public/images/players/player-2/pl-2-down-still.png");
   background-size: cover;
-position: absolute;
-width: 36px;
-height: 36px;
+  position: absolute;
+  width: 36px;
+  height: 36px;
 }
 
 /* <---------------Player 3 images-----------------------> */
@@ -147,9 +171,9 @@ height: 36px;
 .player-3 {
   background-image: url("./public/images/players/player-3/pl-3-down-still.png");
   background-size: cover;
-position: absolute;
-width: 36px;
-height: 36px;
+  position: absolute;
+  width: 36px;
+  height: 36px;
 }
 
 /* <---------------Player 4 images-----------------------> */
@@ -157,9 +181,9 @@ height: 36px;
 .player-4 {
   background-image: url("./public/images/players/player-4/pl-4-down-still.png");
   background-size: cover;
-position: absolute;
-width: 36px;
-height: 36px;
+  position: absolute;
+  width: 36px;
+  height: 36px;
 }
 
 /* <---------------Bomb images-----------------------> */
