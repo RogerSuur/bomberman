@@ -2,28 +2,6 @@ import { obstacles, cellSize, playerSize, powerUps, playerOffset } from "./confi
 
 export class CollisionDetector {
 
-  static checkCollision(direction, futurePosition, obstacle) {
-    console.log("checking", direction)
-    switch (direction) {
-      case "up":
-      case "down":
-        return futurePosition.x < obstacle.x * cellSize + cellSize &&
-            futurePosition.x + playerSize > obstacle.x * cellSize &&
-            futurePosition.y + playerOffset + 8 < obstacle.y * cellSize + cellSize &&
-            futurePosition.y + playerOffset + playerSize - 8 > obstacle.y * cellSize;
-          break;
-      case "left":
-      case "right":
-        return futurePosition.x + 8 < obstacle.x * cellSize + cellSize &&
-            futurePosition.x + playerSize - 8 > obstacle.x * cellSize &&
-            futurePosition.y + playerOffset < obstacle.y * cellSize + cellSize &&
-            futurePosition.y + playerOffset + playerSize > obstacle.y * cellSize;
-          break;
-      default:
-        return false;
-    }
-  }
-
   static performWallCheck(playerPosition, direction, speed) {
     const futurePosition = { ...playerPosition };
     switch (direction) {
@@ -42,23 +20,39 @@ export class CollisionDetector {
     }
 
     const currentObstacles = obstacles;
-
+    const cornerProximity = cellSize * 0.1;
+    
     for (let index = 0; index < currentObstacles.length; index++) {
       const obstacle = currentObstacles[index];
-      // console.log(`Checking obstacle at index ${index}:`, obstacle);
       
-      /* const posXAgainstObstacle = futurePosition.x < obstacle.x * cellSize + cellSize;
-      const posXAgainstPlayerSize = futurePosition.x + playerSize > obstacle.x * cellSize;
-      const posYAgainstObstacle = futurePosition.y + playerOffset < obstacle.y * cellSize + cellSize;
-      const posYAgainstPlayerSize = futurePosition.y + playerOffset + playerSize > obstacle.y * cellSize; */
-
-      console.log(this.checkCollision(direction, futurePosition, obstacle))
-
-      if (this.checkCollision(direction, futurePosition, obstacle)) {
-        return true;
+      const obstacleLeftEdge = obstacle.x * cellSize;
+      const obstacleRightEdge = obstacleLeftEdge + cellSize;
+      const obstacleTopEdge = obstacle.y * cellSize;
+      const obstacleBottomEdge = obstacleTopEdge + cellSize;
+  
+      const playerLeftEdge = futurePosition.x;
+      const playerRightEdge = playerLeftEdge + playerSize;
+      const playerTopEdge = futurePosition.y + playerOffset;
+      const playerBottomEdge = playerTopEdge + playerSize;
+  
+      // Collision check
+      if (playerRightEdge > obstacleLeftEdge && playerLeftEdge < obstacleRightEdge &&
+          playerBottomEdge > obstacleTopEdge && playerTopEdge < obstacleBottomEdge) {
+  
+        // Check for corner proximity
+        const isNearHorizontalCorner = (direction === "left" || direction === "right") && 
+                                       (Math.abs(playerTopEdge - obstacleBottomEdge) <= cornerProximity || 
+                                        Math.abs(playerBottomEdge - obstacleTopEdge) <= cornerProximity);
+        const isNearVerticalCorner = (direction === "up" || direction === "down") && 
+                                     (Math.abs(playerLeftEdge - obstacleRightEdge) <= cornerProximity || 
+                                      Math.abs(playerRightEdge - obstacleLeftEdge) <= cornerProximity);
+  
+        if (!isNearHorizontalCorner && !isNearVerticalCorner) {
+          return true; // Collision detected
+        }
       }
     }
-    return false;
+    return false; // No collision detected
   }
 
   //check if player is on the div of a powerup

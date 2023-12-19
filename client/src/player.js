@@ -26,7 +26,7 @@ export default class Player {
     this.userName = userName;
     this.bombs = powerUps.bombs;
     this.flames = powerUps.flames;
-    this.speed = powerUps.speed + 5;
+    this.speed = powerUps.speed + 4;
     this.bombsPlaced = bombsPlaced;
     this.counter = classCounter;
     this.multiplayer = multiplayer;
