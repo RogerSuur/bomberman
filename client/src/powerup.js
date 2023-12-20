@@ -1,5 +1,4 @@
-import { powerUps, cellSize } from "./config.js";
-import { Bomb } from "./bomb.js";
+import { powerUps } from "./config.js";
 
 export class PowerUp {
   static findPowerUp(row, col) {

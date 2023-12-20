@@ -2,25 +2,9 @@ import { obstacles, cellSize, playerSize, powerUps, playerOffset } from "./confi
 
 export class CollisionDetector {
 
-  static performWallCheck(playerPosition, direction, speed) {
-    const futurePosition = { ...playerPosition };
-    switch (direction) {
-      case "up":
-        futurePosition.y -= speed;
-        break;
-      case "down":
-        futurePosition.y += speed;
-        break;
-      case "left":
-        futurePosition.x -= speed;
-        break;
-      case "right":
-        futurePosition.x += speed;
-        break;
-    }
+  static performWallCheck(futurePosition) {
 
     const currentObstacles = obstacles;
-    const cornerProximity = cellSize * 0.1;
     
     for (let index = 0; index < currentObstacles.length; index++) {
       const obstacle = currentObstacles[index];
@@ -35,21 +19,10 @@ export class CollisionDetector {
       const playerTopEdge = futurePosition.y + playerOffset;
       const playerBottomEdge = playerTopEdge + playerSize;
   
-      // Collision check
+      // Simple collision check
       if (playerRightEdge > obstacleLeftEdge && playerLeftEdge < obstacleRightEdge &&
           playerBottomEdge > obstacleTopEdge && playerTopEdge < obstacleBottomEdge) {
-  
-        // Check for corner proximity
-        const isNearHorizontalCorner = (direction === "left" || direction === "right") && 
-                                       (Math.abs(playerTopEdge - obstacleBottomEdge) <= cornerProximity || 
-                                        Math.abs(playerBottomEdge - obstacleTopEdge) <= cornerProximity);
-        const isNearVerticalCorner = (direction === "up" || direction === "down") && 
-                                     (Math.abs(playerLeftEdge - obstacleRightEdge) <= cornerProximity || 
-                                      Math.abs(playerRightEdge - obstacleLeftEdge) <= cornerProximity);
-  
-        if (!isNearHorizontalCorner && !isNearVerticalCorner) {
-          return true; // Collision detected
-        }
+        return true; // Collision detected
       }
     }
     return false; // No collision detected

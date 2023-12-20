@@ -26,7 +26,8 @@ export default class Player {
     this.userName = userName;
     this.bombs = powerUps.bombs;
     this.flames = powerUps.flames;
-    this.speed = powerUps.speed + 2;
+    this.speed = 3;
+    this.turningSpeed = this.speed;
     this.bombsPlaced = bombsPlaced;
     this.counter = classCounter;
     this.multiplayer = multiplayer;
@@ -107,27 +108,41 @@ export default class Player {
 
   move(direction) {
     if (!this.isAlive) return;
+
+     // Check for a direction change and adjust speed for turning if needed
+    if (this.lastDirection !== direction) {
+      this.turningSpeed = 1; // Reduce speed for turning
+      console.log("turning speed reduced", this.turningSpeed);
+      this.lastDirection = direction; // Update last direction
+    } else {
+      if (this.turningSpeed < this.speed) {
+        this.turningSpeed += 1; // Increase speed for turning
+        console.log("turning speed increased", this.turningSpeed);
+      }
+      //this.turningSpeed = this.speed; // Restore original speed
+      console.log("turning speed restored", this.turningSpeed);
+    }
   
     let newPosition = { ...this.currentPosition };
     switch (direction) {
       case "up":
-        newPosition.y -= this.speed;
+        newPosition.y -= this.turningSpeed;
         break;
       case "down":
-        newPosition.y += this.speed;
+        newPosition.y += this.turningSpeed;
         break;
       case "left":
-        newPosition.x -= this.speed;
+        newPosition.x -= this.turningSpeed;
         break;
       case "right":
-        newPosition.x += this.speed;
+        newPosition.x += this.turningSpeed;
         break;
       default:
         return; // Invalid direction
     }
 
     // Perform collision check with the new position
-    if (!CollisionDetector.performWallCheck(newPosition, direction, this.speed)) {
+    if (!CollisionDetector.performWallCheck(newPosition)) {
       this.currentPosition = newPosition;
       requestAnimationFrame(() => this.updatePosition());
 
@@ -201,7 +216,8 @@ export default class Player {
   applyPowerUp(powerUp) {
     switch (powerUp) {
       case "speed":
-        this.speed += 2;
+        this.speed += 3;
+        console.log("speed", this.speed);
         break;
       case "flames":
         this.flames += 1;
