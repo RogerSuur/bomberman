@@ -131,7 +131,7 @@ export default class Player {
 
     // Check if near a corner and adjust position accordingly
     if (this.isNearCorner(newPosition, direction, cornerProximity)) {
-      console.log("near corner");
+      // console.log("near corner");
       newPosition = this.adjustPositionForCorner(newPosition, direction, cornerProximity);
     }
   
@@ -176,14 +176,7 @@ export default class Player {
     position.x = Math.round(position.x / cellSize) * cellSize;
     position.y = Math.round((position.y + playerOffset) / cellSize) * cellSize - playerOffset;
     return position;
-}
-
-/*   alignWithGrid(position) {
-    // Align the position with the nearest grid point based on the top-left corner
-    position.x = Math.round((position.x + playerSize / 2) / cellSize) * cellSize - playerSize / 2;
-    position.y = Math.round((position.y + playerOffset + playerSize / 2) / cellSize) * cellSize - playerSize / 2 - playerOffset;
-    return position;
-  } */
+  } 
 
   isNearCorner(position, direction, proximity) {
     // Calculate the player's center position
@@ -274,7 +267,7 @@ export default class Player {
     switch (powerUp) {
       case "speed":
         this.speed += 3;
-        console.log("speed", this.speed);
+        // console.log("speed", this.speed);
         break;
       case "flames":
         this.flames += 1;
