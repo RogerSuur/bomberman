@@ -27,7 +27,6 @@ export default class Player {
     this.bombs = powerUps.bombs;
     this.flames = powerUps.flames;
     this.speed = 3;
-    this.turningSpeed = this.speed;
     this.bombsPlaced = bombsPlaced;
     this.counter = classCounter;
     this.multiplayer = multiplayer;
@@ -108,39 +107,34 @@ export default class Player {
 
   move(direction) {
     if (!this.isAlive) return;
-
-     // Check for a direction change and adjust speed for turning if needed
-    if (this.lastDirection !== direction) {
-      this.turningSpeed = 1; // Reduce speed for turning
-      console.log("turning speed reduced", this.turningSpeed);
-      this.lastDirection = direction; // Update last direction
-    } else {
-      if (this.turningSpeed < this.speed) {
-        this.turningSpeed += 1; // Increase speed for turning
-        console.log("turning speed increased", this.turningSpeed);
-      }
-      //this.turningSpeed = this.speed; // Restore original speed
-      console.log("turning speed restored", this.turningSpeed);
-    }
   
     let newPosition = { ...this.currentPosition };
+    const cornerProximity = 10; // Pixels within which corner adjustment should happen
+
     switch (direction) {
       case "up":
-        newPosition.y -= this.turningSpeed;
+        newPosition.y -= this.speed;
         break;
       case "down":
-        newPosition.y += this.turningSpeed;
+        newPosition.y += this.speed;
         break;
       case "left":
-        newPosition.x -= this.turningSpeed;
+        newPosition.x -= this.speed;
         break;
       case "right":
-        newPosition.x += this.turningSpeed;
+        newPosition.x += this.speed;
         break;
       default:
+        console.log("We're in 2 dimensions, dude!")
         return; // Invalid direction
     }
 
+    // Check if near a corner and adjust position accordingly
+    if (this.isNearCorner(newPosition, direction, cornerProximity)) {
+      console.log("near corner");
+      newPosition = this.adjustPositionForCorner(newPosition, direction, cornerProximity);
+    }
+  
     // Perform collision check with the new position
     if (!CollisionDetector.performWallCheck(newPosition)) {
       this.currentPosition = newPosition;
@@ -171,6 +165,58 @@ export default class Player {
         });
       }
     }
+  }
+
+  isNearCorner(position, direction, proximity) {
+    // Calculate the player's center position
+    const playerCenterX = position.x + playerSize / 2;
+    const playerCenterY = position.y + playerOffset + playerSize / 2;
+  
+    // Find the nearest grid lines in both X and Y
+    const nearestGridLineX = Math.round(playerCenterX / cellSize) * cellSize;
+    const nearestGridLineY = Math.round(playerCenterY / cellSize) * cellSize;
+  
+    // Calculate the distance from the player's center to the nearest grid lines
+    const distanceToGridLineX = Math.abs(playerCenterX - nearestGridLineX);
+    const distanceToGridLineY = Math.abs(playerCenterY - nearestGridLineY);
+  
+    // Check if the player is within proximity to a corner in the relevant axis
+    if (direction === "left" || direction === "right") {
+      console.log("close to corner in x", distanceToGridLineX, proximity);
+      return distanceToGridLineY < proximity;
+    } else if (direction === "up" || direction === "down") {
+      console.log("close to corner in y", distanceToGridLineY, proximity);
+      return distanceToGridLineX < proximity;
+    }
+  
+    return false;
+  }
+  
+  // Method to adjust the player's position to align with the grid
+  adjustPositionForCorner(position, direction, proximity) {
+    const gridX = Math.floor(position.x / cellSize) * cellSize;
+    const gridY = Math.floor(position.y / cellSize) * cellSize;
+    
+    switch (direction) {
+      case "left":
+      case "right":
+        // Adjust vertically to align with the grid
+        if (Math.abs(position.y - gridY) < proximity) {
+          console.log("adjusting vertically");
+          position.y = gridY;
+        }
+        break;
+      case "up":
+      case "down":
+        // Adjust horizontally to align with the grid
+        if (Math.abs(position.x - gridX) < proximity) {
+          console.log("adjusting horizontally");
+          position.x = gridX;
+        }
+        break;
+    }
+  
+    return position;
   }
 
   updatePosition() {
