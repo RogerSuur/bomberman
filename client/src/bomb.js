@@ -1,8 +1,6 @@
 import { cellSize, obstacles, playerOffset } from "./config.js";
 import fw from "../src/fwinstance.js";
 import { PowerUp } from "./powerup.js";
-import Multiplayer from "./multiplayer.js";
-import SocketManager from "./socketManager.js";
 import { CollisionDetector } from "./collision.js";
 
 export class Bomb {

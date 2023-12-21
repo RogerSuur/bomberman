@@ -2,7 +2,6 @@ import MiniFramework from "../framework/mini-framework.js";
 
 // Define the configuration for the application
 let players = [];
-let currentRoute = {};
 
 let storedPlayers = JSON.parse(localStorage.getItem("players"));
 
