@@ -138,7 +138,6 @@ export default class Player {
     // Perform collision check with the new position
     if (!CollisionDetector.performWallCheck(newPosition)) {
       this.currentPosition = newPosition;
-      requestAnimationFrame(() => this.updatePosition());
 
       if (this.isLocalPlayer()) {
         if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
@@ -164,8 +163,27 @@ export default class Player {
           direction,
         });
       }
+    } else {
+      // If movement is stopped near a grid point, adjust to align with the grid
+      this.currentPosition = this.alignWithGrid(this.currentPosition);
     }
+
+    requestAnimationFrame(() => this.updatePosition());
   }
+
+  alignWithGrid(position) {
+    // Align the position with the nearest grid point based on the top-left corner
+    position.x = Math.round(position.x / cellSize) * cellSize;
+    position.y = Math.round((position.y + playerOffset) / cellSize) * cellSize - playerOffset;
+    return position;
+}
+
+/*   alignWithGrid(position) {
+    // Align the position with the nearest grid point based on the top-left corner
+    position.x = Math.round((position.x + playerSize / 2) / cellSize) * cellSize - playerSize / 2;
+    position.y = Math.round((position.y + playerOffset + playerSize / 2) / cellSize) * cellSize - playerSize / 2 - playerOffset;
+    return position;
+  } */
 
   isNearCorner(position, direction, proximity) {
     // Calculate the player's center position
