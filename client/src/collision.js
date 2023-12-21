@@ -3,27 +3,27 @@ import { obstacles, cellSize, playerSize, powerUps, playerOffset } from "./confi
 export class CollisionDetector {
 
   static performWallCheck(futurePosition) {
-
     const currentObstacles = obstacles;
-    
+
+    // Calculate the player's center position
+    const playerCenterX = futurePosition.x + playerSize / 2;
+    const playerCenterY = futurePosition.y + playerOffset + playerSize / 2;
+
     for (let index = 0; index < currentObstacles.length; index++) {
-      const obstacle = currentObstacles[index];
-      
-      const obstacleLeftEdge = obstacle.x * cellSize;
-      const obstacleRightEdge = obstacleLeftEdge + cellSize;
-      const obstacleTopEdge = obstacle.y * cellSize;
-      const obstacleBottomEdge = obstacleTopEdge + cellSize;
-  
-      const playerLeftEdge = futurePosition.x;
-      const playerRightEdge = playerLeftEdge + playerSize;
-      const playerTopEdge = futurePosition.y + playerOffset;
-      const playerBottomEdge = playerTopEdge + playerSize;
-  
-      // Simple collision check
-      if (playerRightEdge > obstacleLeftEdge && playerLeftEdge < obstacleRightEdge &&
-          playerBottomEdge > obstacleTopEdge && playerTopEdge < obstacleBottomEdge) {
-        return true; // Collision detected
-      }
+        const obstacle = currentObstacles[index];
+
+        // Calculate the obstacle's center position
+        const obstacleCenterX = obstacle.x * cellSize + cellSize / 2;
+        const obstacleCenterY = obstacle.y * cellSize + cellSize / 2;
+
+        // Calculate distances between player center and obstacle center
+        const distanceX = Math.abs(playerCenterX - obstacleCenterX);
+        const distanceY = Math.abs(playerCenterY - obstacleCenterY);
+
+        // Check for collision based on proximity
+        if (distanceX < (playerSize / 2 + cellSize / 2) && distanceY < (playerSize / 2 + cellSize / 2)) {
+            return true; // Collision detected
+        }
     }
     return false; // No collision detected
   }

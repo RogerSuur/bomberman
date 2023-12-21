@@ -109,7 +109,7 @@ export default class Player {
     if (!this.isAlive) return;
   
     let newPosition = { ...this.currentPosition };
-    const cornerProximity = 10; // Pixels within which corner adjustment should happen
+    const cornerProximity = 9; // Pixels within which corner adjustment should happen
 
     switch (direction) {
       case "up":
@@ -182,10 +182,8 @@ export default class Player {
   
     // Check if the player is within proximity to a corner in the relevant axis
     if (direction === "left" || direction === "right") {
-      console.log("close to corner in x", distanceToGridLineX, proximity);
       return distanceToGridLineY < proximity;
     } else if (direction === "up" || direction === "down") {
-      console.log("close to corner in y", distanceToGridLineY, proximity);
       return distanceToGridLineX < proximity;
     }
   
@@ -194,30 +192,25 @@ export default class Player {
   
   // Method to adjust the player's position to align with the grid
   adjustPositionForCorner(position, direction, proximity) {
+    // Calculate grid alignment
     const gridX = Math.floor(position.x / cellSize) * cellSize;
     const gridY = Math.floor(position.y / cellSize) * cellSize;
-    
-    switch (direction) {
-      case "left":
-      case "right":
-        // Adjust vertically to align with the grid
-        if (Math.abs(position.y - gridY) < proximity) {
-          console.log("adjusting vertically");
-          position.y = gridY;
-        }
-        break;
-      case "up":
-      case "down":
-        // Adjust horizontally to align with the grid
-        if (Math.abs(position.x - gridX) < proximity) {
-          console.log("adjusting horizontally");
-          position.x = gridX;
-        }
-        break;
+  
+    // Determine if alignment correction is needed based on direction
+    if ((direction === "left" || direction === "right") && Math.abs(position.y - gridY) < proximity) {
+      // If moving horizontally, adjust vertically only if misaligned
+      if (position.y % cellSize !== 0) {
+        position.y = gridY;
+      }
+    } else if ((direction === "up" || direction === "down") && Math.abs(position.x - gridX) < proximity) {
+      // If moving vertically, adjust horizontally only if misaligned
+      if (position.x % cellSize !== 0) {
+        position.x = gridX;
+      }
     }
   
     return position;
-  }
+  }  
 
   updatePosition() {
     const player = document.getElementById(`player-${this.playerId}`);
@@ -226,7 +219,7 @@ export default class Player {
     player.style.top = `${this.currentPosition.y}px`;
   }
 
-  placeBomb(position) {
+  placeBomb() {
     if (!this.isAlive) return;
 
     // Calculate the center of the player's sprite
