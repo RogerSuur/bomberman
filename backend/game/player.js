@@ -5,6 +5,6 @@ export default class Player {
         this.position = position;
         this.lives = 3;
         this.bombsPlaced = 0;
-        this.powerUps = { bombs: 1, flames: 2, speed: 1 };
+        this.powerUps = { bombs: 1, flames: 1, speed: 1 };
     }
 }

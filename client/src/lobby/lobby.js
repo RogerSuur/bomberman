@@ -17,18 +17,17 @@ export default class Lobby {
     render() {
         this.playerList = this.playerList.filter((player) => player !== null);
         var players = this.playerList.length;
-        var str = `Waiting for players: ${players}/4`
-        
+        var str = `Waiting for players: ${players}/4`;
+
         const header = this.fw.dom.createVirtualNode("h1", {
             attrs: { class: "px-4 py-1" },
-            children: [str]
-        })
+            children: [str],
+        });
 
-
-        const headerRow = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "row"},
-            children: [header]
-        })
+        const headerRow = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "row" },
+            children: [header],
+        });
 
         if (this.timer >= 0) {
             // console.log(this.timer)
@@ -36,16 +35,16 @@ export default class Lobby {
 
             const timer = this.fw.dom.createVirtualNode("p", {
                 attrs: { for: "input-name", class: "" },
-                children: [timerStr]
-            })
+                children: [timerStr],
+            });
 
-            headerRow.children.push(timer)  
+            headerRow.children.push(timer);
         }
 
-        const playerColumn = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "col-4"},
-            children: []
-        })
+        const playerColumn = this.fw.dom.createVirtualNode("div", {
+            attrs: { class: "col-4" },
+            children: [],
+        });
 
         for (const key in this.playerList) {
             playerColumn.children.push(this.fw.dom.createVirtualNode("div",{
@@ -60,8 +59,8 @@ export default class Lobby {
         })
         
         const lobby = this.fw.dom.createVirtualNode("div", {
-            attrs: { class: "container", id:"lobby" },
-            children: [headerRow, contentRow]
+            attrs: { class: "container", id: "lobby" },
+            children: [headerRow, contentRow],
         });
 
         return lobby;

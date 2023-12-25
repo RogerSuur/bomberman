@@ -2,12 +2,13 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
+const LOBBY_COUNTDOWN_SECONDS = 5;
+const PRE_GAME_WAITING_MILLISECONDS = 1500;
 
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
-    if (socket.data.username != undefined)
-      userlist.push(socket.data.username);
+    if (socket.data.username != undefined) userlist.push(socket.data.username);
   }
   console.log("userlist updated", userlist)
   return userlist;
@@ -24,7 +25,7 @@ const GetUsers = (sockets) => {
 
 const Tick = (io, data) => {
   io.to("lobby").emit("tick", data);
-}
+};
 
 const MAX_CONNECTIONS = 4;
 
@@ -32,10 +33,9 @@ let timeoutId;
 
 const menuCountdown = async (io) => {
   io.emit("menu countdown");
-  let secondsLeft = 30; // 20 seconds for menu countdown
+  let secondsLeft = LOBBY_COUNTDOWN_SECONDS;
 
-
-  const menuCountdownTimer = setInterval(async () => {  
+  const menuCountdownTimer = setInterval(async () => {
     if (secondsLeft <= 0) {
       clearInterval(menuCountdownTimer);
       gameCountdown(io);
@@ -43,12 +43,12 @@ const menuCountdown = async (io) => {
       var conList = await io.fetchSockets();
       var userNameList = GetUserlist(conList);
       var users = GetUsers(conList);
-      
+
       var data = {
         userNameList: userNameList,
         users: users,
-        seconds: secondsLeft
-      }
+        seconds: secondsLeft,
+      };
        Tick(io, data);
       secondsLeft--;
     }
@@ -57,16 +57,16 @@ const menuCountdown = async (io) => {
 };
 
 const gameCountdown = (io) => {
-    io.emit("game countdown");
-    const gameStartTimer = setTimeout(() => {
-        GameStart(io);
-    }, 10000);
-    clearTimeout(timeoutId);
-    timeoutId = gameStartTimer;
+  io.emit("game countdown");
+  const gameStartTimer = setTimeout(() => {
+    GameStart(io);
+  }, PRE_GAME_WAITING_MILLISECONDS);
+  clearTimeout(timeoutId);
+  timeoutId = gameStartTimer;
 };
 
 const connectionsCount = async (io, conns) =>
-  conns === 4 ? gameCountdown(io) : conns === 2 && await menuCountdown(io);
+  conns === 4 ? gameCountdown(io) : conns === 2 && (await menuCountdown(io));
 
 const Websocket = (io) => {
   io.on("connection", async (socket) => {
@@ -76,11 +76,11 @@ const Websocket = (io) => {
     if (roomUsers.size <= MAX_CONNECTIONS) {
       socket.data.id = socket.id;
 
-            // Listen for chat messages
-            socket.on("chatMessage", (message) => {
-                // Broadcast the message to all connected users
-                io.emit("chatMessage", message);
-            });
+      // Listen for chat messages
+      socket.on("chatMessage", (message) => {
+        // Broadcast the message to all connected users
+        io.emit("chatMessage", message);
+      });
 
       socket.on("username", async (username) => {
         socket.join(socket.id);
@@ -100,7 +100,6 @@ const Websocket = (io) => {
           const roomUsers = await io.in("lobby").allSockets();
           await connectionsCount(io, roomUsers.size);
 
-
           let data = {
             users: GetUsers(conList),
             userNameList: userList
@@ -110,20 +109,23 @@ const Websocket = (io) => {
           io.to("lobby").emit("userlist", data);
         }
 
-
       });
 
-            socket.on("stateUpdate", () => {
-                console.log("stateUpdate");
-            });
+      /* socket.on("stateUpdate", () => {
+        console.log("stateUpdate");
+      }); */
 
-            socket.on("move", (data) => {
-            socket.broadcast.emit("broadcastMovement", data);
-        });
+      socket.on("move", (data) => {
+        socket.broadcast.emit("broadcastMovement", data);
+      });
 
-            socket.on("move", (data) => {
-            socket.broadcast.emit("broadcastMovement", data);
-        });
+      socket.on("placeBomb", (data) => {
+        socket.broadcast.emit("broadcastBomb", data);
+      });
+
+      socket.on("powerUp", (data) => {
+        socket.broadcast.emit("broadcastPowerUp", data);
+      });
 
       socket.on("disconnecting", () => {
         console.log(`A user ${socket.data.username} disconnected`);
@@ -131,7 +133,10 @@ const Websocket = (io) => {
       });
 
       socket.on("disconnect", async () => {
-        connections.length < 3 && timeoutId && socket.emit("countdown stopped") && clearTimeout(timeoutId);
+        connections.length < 3 &&
+          timeoutId &&
+          socket.emit("countdown stopped") &&
+          clearTimeout(timeoutId);
         // console.log(socket.data);
         console.log("A user disconnected");
         var conList = await io.fetchSockets();
@@ -148,30 +153,31 @@ const Websocket = (io) => {
 
 //creates tilemap with randomized elements and player characters
 const GameStart = async (io) => {
-    //TODO: wants number of players
-    const connections = await io.fetchSockets();
-    const players = [];
-    const positions = [
-        { x: 72, y: 36 },
-        { x: 504, y: 396 },
-        { x: 504, y: 36 },
-        { x: 72, y: 396 },
-    ];
+  //TODO: wants number of players
+  const connections = await io.fetchSockets();
+  const players = [];
+  const positions = [
+    { x: 72, y: 24 },
+    { x: 504, y: 384 },
+    { x: 504, y: 24 },
+    { x: 72, y: 384 },
+  ];
 
-    connections.forEach((conn, index) => {
-        console.log("PLAYER:", conn.data);
-        const player = new Player(
-            conn.data.id,
-            conn.data.username,
-            positions[index]
-        );
-        players.push(player);
-    });
-    const randomizedMap = populateMapWithWallsAndPowerUps(
-        templateMap,
-        players.length
+  connections.forEach((conn, index) => {
+    console.log("PLAYER:", conn.data);
+    const player = new Player(
+      conn.data.id,
+      conn.data.username,
+      positions[index]
     );
-    io.emit("startGame", randomizedMap, players);
+    players.push(player);
+  });
+  const randomizedMap = populateMapWithWallsAndPowerUps(
+    templateMap,
+    players.length
+  );
+  console.log(randomizedMap);
+  io.emit("startGame", randomizedMap, players);
 };
 
 export default Websocket;

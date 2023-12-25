@@ -12,7 +12,7 @@ const socket = io(); // Establish WebSocket connection
 const multiplayer = new Multiplayer(socket);
 
 socket.on("user left", (msg) => {
-    console.log(`A user ${msg} disconnected`);
+  console.log(`A user ${msg} disconnected`);
 });
 
 /* socket.on("joined", (msg) => {
@@ -20,43 +20,44 @@ socket.on("user left", (msg) => {
 }); */
 
 socket.on("startGame", (newMap, players) => {
-    const gridVirtualNodes = gameGrid(newMap);
-    const gameInstance = new BombermanGame(fw, socket, {});
-    const gameLayout = gameInstance.generateLayout(
-        players.length,
-        gridVirtualNodes
-    );
-    const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
+  const gridVirtualNodes = gameGrid(newMap);
+  const gameInstance = new BombermanGame(fw, socket, {});
+  const gameLayout = gameInstance.generateLayout(
+    players.length,
+    gridVirtualNodes
+  );
+  const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+  const patch = fw.dom.diff(appNode, newApp);
+  const actualDOMNode = document.getElementById("app");
+  patch(actualDOMNode);
 
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].id === socket.id) {
-            sessionStorage.setItem("localPlayerId", players[i].id);
-        }
-        let newPlayer = new Player(
-            `${players[i].id}`,
-            i + 1,
-            socket,
-            players[i].position,
-            players[i].bombsPlaced,
-            players[i].lives,
-            players[i].powerUps,
-            players[i].userName
-        );
-        newPlayer.createNode();
-        multiplayer.addPlayer(newPlayer);
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].id === socket.id) {
+      sessionStorage.setItem("localPlayerId", players[i].id);
     }
+    let newPlayer = new Player(
+      `${players[i].id}`,
+      i + 1,
+      socket,
+      players[i].position,
+      players[i].bombsPlaced,
+      players[i].lives,
+      players[i].powerUps,
+      players[i].userName,
+      multiplayer
+    );
+    newPlayer.createNode();
+    multiplayer.addPlayer(newPlayer);
+  }
 });
 
 const App = (attrs = {}, children = []) =>
-    fw.dom.createVirtualNode("div", {
-        attrs: {
-            ...attrs,
-        },
-        children,
-    });
+  fw.dom.createVirtualNode("div", {
+    attrs: {
+      ...attrs,
+    },
+    children,
+  });
 
 //Lobby
 const preLobbyInstance = new PreLobby(fw, socket, false);
@@ -67,14 +68,13 @@ const lobbyInstance = new Lobby(fw, socket, 0);
 export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
-
 socket.on("username taken", () => {
-    preLobbyInstance.errorPresent = true;
-    preLobbyInstance.update()
+  preLobbyInstance.errorPresent = true;
+  preLobbyInstance.update();
 });
 
 socket.on("userlist", (data) => {
-    console.log("userlist", data);
+    //console.log("userlist", data);
     const name = GetMyUserName(data.users, socket.id);
     chatComponent.addPlayer(name);
     lobbyInstance.addPlayer(data.userNameList, name);
@@ -83,18 +83,11 @@ socket.on("userlist", (data) => {
     const patch = fw.dom.diff(appNode, newApp);
     const actualDOMNode = document.getElementById("app");
     patch(actualDOMNode);
-    lobbyInstance.update();
+    lobbyInstance.update(0);
 
 });
 
 socket.on("tick", (data) => {
-    /* let name = GetMyUserName(data.users, socket.id);
-    lobbyInstance.addPlayer(data.userNameList, name);
-    const lobby = lobbyInstance.content;
-    const newApp = App({ id: "app", class: "gameapp" }, [lobby]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode); */
     lobbyInstance.update(data.seconds);
   });
   

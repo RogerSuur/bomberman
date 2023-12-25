@@ -1,3 +1,8 @@
+:root {
+  --player-size: 48px;
+  --cell-size: 36px;
+}
+
 body {
     color: blue;
 }
@@ -57,8 +62,8 @@ display: flex;
   height: 408px; */
 }
 .grid-cell {
-  width: 36px;
-  height: 36px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   align-items: center;
 }
 .game-grid {
@@ -127,8 +132,8 @@ background-size: cover;
   background-image: url("./public/images/players/player-1/pl-1-down-still.png");
   background-size: cover;
 position: absolute;
-width: 36px;
-height: 36px;
+width: var(--player-size);
+height: var(--player-size);
 
 }
 
@@ -138,8 +143,8 @@ height: 36px;
   background-image: url("./public/images/players/player-2/pl-2-down-still.png");
   background-size: cover;
 position: absolute;
-width: 36px;
-height: 36px;
+width: var(--player-size);
+height: var(--player-size);
 }
 
 /* <---------------Player 3 images-----------------------> */
@@ -148,8 +153,8 @@ height: 36px;
   background-image: url("./public/images/players/player-3/pl-3-down-still.png");
   background-size: cover;
 position: absolute;
-width: 36px;
-height: 36px;
+width: var(--player-size);
+height: var(--player-size);
 }
 
 /* <---------------Player 4 images-----------------------> */
@@ -158,6 +163,123 @@ height: 36px;
   background-image: url("./public/images/players/player-4/pl-4-down-still.png");
   background-size: cover;
 position: absolute;
-width: 36px;
-height: 36px;
+width: var(--player-size);
+height: var(--player-size);
+}
+
+/* <---------------Bomb images-----------------------> */
+
+.bomb-1 {
+  background-image: url("./public/images/bombs/bomb-1.png");
+  background-size: cover;
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.bomb-2 {
+  background-image: url("./public/images/bombs/bomb-2.png");
+  background-size: cover;
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.bomb-3 {
+  background-image: url("./public/images/bombs/bomb-3.png");
+  background-size: cover;
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-center-1 {
+  background-image: url("./public/images/bombs/expl-center-1.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-center-2 {
+  background-image: url("./public/images/bombs/expl-center-2.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-center-3 {
+  background-image: url("./public/images/bombs/expl-center-3.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-center-4 {
+  background-image: url("./public/images/bombs/expl-center-4.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-center-5 {
+  background-image: url("./public/images/bombs/expl-center-5.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-wing-1 {
+  background-image: url("./public/images/bombs/expl-wing-1.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-wing-2 {
+  background-image: url("./public/images/bombs/expl-wing-2.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-wing-3 {
+  background-image: url("./public/images/bombs/expl-wing-3.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-wing-4 {
+  background-image: url("./public/images/bombs/expl-wing-4.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-side-1 {
+  background-image: url("./public/images/bombs/expl-side-1.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-side-2 {
+  background-image: url("./public/images/bombs/expl-side-2.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-side-3 {
+  background-image: url("./public/images/bombs/expl-side-3.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+.expl-side-4 {
+  background-image: url("./public/images/bombs/expl-side-4.png");
+  background-size: cover;
+  width: var(--cell-size);
+  height: var(--cell-size);
 }
