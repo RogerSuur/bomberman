@@ -1,14 +1,11 @@
-import ChatComponent from "../chat.js";
-
 export default class Lobby {
-    constructor(fw, socket, timer, chat) {
+    constructor(fw, socket, timer) {
         this.fw = fw;
         this.state = fw.state;
         this.playerList = [];
         this.myUserName = "";
         this.socket = socket;
         this.timer = timer;
-        this.chat = chat;
         this.content = this.render();
     }
 
@@ -57,16 +54,9 @@ export default class Lobby {
             }))
         };
 
-        const chatElement = this.chat.getChatElement();
-
-        const chatArea = this.fw.dom.createVirtualNode("div",{
-            attrs: { class: "col-8"},
-            children: [chatElement]
-        })
-
         const contentRow = this.fw.dom.createVirtualNode("div",{
             attrs: { class: "row"},
-            children: [playerColumn, chatArea]
+            children: [playerColumn]
         })
         
         const lobby = this.fw.dom.createVirtualNode("div", {

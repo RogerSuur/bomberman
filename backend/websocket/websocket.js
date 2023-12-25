@@ -6,9 +6,10 @@ import Player from "../game/player.js";
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
-    if (socket.data != undefined)
+    if (socket.data.username != undefined)
       userlist.push(socket.data.username);
   }
+  console.log("userlist updated", userlist)
   return userlist;
 };
 const GetUsers = (sockets) => {
