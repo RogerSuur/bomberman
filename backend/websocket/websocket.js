@@ -93,9 +93,9 @@ const Websocket = (io) => {
         }
       });
 
-      socket.on("stateUpdate", () => {
-        console.log("stateUpdate");
-      });
+/*       socket.on("stateUpdate", (data) => {
+        socket.broadcast.emit("stateUpdate", data);
+      }); */
 
       socket.on("move", (data) => {
         socket.broadcast.emit("broadcastMovement", data);
