@@ -45,7 +45,7 @@ export default class Multiplayer {
         if (
           CollisionDetector.isPlayerInFlames(playerPosition, bomb.affectedCells)
         ) {
-          player.handlePlayerHit(playerId);
+          player.handlePlayerHit(player);
         }
       });
     });

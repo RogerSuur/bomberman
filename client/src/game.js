@@ -19,7 +19,6 @@ export default class BombermanGame {
       children: [...this.gridNodes],
     });
     const hudNode = gameHud(playersData);
-    console.log(hudNode);
     const gameLayout = this.fw.dom.createVirtualNode("div", {
       attrs: { id: "gameapp" },
       children: [hudNode, gameGridNode],

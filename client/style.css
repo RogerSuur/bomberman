@@ -83,50 +83,45 @@ body {
   background-size: cover;
 }
 
-.hud-2-pl {
-  background-image: url("./public/images/map/hud-2-pl.png");
+.hud-2-pl, .hud-3-pl, .hud-4-pl {
+  display: flex;
   background-size: contain;
   height: 80px;
+}
+
+.hud-2-pl {
+  background-image: url("./public/images/map/hud-2-pl.png");
 }
 
 .hud-3-pl {
   background-image: url("./public/images/map/hud-3-pl.png");
-  background-size: contain;
-  height: 80px;
 }
+
 .hud-4-pl {
   background-image: url("./public/images/map/hud-4-pl.png");
+}
+
+.lives-0, .lives-1, .lives-2, .lives-3 {
   background-size: contain;
-  height: 80px;
+  height: 15px;
+  width: 15px;
+  position: absolute;
 }
 
 .lives-0 {
   background-image: url("./public/images/map/0.png");
-  background-size: contain;
-  height: 15px;
-  width: 15px;
 }
 
 .lives-1 {
   background-image: url("./public/images/map/1.png");
-  background-size: contain;
-  height: 15px;
-  width: 15px;
 }
 
 .lives-2 {
   background-image: url("./public/images/map/2.png");
-  background-size: contain;
-  height: 15px;
-  width: 15px;
 }
 
 .lives-3 {
   background-image: url("./public/images/map/3.png");
-  background-size: contain;
-  position: absolute;
-  height: 15px;
-  width: 15px;
 }
 
 /* <---------------PowerUp images-----------------------> */

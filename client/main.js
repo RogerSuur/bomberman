@@ -61,12 +61,13 @@ socket.on("startGame", (newMap, players) => {
     players,
     gridVirtualNodes
   );
-  console.log(gameLayout);
   const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+  /*
   console.log(newApp);
   const patch = fw.dom.diff(appNode, newApp);
   const actualDOMNode = document.getElementById("app");
-  patch(actualDOMNode);
+  patch(actualDOMNode); */
+  fw.dom.mount(document.getElementById("app"), newApp);
 
   for (let i = 0; i < players.length; i++) {
     if (players[i].id === socket.id) {

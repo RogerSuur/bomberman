@@ -4,7 +4,10 @@ const livesPositions = [247, 319, 391, 463];
 
 export const gameHud = (players) => {
   const newGameHud = fw.dom.createVirtualNode("div", {
-    attrs: { class: `hud-${players.length}-pl` },
+    attrs: { 
+      id: "game-hud",
+      class: `hud-${players.length}-pl`,
+    },
   });
 
   for (let i = 0; i < players.length; i++) {
@@ -15,10 +18,8 @@ export const gameHud = (players) => {
         style: `margin-top: 28.5px;margin-left:${livesPositions[i]}px`,
       },
     });
-    console.log(`Player ${i} lives virtual node:`, playerLives);
     newGameHud.children.push(playerLives);
   }
 
-  console.log("Final HUD virtual node:", newGameHud);
   return newGameHud;
 };
