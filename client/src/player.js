@@ -93,6 +93,11 @@ export default class Player {
       this.moveBasedOnKeyStates();
       this.lastUpdateTime = timestamp;
     }
+    // once every second emit the state of the player for correction
+    this.socket.emit("stateUpdate", {
+      playerId: this.playerId,
+      position: this.currentPosition,
+    });    
     requestAnimationFrame(this.update.bind(this));
   }
 
@@ -160,7 +165,7 @@ export default class Player {
       if (this.isLocalPlayer()) {
         this.socket.emit("move", {
           playerId: this.playerId,
-          direction,
+          position: this.currentPosition,
         });
       }
     } else {
