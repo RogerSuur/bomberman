@@ -12,13 +12,13 @@ export default class BombermanGame {
     // bombs, etc.
   }
 
-  generateLayout(playerCount, gridVirtualNodes) {
+  generateLayout(playersData, gridVirtualNodes) {
     this.gridNodes = gridVirtualNodes;
     const gameGridNode = this.fw.dom.createVirtualNode("div", {
       attrs: { id: "gamegrid", class: "game-grid" },
       children: [...this.gridNodes],
     });
-    const hudNode = gameHud(playerCount);
+    const hudNode = gameHud(playersData);
     console.log(hudNode);
     const gameLayout = this.fw.dom.createVirtualNode("div", {
       attrs: { id: "gameapp" },

@@ -58,7 +58,7 @@ socket.on("startGame", (newMap, players) => {
   const gridVirtualNodes = gameGrid(newMap);
   const gameInstance = new BombermanGame(fw, socket, {});
   const gameLayout = gameInstance.generateLayout(
-    players.length,
+    players,
     gridVirtualNodes
   );
   console.log(gameLayout);

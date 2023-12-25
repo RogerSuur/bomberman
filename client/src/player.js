@@ -185,6 +185,11 @@ export default class Player {
 
   handlePlayerHit(playerId) {
     this.lives -= 1;
+    
+    const playerLives = document.getElementById(`player-lives-${playerId}`);
+    playerLives.classList.remove(`lives-${this.lives + 1}`);
+    playerLives.classList.add(`lives-${this.lives}`);
+
     if (this.lives <= 0) {
       console.log("game over for player", playerId);
       this.handlePlayerDeath(playerId);
