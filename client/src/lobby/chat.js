@@ -1,11 +1,15 @@
-import fw from "./fwinstance.js";
+import fw from "../fwinstance.js";
 
 export default class ChatComponent {
   constructor(socket) {
     this.socket = socket;
     this.chatElement = this.createChatElement();
-    this.username = '';
+    this.username = "";
     this.attachEventListeners();
+  }
+
+  addPlayer(myUserName) {
+    this.username = myUserName;
   }
 
   createChatElement() {
