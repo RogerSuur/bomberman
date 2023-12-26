@@ -314,6 +314,12 @@ export default class Player {
     }
 
     this.isAlive = false;
+    
+    if (this.isLocalPlayer()) {
+      const gameOver = document.getElementById("gameover-text");
+      gameOver.style.display = "block";
+    }
+
     this.multiplayer.removePlayer(playerId);
   }
 }
