@@ -316,6 +316,7 @@ export default class Player {
 
   win() {
     if (this.isLocalPlayer()) {
+      this.isAlive = false;
       const winText = document.getElementById("gameover-text");
       winText.innerHTML = "YOU WIN!";
       winText.style.display = "block";
