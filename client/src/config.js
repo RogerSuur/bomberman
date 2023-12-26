@@ -3,3 +3,4 @@ export const playerSize = 36;
 export const obstacles = [];
 export const powerUps = [];
 export const playerOffset = 12;
+export const cornerProximity = 10;

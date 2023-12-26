@@ -2,7 +2,7 @@ import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
 import { Bomb } from "./bomb.js";
 import { PowerUp } from "./powerup.js";
-import { cellSize, playerSize, playerOffset } from "./config.js";
+import { cellSize, playerSize, playerOffset, cornerProximity } from "./config.js";
 
 export default class Player {
   constructor(
@@ -112,10 +112,22 @@ export default class Player {
 
   move(direction) {
     if (!this.isAlive) return;
-  
-    let newPosition = { ...this.currentPosition };
-    const cornerProximity = 9; // Pixels within which corner adjustment should happen
 
+    let newPosition = this.caclulateNewPosition(direction);
+
+    // Perform collision check with the new position
+    if (!CollisionDetector.performWallCheck(newPosition)) {
+      this.currentPosition = newPosition;
+      this.checkForPowerUpsAndEmitSocket();
+    } else {
+      this.tryGridAlignedMove(newPosition, direction);
+    }
+
+    requestAnimationFrame(() => this.updatePosition());
+  }
+ 
+  caclulateNewPosition(direction) {
+    let newPosition = { ...this.currentPosition };
     switch (direction) {
       case "up":
         newPosition.y -= this.speed;
@@ -131,102 +143,72 @@ export default class Player {
         break;
       default:
         console.log("We're in 2 dimensions, dude!")
-        return; // Invalid direction
+        return this.currentPosition; // Invalid direction
     }
+    return newPosition;
+  }
 
-    // Check if near a corner and adjust position accordingly
-    if (this.isNearCorner(newPosition, direction, cornerProximity)) {
-      // console.log("near corner");
-      newPosition = this.adjustPositionForCorner(newPosition, direction, cornerProximity);
-    }
-  
-    // Perform collision check with the new position
-    if (!CollisionDetector.performWallCheck(newPosition)) {
-      this.currentPosition = newPosition;
+  tryGridAlignedMove(newPosition, direction) {
+    // if collision is detected try the same move while aligning to grid on the other axis
+    let gridPosition = this.gridPosition(newPosition);
 
-      if (this.isLocalPlayer()) {
-        if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
-          const row = Math.floor((this.currentPosition.y + playerOffset) / cellSize);
-          const col = Math.floor(this.currentPosition.x / cellSize);
-          let powerUpEffect = PowerUp.getPowerUp(row, col);
-
-          if (powerUpEffect !== undefined) {
-            this.applyPowerUp(powerUpEffect);
-            this.socket.emit("powerUp", {
-              playerId: this.playerId,
-              powerUp: powerUpEffect,
-              row: row,
-              col: col,
-            });
+    if ((Math.abs(this.currentPosition.x - gridPosition.x) < cornerProximity) &&
+        (direction === "up" || direction === "down")) {
+          let tryPosition = { ...newPosition };
+          tryPosition.x = gridPosition.x;
+          if (!CollisionDetector.performWallCheck(tryPosition)) {
+            this.currentPosition = tryPosition;
+            this.checkForPowerUpsAndEmitSocket();
           }
+        }
+    
+    if ((Math.abs(this.currentPosition.y - gridPosition.y) < cornerProximity) &&
+        (direction === "left" || direction === "right")) {
+        let tryPosition = { ...newPosition };
+        tryPosition.y = gridPosition.y;
+        if (!CollisionDetector.performWallCheck(tryPosition)) {
+          this.currentPosition = tryPosition;
+          this.checkForPowerUpsAndEmitSocket();
+        }
+      }
+  }
+  
+  checkForPowerUpsAndEmitSocket() {
+    if (this.isLocalPlayer()) {
+      if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
+        const row = Math.floor((this.currentPosition.y + playerOffset) / cellSize);
+        const col = Math.floor(this.currentPosition.x / cellSize);
+        let powerUpEffect = PowerUp.getPowerUp(row, col);
+
+        if (powerUpEffect !== undefined) {
+          this.applyPowerUp(powerUpEffect);
+          this.socket.emit("powerUp", {
+            playerId: this.playerId,
+            powerUp: powerUpEffect,
+            row: row,
+            col: col,
+          });
         }
       }
 
-      if (this.isLocalPlayer()) {
-        this.socket.emit("move", {
-          playerId: this.playerId,
-          position: this.currentPosition,
-        });
-      }
-    } else {
-      // If movement is stopped near a grid point, adjust to align with the grid
-      this.currentPosition = this.alignWithGrid(this.currentPosition);
+      this.socket.emit("move", {
+        playerId: this.playerId,
+        position: this.currentPosition,
+      });
     }
-
-    requestAnimationFrame(() => this.updatePosition());
   }
 
-  alignWithGrid(position) {
-    // Align the position with the nearest grid point based on the top-left corner
-    position.x = Math.round(position.x / cellSize) * cellSize;
-    position.y = Math.round((position.y + playerOffset) / cellSize) * cellSize - playerOffset;
-    return position;
-  } 
+  gridPosition(position) {
+    // calculate grid point
+    const col = Math.round(position.x / cellSize);
+    const row = Math.round((position.y + playerOffset) / cellSize);
 
-  isNearCorner(position, direction, proximity) {
-    // Calculate the player's center position
-    const playerCenterX = position.x + playerSize / 2;
-    const playerCenterY = position.y + playerOffset + playerSize / 2;
-  
-    // Find the nearest grid lines in both X and Y
-    const nearestGridLineX = Math.round(playerCenterX / cellSize) * cellSize;
-    const nearestGridLineY = Math.round(playerCenterY / cellSize) * cellSize;
-  
-    // Calculate the distance from the player's center to the nearest grid lines
-    const distanceToGridLineX = Math.abs(playerCenterX - nearestGridLineX);
-    const distanceToGridLineY = Math.abs(playerCenterY - nearestGridLineY);
-  
-    // Check if the player is within proximity to a corner in the relevant axis
-    if (direction === "left" || direction === "right") {
-      return distanceToGridLineY < proximity;
-    } else if (direction === "up" || direction === "down") {
-      return distanceToGridLineX < proximity;
-    }
-  
-    return false;
+    // calculate grid points
+    const gridPointX = col * cellSize;
+    const gridPointY = row * cellSize - playerOffset;
+
+    return {x: gridPointX, y: gridPointY};
   }
-  
-  // Method to adjust the player's position to align with the grid
-  adjustPositionForCorner(position, direction, proximity) {
-    // Calculate grid alignment
-    const gridX = Math.floor(position.x / cellSize) * cellSize;
-    const gridY = Math.floor(position.y / cellSize) * cellSize;
-  
-    // Determine if alignment correction is needed based on direction
-    if ((direction === "left" || direction === "right") && Math.abs(position.y - gridY) < proximity) {
-      // If moving horizontally, adjust vertically only if misaligned
-      if (position.y % cellSize !== 0) {
-        position.y = gridY;
-      }
-    } else if ((direction === "up" || direction === "down") && Math.abs(position.x - gridX) < proximity) {
-      // If moving vertically, adjust horizontally only if misaligned
-      if (position.x % cellSize !== 0) {
-        position.x = gridX;
-      }
-    }
-  
-    return position;
-  }  
 
   updatePosition() {
     const player = document.getElementById(`player-${this.playerId}`);
