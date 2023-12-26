@@ -1,38 +1,31 @@
-import { obstacles, cellSize, playerSize, powerUps } from "./config.js";
+import { obstacles, cellSize, playerSize, powerUps, playerOffset } from "./config.js";
 
 export class CollisionDetector {
-  static performWallCheck(playerPosition, direction, speed) {
-    const futurePosition = { ...playerPosition };
-    switch (direction) {
-      case "up":
-        futurePosition.y -= speed;
-        break;
-      case "down":
-        futurePosition.y += speed;
-        break;
-      case "left":
-        futurePosition.x -= speed;
-        break;
-      case "right":
-        futurePosition.x += speed;
-        break;
-    }
 
+  static performWallCheck(futurePosition) {
     const currentObstacles = obstacles;
 
+    // Calculate the player's center position
+    const playerCenterX = futurePosition.x + playerSize / 2;
+    const playerCenterY = futurePosition.y + playerOffset + playerSize / 2;
+
     for (let index = 0; index < currentObstacles.length; index++) {
-      const obstacle = currentObstacles[index];
-      // console.log(`Checking obstacle at index ${index}:`, obstacle);
-      if (
-        futurePosition.x < obstacle.x * cellSize + cellSize &&
-        futurePosition.x + playerSize > obstacle.x * cellSize &&
-        futurePosition.y < obstacle.y * cellSize + cellSize &&
-        futurePosition.y + playerSize > obstacle.y * cellSize
-      ) {
-        return true;
-      }
+        const obstacle = currentObstacles[index];
+
+        // Calculate the obstacle's center position
+        const obstacleCenterX = obstacle.x * cellSize + cellSize / 2;
+        const obstacleCenterY = obstacle.y * cellSize + cellSize / 2;
+
+        // Calculate distances between player center and obstacle center
+        const distanceX = Math.abs(playerCenterX - obstacleCenterX);
+        const distanceY = Math.abs(playerCenterY - obstacleCenterY);
+
+        // Check for collision based on proximity
+        if (distanceX < (playerSize / 2 + cellSize / 2) && distanceY < (playerSize / 2 + cellSize / 2)) {
+            return true; // Collision detected
+        }
     }
-    return false;
+    return false; // No collision detected
   }
 
   //check if player is on the div of a powerup
@@ -41,12 +34,13 @@ export class CollisionDetector {
 
     for (let index = 0; index < currentPowerUps.length; index++) {
       const powerUp = currentPowerUps[index];
-      if (
-        playerPosition.x + playerSize / 2 < powerUp.x * cellSize + cellSize &&
-        playerPosition.x + playerSize / 2 > powerUp.x * cellSize &&
-        playerPosition.y + playerSize / 2 < powerUp.y * cellSize + cellSize &&
-        playerPosition.y + playerSize / 2 > powerUp.y * cellSize
-      ) {
+
+      const posXAgainstPowerUpMax = playerPosition.x + playerSize / 2 < powerUp.x * cellSize + cellSize;
+      const posXAgainstPowerUpMin = playerPosition.x + playerSize / 2 > powerUp.x * cellSize;
+      const posYAgainstPowerUpMax = playerPosition.y + playerOffset + playerSize / 2 < powerUp.y * cellSize + cellSize;
+      const posYAgainstPowerUpMin = playerPosition.y + playerOffset + playerSize / 2 > powerUp.y * cellSize;
+
+      if (posXAgainstPowerUpMax && posXAgainstPowerUpMin && posYAgainstPowerUpMax && posYAgainstPowerUpMin) {
         return true;
       }
     }
@@ -72,7 +66,7 @@ export class CollisionDetector {
   }
 
   static isPlayerInFlames(playerPosition, affectedCells) {
-    const playerRow = Math.floor(playerPosition.y / cellSize);
+    const playerRow = Math.floor((playerPosition.y + playerOffset) / cellSize);
     const playerCol = Math.floor(playerPosition.x / cellSize);
 
     return affectedCells.some(

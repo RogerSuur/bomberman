@@ -17,8 +17,9 @@ export default class Multiplayer {
     }
   }
 
-  updatePlayerPosition(playerId, direction) {
-    this.players[playerId].move(direction);
+  updatePlayerPosition(playerId, position) {
+    this.players[playerId].currentPosition = position;
+    this.players[playerId].updatePosition();
   }
 
   updatePlacedBomb(playerId, position) {

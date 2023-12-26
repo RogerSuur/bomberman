@@ -1,8 +1,6 @@
-import { cellSize, obstacles } from "./config.js";
+import { cellSize, obstacles, playerOffset } from "./config.js";
 import fw from "../src/fwinstance.js";
 import { PowerUp } from "./powerup.js";
-import Multiplayer from "./multiplayer.js";
-import SocketManager from "./socketManager.js";
 import { CollisionDetector } from "./collision.js";
 
 export class Bomb {
@@ -49,7 +47,7 @@ export class Bomb {
   static bombTickingStage = ["bomb-2", "bomb-3", "bomb-2", "bomb-1"];
 
   static newBomb(playerPosition, flames, bombs, playerId, multiplayer) {
-    const row = Math.floor(playerPosition.y / cellSize);
+    const row = Math.floor((playerPosition.y + playerOffset) / cellSize);
     const col = Math.floor(playerPosition.x / cellSize);
 
     const bombId = `bomb-${Date.now()}`;

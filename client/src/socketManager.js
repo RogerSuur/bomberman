@@ -7,30 +7,22 @@ export default class SocketManager {
   }
 
   registerEventHandlers() {
-    this.socket.on("broadcastMovement", (data) => this.handlePlayerMoved(data));
+    this.socket.on("broadcastMovement", (data) => this.multiplayer.updatePlayerPosition(
+      data.playerId,
+      data.position,
+    ));
 
-    this.socket.on("broadcastBomb", (data) => this.handlePlacedBomb(data));
+    this.socket.on("broadcastBomb", (data) => this.multiplayer.updatePlacedBomb(
+      data.playerId, 
+      data.position,
+    ));
 
-    this.socket.on("broadcastPowerUp", (data) =>
-      this.handlePlayerPowerUp(data)
-    );
-  }
-
-  handlePlayerMoved(data) {
-    this.multiplayer.updatePlayerPosition(data.playerId, data.direction);
-  }
-
-  handlePlacedBomb(data) {
-    this.multiplayer.updatePlacedBomb(data.playerId, data.position);
-  }
-
-  handlePlayerPowerUp(data) {
-    this.multiplayer.updatePlayerPowerUp(
+    this.socket.on("broadcastPowerUp", (data) => this.multiplayer.updatePlayerPowerUp(
       data.playerId,
       data.powerUp,
       data.row,
       data.col
-    );
+    ));
   }
 
   // TODO: different socket events
