@@ -5,11 +5,12 @@ import Lobby from "./src/lobby/lobby.js";
 import ChatComponent from "./src/lobby/chat.js";
 
 import Player from "./src/player.js";
+import SocketManager from "./src/socketManager.js";
 import { gameGrid } from "./src/components/gameGrid.js";
 import Multiplayer from "./src/multiplayer.js";
 const socket = io(); // Establish WebSocket connection
-
 const multiplayer = new Multiplayer(socket);
+const socketManager = new SocketManager(socket, multiplayer);
 
 socket.on("user left", (msg) => {
   console.log(`A user ${msg} disconnected`);
