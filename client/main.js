@@ -68,7 +68,6 @@ socket.on("startGame", (newMap, players) => {
   const actualDOMNode = document.getElementById("app");
   patch(actualDOMNode); */
   fw.dom.mount(document.getElementById("app"), newApp);
-
   for (let i = 0; i < players.length; i++) {
     if (players[i].id === socket.id) {
       sessionStorage.setItem("localPlayerId", players[i].id);
@@ -81,7 +80,7 @@ socket.on("startGame", (newMap, players) => {
       players[i].bombsPlaced,
       players[i].lives,
       players[i].powerUps,
-      players[i].userName,
+      players[i].username,
       multiplayer
     );
     newPlayer.createNode();
