@@ -305,3 +305,13 @@ height: var(--player-size);
   width: var(--cell-size);
   height: var(--cell-size);
 }
+
+.game-over {
+  height: 2.5rem;
+  text-align: center;
+}
+
+.game-over h1 {
+  color: rgba(175, 47, 47, 0.85);
+  display: none;
+}

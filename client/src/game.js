@@ -19,9 +19,18 @@ export default class BombermanGame {
       children: [...this.gridNodes],
     });
     const hudNode = gameHud(playersData);
+    const gameOverNode = this.fw.dom.createVirtualNode("div", {
+      attrs: { id: "gameover", class: "game-over" },
+      children: [
+        this.fw.dom.createVirtualNode("h1", {
+          attrs: { id: "gameover-text", class: "game-over-text" },
+          children: ["GAME OVER!"],
+        }),
+      ],
+    });
     const gameLayout = this.fw.dom.createVirtualNode("div", {
       attrs: { id: "gameapp" },
-      children: [hudNode, gameGridNode],
+      children: [hudNode, gameGridNode, gameOverNode],
     });
     // console.log(gameLayout);
     return gameLayout;
