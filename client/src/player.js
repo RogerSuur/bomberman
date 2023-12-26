@@ -26,7 +26,7 @@ export default class Player {
     this.userName = userName;
     this.bombs = powerUps.bombs;
     this.flames = powerUps.flames;
-    this.speed = 3;
+    this.speed = powerUps.speed;
     this.bombsPlaced = bombsPlaced;
     this.counter = classCounter;
     this.multiplayer = multiplayer;
@@ -237,6 +237,8 @@ export default class Player {
 
   placeBomb() {
     if (!this.isAlive) return;
+
+    if (this.bombsPlaced >= this.bombs) return;
 
     // Calculate the center of the player's sprite
     const playerCenterX = this.currentPosition.x + playerSize / 2;
