@@ -289,17 +289,22 @@ export default class Player {
     PowerUp.removePowerUp(row, col);
   }
 
-  handlePlayerHit(playerId) {
+  handlePlayerHit(player) {
     this.lives -= 1;
+    
+    const playerLives = document.getElementById(`player-lives-${player.playerId}`);
+    playerLives.classList.replace(`lives-${this.lives + 1}`, `lives-${this.lives}`);
+
     if (this.lives <= 0) {
-      console.log("game over for player", playerId);
-      this.handlePlayerDeath(playerId);
+      console.log("game over for player", player.userName);
+      this.handlePlayerDeath(player.playerId);
     } else {
-      this.startingPosition(playerId, this.spawnPosition);
+      this.startingPosition(player.playerId, this.spawnPosition);
       this.currentPosition = { ...this.spawnPosition };
       //TODO: Display lives on the game-HUD
     }
     //TODO:make player dies animation
+    console.log("player", player.userName, "lives", this.lives);
   }
 
   handlePlayerDeath(playerId) {

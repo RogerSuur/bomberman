@@ -15,7 +15,6 @@ export default class Multiplayer {
     if (this.players[playerId]) {
       delete this.players[playerId];
     }
-    console.log(this.players);
   }
 
   updatePlayerPosition(playerId, position) {
@@ -46,7 +45,7 @@ export default class Multiplayer {
         if (
           CollisionDetector.isPlayerInFlames(playerPosition, bomb.affectedCells)
         ) {
-          player.handlePlayerHit(playerId);
+          player.handlePlayerHit(player);
         }
       });
     });

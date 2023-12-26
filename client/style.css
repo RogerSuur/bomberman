@@ -4,17 +4,17 @@
 }
 
 body {
-    color: blue;
+  color: blue;
 }
 
 .todoapp h1 {
-    color: rgba(175, 47, 47, 0.15);
-    font-size: 100px;
-    top: -155px;
+  color: rgba(175, 47, 47, 0.15);
+  font-size: 100px;
+  top: -155px;
 }
 
 .info {
-    color: #bfbfbf;
+  color: #bfbfbf;
 }
 
 #page-container {
@@ -26,7 +26,7 @@ body {
 #content-container {
   min-height: 100vh;
   min-width: 100vw;
-  padding-bottom: 4rem;    /* Footer height */
+  padding-bottom: 4rem; /* Footer height */
 }
 
 #footer {
@@ -34,8 +34,8 @@ body {
   bottom: 0;
   width: 100%;
   color: #777;
-  height: 2.5rem;   
-           /* Footer height */
+  height: 2.5rem;
+  /* Footer height */
 }
 
 #messages{
@@ -57,7 +57,7 @@ body {
   width: 100vw;
 }
 .grid-row {
-display: flex;
+  display: flex;
 }
 .container {
   /* width: 620px;
@@ -72,45 +72,66 @@ display: flex;
   position: relative;
 }
 
-
 /* <---------------GridMap images-----------------------> */
 .main-wall {
-    background-image: url("./public/images/map/main-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/main-wall.png");
+  background-size: cover;
 }
 .grey-wall {
-    background-image: url("./public/images/map/grey-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/grey-wall.png");
+  background-size: cover;
 }
 .grass {
-    background-image: url("./public/images/map/grass.png");
-    background-size: cover;
+  background-image: url("./public/images/map/grass.png");
+  background-size: cover;
 }
 .soft-wall {
-    background-image: url("./public/images/map/soft-wall.png");
-    background-size: cover;
+  background-image: url("./public/images/map/soft-wall.png");
+  background-size: cover;
+}
+
+.hud-2-pl, .hud-3-pl, .hud-4-pl {
+  display: flex;
+  background-size: contain;
+  height: 80px;
 }
 
 .hud-2-pl {
   background-image: url("./public/images/map/hud-2-pl.png");
-  background-size:contain;
-  height:80px;
 }
 
 .hud-3-pl {
   background-image: url("./public/images/map/hud-3-pl.png");
-  background-size: contain;  
-  height:80px;
 }
+
 .hud-4-pl {
   background-image: url("./public/images/map/hud-4-pl.png");
-  background-size: contain;  
-  height: 80px;
 }
 
+.lives-0, .lives-1, .lives-2, .lives-3 {
+  background-size: contain;
+  height: 15px;
+  width: 15px;
+  position: absolute;
+}
+
+.lives-0 {
+  background-image: url("./public/images/map/0.png");
+}
+
+.lives-1 {
+  background-image: url("./public/images/map/1.png");
+}
+
+.lives-2 {
+  background-image: url("./public/images/map/2.png");
+}
+
+.lives-3 {
+  background-image: url("./public/images/map/3.png");
+}
 
 /* <---------------PowerUp images-----------------------> */
-
 
 .power-up-bombs {
   background-image: url("./public/images/power-ups/bombs-power-up.png");
@@ -118,15 +139,14 @@ display: flex;
 }
 
 .power-up-flames {
-background-image: url("./public/images/power-ups/flames-power-up.png");
-background-size: cover;
+  background-image: url("./public/images/power-ups/flames-power-up.png");
+  background-size: cover;
 }
 
 .power-up-speed {
-background-image: url("./public/images/power-ups/speed-power-up.png");
-background-size: cover;
+  background-image: url("./public/images/power-ups/speed-power-up.png");
+  background-size: cover;
 }
-
 
 /* <---------------Player 1 images-----------------------> */
 

@@ -23,14 +23,16 @@ socket.on("startGame", (newMap, players) => {
   const gridVirtualNodes = gameGrid(newMap);
   const gameInstance = new BombermanGame(fw, socket, {});
   const gameLayout = gameInstance.generateLayout(
-    players.length,
+    players,
     gridVirtualNodes
   );
   const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
+  /*
+  console.log(newApp);
   const patch = fw.dom.diff(appNode, newApp);
   const actualDOMNode = document.getElementById("app");
-  patch(actualDOMNode);
-
+  patch(actualDOMNode); */
+  fw.dom.mount(document.getElementById("app"), newApp);
   for (let i = 0; i < players.length; i++) {
     if (players[i].id === socket.id) {
       sessionStorage.setItem("localPlayerId", players[i].id);
@@ -43,7 +45,7 @@ socket.on("startGame", (newMap, players) => {
       players[i].bombsPlaced,
       players[i].lives,
       players[i].powerUps,
-      players[i].userName,
+      players[i].username,
       multiplayer
     );
     newPlayer.createNode();
