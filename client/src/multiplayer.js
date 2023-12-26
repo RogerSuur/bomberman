@@ -15,6 +15,10 @@ export default class Multiplayer {
     if (this.players[playerId]) {
       delete this.players[playerId];
     }
+
+    if (Object.entries(this.players).length < 2) {
+      Object.values(this.players)[0].win();
+    }
   }
 
   updatePlayerPosition(playerId, position) {
@@ -33,6 +37,10 @@ export default class Multiplayer {
 
   updatePlayerBombsPlaced(playerId) {
     this.players[playerId].bombsPlaced--;
+  }
+
+  resetPlayerPowerUps(playerId) {
+    this.players[playerId].resetPowerUps();
   }
 
   checkPlayersInFlames(bombsData) {

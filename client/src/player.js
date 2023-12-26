@@ -273,6 +273,12 @@ export default class Player {
     PowerUp.removePowerUp(row, col);
   }
 
+  resetPowerUps() {
+    this.speed = 3;
+    this.flames = 1;
+    this.bombs = 1;
+  }
+
   handlePlayerHit(player) {
     this.lives -= 1;
     
@@ -285,6 +291,7 @@ export default class Player {
     } else {
       this.startingPosition(player.playerId, this.spawnPosition);
       this.currentPosition = { ...this.spawnPosition };
+      this.resetPowerUps();
       //TODO: Display lives on the game-HUD
     }
     //TODO:make player dies animation
@@ -305,5 +312,13 @@ export default class Player {
     }
 
     this.multiplayer.removePlayer(playerId);
+  }
+
+  win() {
+    if (this.isLocalPlayer()) {
+      const winText = document.getElementById("gameover-text");
+      winText.innerHTML = "YOU WIN!";
+      winText.style.display = "block";
+    }
   }
 }

@@ -126,19 +126,15 @@ const Websocket = (io) => {
       socket.on("powerUp", (data) => {
         socket.broadcast.emit("broadcastPowerUp", data);
       });
-
-      socket.on("disconnecting", () => {
-        console.log(`A user ${socket.data.username} disconnected`);
-        socket.broadcast.emit("user left", socket.data.username);
-      });
-
+      
       socket.on("disconnect", async () => {
         connections.length < 3 &&
           timeoutId &&
           socket.emit("countdown stopped") &&
           clearTimeout(timeoutId);
         // console.log(socket.data);
-        console.log("A user disconnected");
+        console.log(`A user with ID ${socket.data.id} disconnected`);
+        socket.broadcast.emit("user left", socket.data.id);
         var conList = await io.fetchSockets();
         var userList = GetUserlist(conList);
         io.to("lobby").emit("userlist", userList);
