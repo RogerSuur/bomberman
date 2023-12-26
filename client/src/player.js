@@ -241,7 +241,6 @@ export default class Player {
 
   handlePlayerHit(player) {
     this.lives -= 1;
-    console.log("player", player);
     
     const playerLives = document.getElementById(`player-lives-${player.playerId}`);
     playerLives.classList.replace(`lives-${this.lives + 1}`, `lives-${this.lives}`);
