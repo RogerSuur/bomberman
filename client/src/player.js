@@ -114,7 +114,7 @@ export default class Player {
     if (!this.isAlive) return;
   
     let newPosition = { ...this.currentPosition };
-    const cornerProximity = 9; // Pixels within which corner adjustment should happen
+    const cornerProximity = 3; // Pixels within which corner adjustment should happen
 
     switch (direction) {
       case "up":
@@ -135,10 +135,9 @@ export default class Player {
     }
 
     // Check if near a corner and adjust position accordingly
-    if (this.isNearCorner(newPosition, direction, cornerProximity)) {
-      // console.log("near corner");
-      newPosition = this.adjustPositionForCorner(newPosition, direction, cornerProximity);
-    }
+    console.log("near corner", newPosition);
+    newPosition = this.adjustPositionForCorner(newPosition, direction, cornerProximity);
+    console.log("adjusted position", newPosition);
   
     // Perform collision check with the new position
     if (!CollisionDetector.performWallCheck(newPosition)) {
@@ -168,10 +167,12 @@ export default class Player {
           position: this.currentPosition,
         });
       }
-    } else {
+    }/*  else {
       // If movement is stopped near a grid point, adjust to align with the grid
+      console.log("current position", this.currentPosition)
       this.currentPosition = this.alignWithGrid(this.currentPosition);
-    }
+      console.log("aligned position", this.currentPosition)
+    } */
 
     requestAnimationFrame(() => this.updatePosition());
   }
@@ -182,51 +183,39 @@ export default class Player {
     position.y = Math.round((position.y + playerOffset) / cellSize) * cellSize - playerOffset;
     return position;
   } 
-
-  isNearCorner(position, direction, proximity) {
-    // Calculate the player's center position
-    const playerCenterX = position.x + playerSize / 2;
-    const playerCenterY = position.y + playerOffset + playerSize / 2;
-  
-    // Find the nearest grid lines in both X and Y
-    const nearestGridLineX = Math.round(playerCenterX / cellSize) * cellSize;
-    const nearestGridLineY = Math.round(playerCenterY / cellSize) * cellSize;
-  
-    // Calculate the distance from the player's center to the nearest grid lines
-    const distanceToGridLineX = Math.abs(playerCenterX - nearestGridLineX);
-    const distanceToGridLineY = Math.abs(playerCenterY - nearestGridLineY);
-  
-    // Check if the player is within proximity to a corner in the relevant axis
-    if (direction === "left" || direction === "right") {
-      return distanceToGridLineY < proximity;
-    } else if (direction === "up" || direction === "down") {
-      return distanceToGridLineX < proximity;
-    }
-  
-    return false;
-  }
   
   // Method to adjust the player's position to align with the grid
-  adjustPositionForCorner(position, direction, proximity) {
-    // Calculate grid alignment
-    const gridX = Math.floor(position.x / cellSize) * cellSize;
-    const gridY = Math.floor(position.y / cellSize) * cellSize;
-  
-    // Determine if alignment correction is needed based on direction
-    if ((direction === "left" || direction === "right") && Math.abs(position.y - gridY) < proximity) {
-      // If moving horizontally, adjust vertically only if misaligned
-      if (position.y % cellSize !== 0) {
-        position.y = gridY;
-      }
-    } else if ((direction === "up" || direction === "down") && Math.abs(position.x - gridX) < proximity) {
-      // If moving vertically, adjust horizontally only if misaligned
-      if (position.x % cellSize !== 0) {
-        position.x = gridX;
-      }
+adjustPositionForCorner(position, direction, proximity) {
+  // Calculate the player's center position
+  const playerCenterX = position.x + playerSize / 2;
+  const playerCenterY = position.y + playerOffset + playerSize / 2;
+
+  // Calculate the center of the current cell
+  const gridCenterX = Math.round(playerCenterX / cellSize) * cellSize;
+  const gridCenterY = Math.round(playerCenterY / cellSize) * cellSize;
+
+  // Determine if alignment correction is needed based on direction
+  if ((direction === "left" || direction === "right") && Math.abs(playerCenterX - gridCenterX) < proximity) {
+    let potentialX = gridCenterX - playerSize / 2;
+    if (direction === "right" && playerCenterX < potentialX) {
+      position.x = potentialX + playerSize / 2;
     }
-  
-    return position;
-  }  
+    if (direction === "left" && playerCenterX > potentialX) {
+      position.x = potentialX - playerSize / 2;
+    }
+  } else if ((direction === "up" || direction === "down") && Math.abs(playerCenterY - gridCenterY) < proximity) {
+    let potentialY = gridCenterY - (playerSize / 2 + playerOffset);
+    if (direction === "down" && playerCenterY < potentialY) {
+      position.y = potentialY + playerSize / 2 - playerOffset;
+    }
+    if (direction === "up" && playerCenterY > potentialY) {
+      position.y = potentialY - playerSize / 2 + playerOffset;
+    }
+  }
+
+  return position;
+}
+
 
   updatePosition() {
     const player = document.getElementById(`player-${this.playerId}`);
