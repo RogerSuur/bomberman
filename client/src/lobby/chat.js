@@ -3,7 +3,6 @@ import fw from "../fwinstance.js";
 export default class ChatComponent {
   constructor(socket) {
     this.socket = socket;
-    this.chatElement = this.createChatElement();
     this.username = "";
     this.attachEventListeners();
   }
@@ -70,8 +69,4 @@ export default class ChatComponent {
       messages.scrollTop = messages.scrollHeight;
     });
   }
-
-    getChatElement() {
-        return this.chatElement;
-    }
 }

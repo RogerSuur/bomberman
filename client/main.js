@@ -76,7 +76,7 @@ socket.on("userlist", (data) => {
   const lobby = lobbyInstance.content;
   const newApp = App({ id: "app", class: "gameapp" }, [
     lobby,
-    chatComponent.getChatElement(),
+    chatComponent.createChatElement(),
   ]);
   const patch = fw.dom.diff(appNode, newApp);
   const actualDOMNode = document.getElementById("app");
