@@ -13,6 +13,10 @@ export default class Multiplayer {
 
   removePlayer(playerId) {
     if (this.players[playerId]) {
+      const player = document.getElementById(`player-${playerId}`);
+      if (player) {
+        player.parentNode.removeChild(player);
+      }
       delete this.players[playerId];
     }
 
@@ -57,5 +61,10 @@ export default class Multiplayer {
         }
       });
     });
+  }
+
+  updateUserLeft(data) {
+    this.removePlayer(data);
+    //TODO: Remove disconnected player from the HUD
   }
 }

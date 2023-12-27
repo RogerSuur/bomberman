@@ -12,9 +12,9 @@ const socket = io(); // Establish WebSocket connection
 const multiplayer = new Multiplayer(socket);
 const socketManager = new SocketManager(socket, multiplayer);
 
-socket.on("user left", (msg) => {
-  console.log(`A user ${msg} disconnected`);
-});
+// socket.on("user left", (msg) => {
+//   console.log(`A user ${msg} disconnected`);
+// });
 
 /* socket.on("joined", (msg) => {
   console.log(`A user ${msg} connected`);
@@ -70,7 +70,7 @@ socket.on("username taken", () => {
 });
 
 socket.on("userlist", (data) => {
-  //console.log("userlist", data);
+  console.log("userlist", data);
   const name = GetMyUserName(data.users, socket.id);
   chatComponent.addPlayer(name);
   lobbyInstance.addPlayer(data.userNameList, name);
