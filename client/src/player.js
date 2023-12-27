@@ -2,7 +2,12 @@ import fw from "../src/fwinstance.js";
 import { CollisionDetector } from "./collision.js";
 import { Bomb } from "./bomb.js";
 import { PowerUp } from "./powerup.js";
-import { cellSize, playerSize, playerOffset, cornerProximity } from "./config.js";
+import {
+  cellSize,
+  playerSize,
+  playerOffset,
+  cornerProximity,
+} from "./config.js";
 
 export default class Player {
   constructor(
@@ -70,7 +75,7 @@ export default class Player {
       if (event.key in this.keyStates) {
         this.keyStates[event.key] = true;
       } else if (event.key === " ") {
-        event.preventDefault();  // Prevent default action for space key
+        event.preventDefault(); // Prevent default action for space key
         this.placeBomb(this.currentPosition);
       }
     });
@@ -89,7 +94,8 @@ export default class Player {
   }
 
   update(timestamp) {
-    if (timestamp - this.lastUpdateTime > 1000 / 60) { // 60 times per second
+    if (timestamp - this.lastUpdateTime > 1000 / 60) {
+      // 60 times per second
       this.moveBasedOnKeyStates();
       this.lastUpdateTime = timestamp;
     }
@@ -97,13 +103,13 @@ export default class Player {
     this.socket.emit("stateUpdate", {
       playerId: this.playerId,
       position: this.currentPosition,
-    });    
+    });
     requestAnimationFrame(this.update.bind(this));
   }
 
   moveBasedOnKeyStates() {
     if (!this.isAlive) return;
-  
+
     if (this.keyStates.ArrowUp) this.move("up");
     if (this.keyStates.ArrowDown) this.move("down");
     if (this.keyStates.ArrowLeft) this.move("left");
@@ -125,7 +131,7 @@ export default class Player {
 
     requestAnimationFrame(() => this.updatePosition());
   }
- 
+
   caclulateNewPosition(direction) {
     let newPosition = { ...this.currentPosition };
     switch (direction) {
@@ -142,7 +148,7 @@ export default class Player {
         newPosition.x += this.speed;
         break;
       default:
-        console.log("We're in 2 dimensions, dude!")
+        console.log("We're in 2 dimensions, dude!");
         return this.currentPosition; // Invalid direction
     }
     return newPosition;
@@ -152,31 +158,37 @@ export default class Player {
     // if collision is detected try the same move while aligning to grid on the other axis
     let gridPosition = this.gridPosition(newPosition);
 
-    if ((Math.abs(this.currentPosition.x - gridPosition.x) < cornerProximity) &&
-        (direction === "up" || direction === "down")) {
-          let tryPosition = { ...newPosition };
-          tryPosition.x = gridPosition.x;
-          if (!CollisionDetector.performWallCheck(tryPosition)) {
-            this.currentPosition = tryPosition;
-            this.checkForPowerUpsAndEmitSocket();
-          }
-        }
-    
-    if ((Math.abs(this.currentPosition.y - gridPosition.y) < cornerProximity) &&
-        (direction === "left" || direction === "right")) {
-        let tryPosition = { ...newPosition };
-        tryPosition.y = gridPosition.y;
-        if (!CollisionDetector.performWallCheck(tryPosition)) {
-          this.currentPosition = tryPosition;
-          this.checkForPowerUpsAndEmitSocket();
-        }
+    if (
+      Math.abs(this.currentPosition.x - gridPosition.x) < cornerProximity &&
+      (direction === "up" || direction === "down")
+    ) {
+      let tryPosition = { ...newPosition };
+      tryPosition.x = gridPosition.x;
+      if (!CollisionDetector.performWallCheck(tryPosition)) {
+        this.currentPosition = tryPosition;
+        this.checkForPowerUpsAndEmitSocket();
       }
+    }
+
+    if (
+      Math.abs(this.currentPosition.y - gridPosition.y) < cornerProximity &&
+      (direction === "left" || direction === "right")
+    ) {
+      let tryPosition = { ...newPosition };
+      tryPosition.y = gridPosition.y;
+      if (!CollisionDetector.performWallCheck(tryPosition)) {
+        this.currentPosition = tryPosition;
+        this.checkForPowerUpsAndEmitSocket();
+      }
+    }
   }
-  
+
   checkForPowerUpsAndEmitSocket() {
     if (this.isLocalPlayer()) {
       if (CollisionDetector.performPowerUpCheck(this.currentPosition)) {
-        const row = Math.floor((this.currentPosition.y + playerOffset) / cellSize);
+        const row = Math.floor(
+          (this.currentPosition.y + playerOffset) / cellSize
+        );
         const col = Math.floor(this.currentPosition.x / cellSize);
         let powerUpEffect = PowerUp.getPowerUp(row, col);
 
@@ -207,7 +219,7 @@ export default class Player {
     const gridPointX = col * cellSize;
     const gridPointY = row * cellSize - playerOffset;
 
-    return {x: gridPointX, y: gridPointY};
+    return { x: gridPointX, y: gridPointY };
   }
 
   updatePosition() {
@@ -224,7 +236,8 @@ export default class Player {
 
     // Calculate the center of the player's sprite
     const playerCenterX = this.currentPosition.x + playerSize / 2;
-    const playerCenterY = this.currentPosition.y + playerOffset + playerSize / 2;
+    const playerCenterY =
+      this.currentPosition.y + playerOffset + playerSize / 2;
 
     // Determine the grid cell based on the center of the sprite
     const col = Math.floor(playerCenterX / cellSize);
@@ -281,9 +294,14 @@ export default class Player {
 
   handlePlayerHit(player) {
     this.lives -= 1;
-    
-    const playerLives = document.getElementById(`player-lives-${player.playerId}`);
-    playerLives.classList.replace(`lives-${this.lives + 1}`, `lives-${this.lives}`);
+
+    const playerLives = document.getElementById(
+      `player-lives-${player.playerId}`
+    );
+    playerLives.classList.replace(
+      `lives-${this.lives + 1}`,
+      `lives-${this.lives}`
+    );
 
     if (this.lives <= 0) {
       console.log("game over for player", player.userName);
@@ -305,7 +323,7 @@ export default class Player {
     }
 
     this.isAlive = false;
-    
+
     if (this.isLocalPlayer()) {
       const gameOver = document.getElementById("gameover-text");
       gameOver.style.display = "block";

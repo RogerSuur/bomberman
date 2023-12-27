@@ -23,16 +23,9 @@ socket.on("user left", (msg) => {
 socket.on("startGame", (newMap, players) => {
   const gridVirtualNodes = gameGrid(newMap);
   const gameInstance = new BombermanGame(fw, socket, {});
-  const gameLayout = gameInstance.generateLayout(
-    players,
-    gridVirtualNodes
-  );
+  const gameLayout = gameInstance.generateLayout(players, gridVirtualNodes);
   const newApp = App({ id: "app", class: "gameapp" }, [gameLayout]);
-  /*
-  console.log(newApp);
-  const patch = fw.dom.diff(appNode, newApp);
-  const actualDOMNode = document.getElementById("app");
-  patch(actualDOMNode); */
+
   fw.dom.mount(document.getElementById("app"), newApp);
   for (let i = 0; i < players.length; i++) {
     if (players[i].id === socket.id) {
@@ -77,31 +70,35 @@ socket.on("username taken", () => {
 });
 
 socket.on("userlist", (data) => {
-    //console.log("userlist", data);
-    const name = GetMyUserName(data.users, socket.id);
-    chatComponent.addPlayer(name);
-    lobbyInstance.addPlayer(data.userNameList, name);
-    const lobby = lobbyInstance.content;
-    const newApp = App({ id: "app", class: "gameapp" }, [lobby, chatComponent.getChatElement()]);
-    const patch = fw.dom.diff(appNode, newApp);
-    const actualDOMNode = document.getElementById("app");
-    patch(actualDOMNode);
-    lobbyInstance.update(0);
-
+  //console.log("userlist", data);
+  const name = GetMyUserName(data.users, socket.id);
+  chatComponent.addPlayer(name);
+  lobbyInstance.addPlayer(data.userNameList, name);
+  const lobby = lobbyInstance.content;
+  const newApp = App({ id: "app", class: "gameapp" }, [
+    lobby,
+    chatComponent.getChatElement(),
+  ]);
+  const patch = fw.dom.diff(appNode, newApp);
+  const actualDOMNode = document.getElementById("app");
+  patch(actualDOMNode);
+  lobbyInstance.update(0);
 });
 
-socket.on("tick", (data) => {
-    lobbyInstance.update(data.seconds);
-  });
-  
+socket.on("tickMenu", (data) => {
+  lobbyInstance.update(data.seconds, "");
+});
+
+socket.on("tickGame", (data) => {
+  lobbyInstance.update(data, "game");
+});
 
 const GetMyUserName = (userList, id) => {
-    const user = userList.find(user => user.id === id);
+  const user = userList.find((user) => user.id === id);
 
-    if (user) {
-        return user.username;
-    }
+  if (user) {
+    return user.username;
+  }
 
-    return "";
+  return "";
 };
-

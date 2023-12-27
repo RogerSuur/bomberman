@@ -2,29 +2,31 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
-const LOBBY_COUNTDOWN_SECONDS = 5;
-const PRE_GAME_WAITING_MILLISECONDS = 1500;
+const LOBBY_COUNTDOWN_SECONDS = 20;
+const PRE_GAME_WAITING_SECONDS = 10;
 
 const GetUserlist = (sockets) => {
   let userlist = [];
   for (const socket of sockets) {
     if (socket.data.username != undefined) userlist.push(socket.data.username);
   }
-  console.log("userlist updated", userlist)
+  //console.log("userlist updated", userlist);
   return userlist;
 };
 const GetUsers = (sockets) => {
   let users = [];
   for (const socket of sockets) {
-    if (socket.data != undefined)
-      users.push(socket.data);
+    if (socket.data != undefined) users.push(socket.data);
   }
   return users;
 };
 
+const TickMenuCountDown = (io, data) => {
+  io.to("lobby").emit("tickMenu", data);
+};
 
-const Tick = (io, data) => {
-  io.to("lobby").emit("tick", data);
+const TickGameCountDown = (io, data) => {
+  io.to("lobby").emit("tickGame", data);
 };
 
 const MAX_CONNECTIONS = 4;
@@ -32,7 +34,7 @@ const MAX_CONNECTIONS = 4;
 let timeoutId;
 
 const menuCountdown = async (io) => {
-  io.emit("menu countdown");
+  //io.emit("menu countdown");
   let secondsLeft = LOBBY_COUNTDOWN_SECONDS;
 
   const menuCountdownTimer = setInterval(async () => {
@@ -49,7 +51,12 @@ const menuCountdown = async (io) => {
         users: users,
         seconds: secondsLeft,
       };
-       Tick(io, data);
+      console.log(`Waiting new players for ${secondsLeft} seconds`);
+      if (userNameList.length === 4) {
+        clearInterval(menuCountdownTimer);
+        gameCountdown(io);
+      }
+      TickMenuCountDown(io, data);
       secondsLeft--;
     }
   }, 1000);
@@ -57,16 +64,28 @@ const menuCountdown = async (io) => {
 };
 
 const gameCountdown = (io) => {
-  io.emit("game countdown");
-  const gameStartTimer = setTimeout(() => {
-    GameStart(io);
-  }, PRE_GAME_WAITING_MILLISECONDS);
+  console.log("Game countdown started");
+  let secondsLeft = PRE_GAME_WAITING_SECONDS;
+  const gameStartTimer = setInterval(() => {
+    if (secondsLeft <= 0) {
+      clearInterval(gameStartTimer);
+      GameStart(io);
+    } else {
+      console.log(`Game starts in ${secondsLeft} seconds`);
+      TickGameCountDown(io, secondsLeft);
+      secondsLeft--;
+    }
+  }, 1000);
+
   clearTimeout(timeoutId);
   timeoutId = gameStartTimer;
 };
 
-const connectionsCount = async (io, conns) =>
-  conns === 4 ? gameCountdown(io) : conns === 2 && (await menuCountdown(io));
+const connectionsCount = async (io, conns) => {
+  console.log("conns", conns);
+  // conns === 4 ? gameCountdown(io) : conns === 2 && (await menuCountdown(io));
+  conns === 2 && (await menuCountdown(io));
+};
 
 const Websocket = (io) => {
   io.on("connection", async (socket) => {
@@ -102,13 +121,11 @@ const Websocket = (io) => {
 
           let data = {
             users: GetUsers(conList),
-            userNameList: userList
-          }
-
+            userNameList: userList,
+          };
 
           io.to("lobby").emit("userlist", data);
         }
-
       });
 
       /* socket.on("stateUpdate", () => {
@@ -126,7 +143,7 @@ const Websocket = (io) => {
       socket.on("powerUp", (data) => {
         socket.broadcast.emit("broadcastPowerUp", data);
       });
-      
+
       socket.on("disconnect", async () => {
         connections.length < 3 &&
           timeoutId &&
@@ -149,7 +166,6 @@ const Websocket = (io) => {
 
 //creates tilemap with randomized elements and player characters
 const GameStart = async (io) => {
-  //TODO: wants number of players
   const connections = await io.fetchSockets();
   const players = [];
   const positions = [
@@ -160,14 +176,17 @@ const GameStart = async (io) => {
   ];
 
   connections.forEach((conn, index) => {
-    console.log("PLAYER:", conn.data);
-    const player = new Player(
-      conn.data.id,
-      conn.data.username,
-      positions[index]
-    );
-    players.push(player);
+    if (conn.data.username) {
+      console.log("PLAYER:", conn.data);
+      const player = new Player(
+        conn.data.id,
+        conn.data.username,
+        positions[index]
+      );
+      players.push(player);
+    }
   });
+
   const randomizedMap = populateMapWithWallsAndPowerUps(
     templateMap,
     players.length
