@@ -70,7 +70,6 @@ socket.on("username taken", () => {
 });
 
 socket.on("userlist", (data) => {
-  console.log("userlist", data);
   const name = GetMyUserName(data.users, socket.id);
   chatComponent.addPlayer(name);
   lobbyInstance.addPlayer(data.userNameList, name);
@@ -91,6 +90,10 @@ socket.on("tickMenu", (data) => {
 
 socket.on("tickGame", (data) => {
   lobbyInstance.update(data, "game");
+});
+
+socket.on("resetCountDown", (data) => {
+  lobbyInstance.update(data, "");
 });
 
 const GetMyUserName = (userList, id) => {

@@ -158,6 +158,7 @@ const Websocket = (io) => {
             userNameList: userList,
           };
           io.to("lobby").emit("userlist", data);
+          io.to("lobby").emit("resetCountDown", -1);
         } else {
           socket.broadcast.emit("user left", socket.data.id);
         }
