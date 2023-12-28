@@ -81,7 +81,7 @@ socket.on("userlist", (data) => {
   const patch = fw.dom.diff(appNode, newApp);
   const actualDOMNode = document.getElementById("app");
   patch(actualDOMNode);
-  lobbyInstance.update(0);
+  lobbyInstance.update(0, "");
 });
 
 socket.on("tickMenu", (data) => {
@@ -94,6 +94,10 @@ socket.on("tickGame", (data) => {
 
 socket.on("resetCountDown", (data) => {
   lobbyInstance.update(data, "");
+});
+
+socket.on("gameInProgress", () => {
+  alert("Game is already in progress. Please try again later.");
 });
 
 const GetMyUserName = (userList, id) => {

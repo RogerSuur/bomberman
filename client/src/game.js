@@ -26,6 +26,12 @@ export default class BombermanGame {
           attrs: { id: "gameover-text", class: "game-over-text" },
           children: ["GAME OVER!"],
         }),
+        this.fw.dom.createVirtualNode("button", {
+          attrs: { id: "restart-btn", class: "restart-btn" },
+          children: ["Restart game"],
+          listeners: { click: this.restartGame.bind(this) },
+          props: { disabled: true },
+        }),
       ],
     });
     const gameLayout = this.fw.dom.createVirtualNode("div", {
@@ -34,6 +40,17 @@ export default class BombermanGame {
     });
     // console.log(gameLayout);
     return gameLayout;
+  }
+
+  restartGame() {
+    console.log("restarting game");
+    // const messageInput = document.getElementById("messageInput");
+    // const message = messageInput.value.trim();
+    // if (message) {
+    //   this.socket.emit("chatMessage", { username: this.username, message });
+    //   messageInput.value = "";
+    // }
+    this.socket.emit("gameReset", {});
   }
 
   render() {

@@ -12,6 +12,7 @@ export default class Multiplayer {
   }
 
   removePlayer(playerId) {
+    console.log("removing player:", playerId);
     if (this.players[playerId]) {
       const player = document.getElementById(`player-${playerId}`);
       if (player) {
@@ -20,8 +21,12 @@ export default class Multiplayer {
       delete this.players[playerId];
     }
 
-    if (Object.entries(this.players).length < 2) {
-      Object.values(this.players)[0].win();
+    // if (Object.entries(this.players).length < 2) {
+    //   Object.values(this.players)[0].win();
+    // }
+    const remainingPlayers = Object.values(this.players);
+    if (remainingPlayers.length === 1) {
+      remainingPlayers[0].win();
     }
   }
 

@@ -24,7 +24,7 @@ export default class SocketManager {
       )
     );
 
-    this.socket.on("user left", (data) =>
+    this.socket.on("userDisconnected", (data) =>
       this.multiplayer.updateUserLeft(data)
     );
   }

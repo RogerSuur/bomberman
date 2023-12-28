@@ -336,8 +336,10 @@ export default class Player {
     if (this.isLocalPlayer()) {
       this.isAlive = false;
       const winText = document.getElementById("gameover-text");
+      const restartBtn = document.getElementById("restart-btn");
       winText.innerHTML = "YOU WIN!";
       winText.style.display = "block";
+      restartBtn.style.display = "block";
     }
   }
 }

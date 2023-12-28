@@ -4,6 +4,16 @@ import Player from "../game/player.js";
 
 const LOBBY_COUNTDOWN_SECONDS = 20;
 const PRE_GAME_WAITING_SECONDS = 10;
+
+const GameStages = {
+  WAITING_FOR_PLAYERS: "waitingForPlayers",
+  MENU_COUNTDOWN: "menuCountdown",
+  GAME_COUNTDOWN: "gameCountdown",
+  GAME_ONGOING: "gameOngoing",
+  GAME_FINISHED: "gameFinished",
+};
+
+let currentGameStage = GameStages.WAITING_FOR_PLAYERS;
 let gameStarted = false;
 
 const GetUserlist = (sockets) => {
@@ -34,10 +44,11 @@ const MAX_CONNECTIONS = 4;
 let timeoutId;
 
 const menuCountdown = async (io) => {
+  currentGameStage = GameStages.MENU_COUNTDOWN;
   let secondsLeft = LOBBY_COUNTDOWN_SECONDS;
 
   const menuCountdownTimer = setInterval(async () => {
-    if (secondsLeft <= 0) {
+    if (secondsLeft <= 1) {
       clearInterval(menuCountdownTimer);
       gameCountdown(io);
     } else {
@@ -64,9 +75,11 @@ const menuCountdown = async (io) => {
 
 const gameCountdown = (io) => {
   console.log("Game countdown started");
+  currentGameStage = GameStages.GAME_COUNTDOWN;
+  console.log(currentGameStage);
   let secondsLeft = PRE_GAME_WAITING_SECONDS;
   const gameStartTimer = setInterval(() => {
-    if (secondsLeft <= 0) {
+    if (secondsLeft <= 1) {
       clearInterval(gameStartTimer);
       GameStart(io);
     } else {
@@ -87,6 +100,15 @@ const connectionsCount = async (io, conns) => {
 
 const Websocket = (io) => {
   io.on("connection", async (socket) => {
+    if (
+      currentGameStage === GameStages.GAME_ONGOING ||
+      currentGameStage === GameStages.GAME_COUNTDOWN
+    ) {
+      console.log("Connection denied: Game is already in progress");
+      socket.emit("gameInProgress");
+      socket.disconnect(true);
+      return;
+    }
     const connections = await io.fetchSockets();
     const roomUsers = await io.in("lobby").allSockets();
 
@@ -131,8 +153,23 @@ const Websocket = (io) => {
       }); */
 
       //TODO: handle game reset
-      socket.on("gameReset", (data) => {
-        socket.broadcast.emit("gameReset", data);
+      socket.on("gameReset", async () => {
+        console.log("Resetting game in backend");
+        currentGameStage = GameStages.WAITING_FOR_PLAYERS;
+        // socket.broadcast.emit("gameReset", data);
+        socket.join("lobby");
+
+        const roomUsers = await io.in("lobby").allSockets();
+        await connectionsCount(io, roomUsers.size);
+
+        var conList = await io.fetchSockets();
+        var userList = GetUserlist(conList);
+        let data = {
+          users: GetUsers(conList),
+          userNameList: userList,
+        };
+
+        io.to("lobby").emit("userlist", data);
       });
 
       socket.on("move", (data) => {
@@ -148,8 +185,15 @@ const Websocket = (io) => {
       });
 
       socket.on("disconnect", async () => {
-        if (!gameStarted) {
-          connections.length < 3 && timeoutId && clearTimeout(timeoutId);
+        if (currentGameStage === GameStages.GAME_ONGOING) {
+          console.log("user disconnected while game ongoing", socket.data.id);
+          socket.broadcast.emit("userDisconnected", socket.data.id);
+        }
+        if (
+          currentGameStage === GameStages.MENU_COUNTDOWN ||
+          currentGameStage === GameStages.GAME_COUNTDOWN
+        ) {
+          // connections.length < 3 && timeoutId && clearTimeout(timeoutId);
           console.log(`A user with ID ${socket.data.id} disconnected`);
           var conList = await io.fetchSockets();
           var userList = GetUserlist(conList);
@@ -157,16 +201,23 @@ const Websocket = (io) => {
             users: GetUsers(conList),
             userNameList: userList,
           };
+          if (data.userNameList.length < 2) {
+            io.to("lobby").emit("resetCountDown", 0);
+            clearTimeout(timeoutId);
+            currentGameStage = GameStages.WAITING_FOR_PLAYERS;
+          }
+          console.log(data);
           io.to("lobby").emit("userlist", data);
-          io.to("lobby").emit("resetCountDown", -1);
         } else {
-          socket.broadcast.emit("user left", socket.data.id);
+          console.log("user disconnected while gamestage", currentGameStage);
+          socket.broadcast.emit("userDisconnected", socket.data.id);
         }
       });
     } else {
-      console.log("Connection denied: Maximum clients reached");
-      io.emit("game full");
-      socket.disconnect(true);
+      console.log("else");
+      // console.log("Connection denied: Maximum clients reached");
+      // io.emit("game full");
+      // socket.disconnect(true);
     }
   });
 };
@@ -174,6 +225,7 @@ const Websocket = (io) => {
 //creates tilemap with randomized elements and player characters
 const GameStart = async (io) => {
   gameStarted = true;
+  currentGameStage = GameStages.GAME_ONGOING;
   const connections = await io.fetchSockets();
   const players = [];
   const positions = [
@@ -200,6 +252,7 @@ const GameStart = async (io) => {
     players.length
   );
   console.log(randomizedMap);
+  console.log("Starting game with :" + players.length + " players");
   io.emit("startGame", randomizedMap, players);
 };
 

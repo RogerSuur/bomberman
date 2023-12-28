@@ -38,7 +38,7 @@ body {
   /* Footer height */
 }
 
-#messages{
+#messages {
   background-color: rgb(215, 224, 248);
   margin: 10px;
   width: 60vw;
@@ -90,7 +90,9 @@ body {
   background-size: cover;
 }
 
-.hud-2-pl, .hud-3-pl, .hud-4-pl {
+.hud-2-pl,
+.hud-3-pl,
+.hud-4-pl {
   display: flex;
   background-size: contain;
   height: 80px;
@@ -108,7 +110,10 @@ body {
   background-image: url("./public/images/map/hud-4-pl.png");
 }
 
-.lives-0, .lives-1, .lives-2, .lives-3 {
+.lives-0,
+.lives-1,
+.lives-2,
+.lives-3 {
   background-size: contain;
   height: 15px;
   width: 15px;
@@ -153,10 +158,9 @@ body {
 .player-1 {
   background-image: url("./public/images/players/player-1/pl-1-down-still.png");
   background-size: cover;
-position: absolute;
-width: var(--player-size);
-height: var(--player-size);
-
+  position: absolute;
+  width: var(--player-size);
+  height: var(--player-size);
 }
 
 /* <---------------Player 2 images-----------------------> */
@@ -164,9 +168,9 @@ height: var(--player-size);
 .player-2 {
   background-image: url("./public/images/players/player-2/pl-2-down-still.png");
   background-size: cover;
-position: absolute;
-width: var(--player-size);
-height: var(--player-size);
+  position: absolute;
+  width: var(--player-size);
+  height: var(--player-size);
 }
 
 /* <---------------Player 3 images-----------------------> */
@@ -174,9 +178,9 @@ height: var(--player-size);
 .player-3 {
   background-image: url("./public/images/players/player-3/pl-3-down-still.png");
   background-size: cover;
-position: absolute;
-width: var(--player-size);
-height: var(--player-size);
+  position: absolute;
+  width: var(--player-size);
+  height: var(--player-size);
 }
 
 /* <---------------Player 4 images-----------------------> */
@@ -184,9 +188,9 @@ height: var(--player-size);
 .player-4 {
   background-image: url("./public/images/players/player-4/pl-4-down-still.png");
   background-size: cover;
-position: absolute;
-width: var(--player-size);
-height: var(--player-size);
+  position: absolute;
+  width: var(--player-size);
+  height: var(--player-size);
 }
 
 /* <---------------Bomb images-----------------------> */
@@ -313,5 +317,9 @@ height: var(--player-size);
 
 .game-over h1 {
   color: rgba(175, 47, 47, 0.85);
+  display: none;
+}
+
+.restart-btn {
   display: none;
 }
