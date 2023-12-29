@@ -44,12 +44,6 @@ export default class BombermanGame {
 
   restartGame() {
     console.log("restarting game");
-    // const messageInput = document.getElementById("messageInput");
-    // const message = messageInput.value.trim();
-    // if (message) {
-    //   this.socket.emit("chatMessage", { username: this.username, message });
-    //   messageInput.value = "";
-    // }
     this.socket.emit("gameReset", {});
   }
 

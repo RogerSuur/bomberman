@@ -310,7 +310,6 @@ export default class Player {
       this.startingPosition(player.playerId, this.spawnPosition);
       this.currentPosition = { ...this.spawnPosition };
       this.resetPowerUps();
-      //TODO: Display lives on the game-HUD
     }
     //TODO:make player dies animation
     console.log("player", player.userName, "lives", this.lives);

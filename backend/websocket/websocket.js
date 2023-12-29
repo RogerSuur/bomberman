@@ -14,7 +14,6 @@ const GameStages = {
 };
 
 let currentGameStage = GameStages.WAITING_FOR_PLAYERS;
-let gameStarted = false;
 
 const GetUserlist = (sockets) => {
   let userlist = [];
@@ -48,7 +47,7 @@ const menuCountdown = async (io) => {
   let secondsLeft = LOBBY_COUNTDOWN_SECONDS;
 
   const menuCountdownTimer = setInterval(async () => {
-    if (secondsLeft <= 1) {
+    if (secondsLeft <= 0) {
       clearInterval(menuCountdownTimer);
       gameCountdown(io);
     } else {
@@ -74,12 +73,10 @@ const menuCountdown = async (io) => {
 };
 
 const gameCountdown = (io) => {
-  console.log("Game countdown started");
   currentGameStage = GameStages.GAME_COUNTDOWN;
-  console.log(currentGameStage);
   let secondsLeft = PRE_GAME_WAITING_SECONDS;
   const gameStartTimer = setInterval(() => {
-    if (secondsLeft <= 1) {
+    if (secondsLeft <= 0) {
       clearInterval(gameStartTimer);
       GameStart(io);
     } else {
@@ -188,13 +185,13 @@ const Websocket = (io) => {
         if (currentGameStage === GameStages.GAME_ONGOING) {
           console.log("user disconnected while game ongoing", socket.data.id);
           socket.broadcast.emit("userDisconnected", socket.data.id);
-        }
-        if (
+        } else if (
           currentGameStage === GameStages.MENU_COUNTDOWN ||
           currentGameStage === GameStages.GAME_COUNTDOWN
         ) {
-          // connections.length < 3 && timeoutId && clearTimeout(timeoutId);
-          console.log(`A user with ID ${socket.data.id} disconnected`);
+          console.log(
+            `A user with ID ${socket.data.id} disconnected on countdown`
+          );
           var conList = await io.fetchSockets();
           var userList = GetUserlist(conList);
           let data = {
@@ -206,11 +203,10 @@ const Websocket = (io) => {
             clearTimeout(timeoutId);
             currentGameStage = GameStages.WAITING_FOR_PLAYERS;
           }
-          console.log(data);
           io.to("lobby").emit("userlist", data);
         } else {
           console.log("user disconnected while gamestage", currentGameStage);
-          socket.broadcast.emit("userDisconnected", socket.data.id);
+          // socket.broadcast.emit("userDisconnected", socket.data.id);
         }
       });
     } else {
@@ -224,7 +220,6 @@ const Websocket = (io) => {
 
 //creates tilemap with randomized elements and player characters
 const GameStart = async (io) => {
-  gameStarted = true;
   currentGameStage = GameStages.GAME_ONGOING;
   const connections = await io.fetchSockets();
   const players = [];
@@ -251,8 +246,8 @@ const GameStart = async (io) => {
     templateMap,
     players.length
   );
+  console.log("Start game with", players.length, "players.");
   console.log(randomizedMap);
-  console.log("Starting game with :" + players.length + " players");
   io.emit("startGame", randomizedMap, players);
 };
 

@@ -29,23 +29,18 @@ export default class Lobby {
       children: [header],
     });
 
+    var timerStr = `Waiting for other players to join`;
     if (this.timer === 0) {
-      console.log("this timer === 0 ", this.timer);
-      var timerStr = `Waiting for other players to join`;
     } else if (!stage) {
-      console.log("waiting for players ", this.timer);
-      var timerStr = `Waiting for players: ${this.timer}`;
+      timerStr = `Waiting for players: ${this.timer}`;
     } else {
-      console.log("Game starts in ", this.timer);
-      var timerStr = `Game starts in: ${this.timer}`;
+      timerStr = `Game starts in: ${this.timer}`;
     }
 
     const timer = this.fw.dom.createVirtualNode("p", {
       attrs: { for: "input-name", class: "" },
       children: [timerStr],
     });
-
-    console.log("timerStr", timerStr);
 
     headerRow.children.push(timer);
 
@@ -77,18 +72,8 @@ export default class Lobby {
   }
 
   update(seconds, stage) {
-    console.log(
-      "lobby update with seconds " +
-        seconds +
-        "stage: " +
-        stage +
-        typeof seconds
-    );
     this.timer = seconds;
-    if (this.timer === 0) {
-      stage = "";
-    }
-    console.log(this.timer);
+
     const newLobby = this.render(stage);
     const patch = this.fw.dom.diff(this.content, newLobby);
     const actualDOMNode = document.getElementById("lobby");
