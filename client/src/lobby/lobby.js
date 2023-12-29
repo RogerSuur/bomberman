@@ -29,12 +29,13 @@ export default class Lobby {
       children: [header],
     });
 
-    var timerStr = `Waiting for other players to join`;
+    console.log(this.timer);
     if (this.timer === 0) {
+      var timerStr = `Waiting for other players to join`;
     } else if (!stage) {
-      timerStr = `Waiting for players: ${this.timer}`;
+      var timerStr = `Waiting for players: ${this.timer}`;
     } else {
-      timerStr = `Game starts in: ${this.timer}`;
+      var timerStr = `Game starts in: ${this.timer}`;
     }
 
     const timer = this.fw.dom.createVirtualNode("p", {

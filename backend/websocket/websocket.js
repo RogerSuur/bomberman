@@ -102,8 +102,9 @@ const Websocket = (io) => {
       currentGameStage === GameStages.GAME_COUNTDOWN
     ) {
       console.log("Connection denied: Game is already in progress");
-      socket.emit("gameInProgress");
-      socket.disconnect(true);
+      io.to(socket.id).emit("prelobby error", {
+        error: "Game is already in progress",
+      });
       return;
     }
     const connections = await io.fetchSockets();
@@ -125,7 +126,9 @@ const Websocket = (io) => {
         var userList = GetUserlist(conList);
 
         if (userList.includes(username)) {
-          io.to(socket.id).emit("username taken");
+          io.to(socket.id).emit("prelobby error", {
+            error: "Username already taken",
+          });
         } else {
           socket.join("lobby");
 

@@ -56,7 +56,7 @@ const App = (attrs = {}, children = []) =>
   });
 
 //Lobby
-const preLobbyInstance = new PreLobby(fw, socket, false);
+const preLobbyInstance = new PreLobby(fw, socket, "");
 const preLobby = preLobbyInstance.render();
 const chatComponent = new ChatComponent(socket);
 const lobbyInstance = new Lobby(fw, socket, 0);
@@ -64,9 +64,8 @@ const lobbyInstance = new Lobby(fw, socket, 0);
 export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
-socket.on("username taken", () => {
-  preLobbyInstance.errorPresent = true;
-  preLobbyInstance.update();
+socket.on("prelobby error", (data) => {
+  preLobbyInstance.update(data.error);
 });
 
 socket.on("userlist", (data) => {
@@ -96,9 +95,10 @@ socket.on("resetCountDown", (data) => {
   lobbyInstance.update(data, "");
 });
 
-socket.on("gameInProgress", () => {
-  alert("Game is already in progress. Please try again later.");
-});
+// socket.on("gameInProgress", () => {
+//   io.to(socket.id).emit("username taken");
+//   //alert("Game is already in progress. Please try again later.");
+// });
 
 const GetMyUserName = (userList, id) => {
   const user = userList.find((user) => user.id === id);
