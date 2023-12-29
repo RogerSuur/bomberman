@@ -50,7 +50,7 @@ export class Bomb {
     const row = Math.floor((playerPosition.y + playerOffset) / cellSize);
     const col = Math.floor(playerPosition.x / cellSize);
 
-    const bombId = `bomb-${Date.now()}`;
+    const bombId = `bomb-${crypto.randomUUID()}`;
     const bombElement = fw.dom.createVirtualNode("div", {
       attrs: { class: "bomb-2", id: bombId },
     });
