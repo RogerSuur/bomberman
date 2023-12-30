@@ -99,11 +99,6 @@ export default class Player {
       this.moveBasedOnKeyStates();
       this.lastUpdateTime = timestamp;
     }
-    // once every second emit the state of the player for correction
-    this.socket.emit("stateUpdate", {
-      playerId: this.playerId,
-      position: this.currentPosition,
-    });
     requestAnimationFrame(this.update.bind(this));
   }
 
@@ -312,7 +307,7 @@ export default class Player {
       this.resetPowerUps();
     }
     //TODO:make player dies animation
-    console.log("player", player.userName, "lives", this.lives);
+    console.log("player", player.userName, "has", this.lives, "lives left");
   }
 
   handlePlayerDeath(playerId) {

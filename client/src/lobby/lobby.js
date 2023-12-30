@@ -29,7 +29,7 @@ export default class Lobby {
       children: [header],
     });
 
-    console.log(this.timer);
+    //console.log(this.timer);
     if (this.timer === 0) {
       var timerStr = `Waiting for other players to join`;
     } else if (!stage) {

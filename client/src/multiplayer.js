@@ -46,6 +46,11 @@ export default class Multiplayer {
     this.players[playerId].bombsPlaced--;
   }
 
+  updatePlayerHit(playerId) {
+    // update broadcasted player
+    this.players[playerId].handlePlayerHit(this.players[playerId]);
+  }
+
   resetPlayerPowerUps(playerId) {
     this.players[playerId].resetPowerUps();
   }
@@ -53,6 +58,9 @@ export default class Multiplayer {
   checkPlayersInFlames(bombsData) {
     Object.keys(this.players).forEach((playerId) => {
       const player = this.players[playerId];
+
+      if (!player.isLocalPlayer()) return;
+      
       const playerPosition = player.currentPosition;
 
       Object.keys(bombsData).forEach((bombId) => {
@@ -60,7 +68,10 @@ export default class Multiplayer {
         if (
           CollisionDetector.isPlayerInFlames(playerPosition, bomb.affectedCells)
         ) {
+          // handle local player
           player.handlePlayerHit(player);
+          // broadcast to other players
+          this.socket.emit("playerHit", { playerId: player.playerId });
         }
       });
     });

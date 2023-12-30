@@ -148,10 +148,6 @@ const Websocket = (io) => {
         }
       });
 
-      /* socket.on("stateUpdate", () => {
-        console.log("stateUpdate");
-      }); */
-
       //TODO: handle game reset
       socket.on("gameReset", async () => {
         console.log("Resetting game in backend");
@@ -182,6 +178,10 @@ const Websocket = (io) => {
 
       socket.on("powerUp", (data) => {
         socket.broadcast.emit("broadcastPowerUp", data);
+      });
+
+      socket.on("playerHit", (data) => {
+        socket.broadcast.emit("broadcastPlayerHit", data);
       });
 
       socket.on("disconnect", async () => {
