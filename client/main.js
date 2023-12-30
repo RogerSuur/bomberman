@@ -62,7 +62,10 @@ const chatComponent = new ChatComponent(socket);
 const chatElement = chatComponent.createChatElement();
 const lobbyInstance = new Lobby(fw, socket, 0);
 
-export const appNode = App({ id: "app", class: "gameapp" }, [preLobby, chatElement]);
+export const appNode = App({ id: "app", class: "gameapp" }, [
+  preLobby,
+  chatElement,
+]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 socket.on("prelobby error", (data) => {
@@ -73,14 +76,14 @@ socket.on("userlist", (data) => {
   const name = GetMyUserName(data.users, socket.id);
   chatComponent.addPlayer(name);
   lobbyInstance.addPlayer(data.userNameList, name);
-  
+
   const lobby = lobbyInstance.content;
   const actualDOMNode = document.getElementById("lobby-container");
   fw.dom.mount(actualDOMNode, lobby);
-  
+
   const chat = document.getElementById("chat");
   chat.style.display = "block";
-  
+  console.log(data);
   lobbyInstance.update(0, "");
 });
 
@@ -93,6 +96,7 @@ socket.on("tickGame", (data) => {
 });
 
 socket.on("resetCountDown", (data) => {
+  console.log(data);
   lobbyInstance.update(data, "");
 });
 

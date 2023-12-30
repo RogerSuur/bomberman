@@ -30,6 +30,7 @@ export default class Lobby {
     });
 
     //console.log(this.timer);
+    console.log(stage);
     if (this.timer === 0) {
       var timerStr = `Waiting for other players to join`;
     } else if (!stage) {
@@ -44,6 +45,7 @@ export default class Lobby {
     });
 
     headerRow.children.push(timer);
+    console.log(headerRow.children);
 
     const playerColumn = this.fw.dom.createVirtualNode("div", {
       attrs: { class: "col-4" },
@@ -76,6 +78,7 @@ export default class Lobby {
     this.timer = seconds;
 
     const newLobby = this.render(stage);
+    console.log(newLobby.children[0].children[1].children);
     const patch = this.fw.dom.diff(this.content, newLobby);
     const actualDOMNode = document.getElementById("lobby-container");
     patch(actualDOMNode);

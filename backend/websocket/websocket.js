@@ -91,8 +91,10 @@ const gameCountdown = (io) => {
 };
 
 const connectionsCount = async (io, conns) => {
-  // conns === 4 ? gameCountdown(io) : conns === 2 && (await menuCountdown(io));
-  conns === 2 && (await menuCountdown(io));
+  console.log("conns", conns);
+  if (conns === 2) {
+    await menuCountdown(io);
+  }
 };
 
 const Websocket = (io) => {
@@ -107,7 +109,6 @@ const Websocket = (io) => {
       });
       return;
     }
-    const connections = await io.fetchSockets();
     const roomUsers = await io.in("lobby").allSockets();
 
     if (roomUsers.size <= MAX_CONNECTIONS) {
@@ -185,8 +186,18 @@ const Websocket = (io) => {
       });
 
       socket.on("disconnect", async () => {
+        var conList = await io.fetchSockets();
+        var userList = GetUserlist(conList);
+        let data = {
+          users: GetUsers(conList),
+          userNameList: userList,
+        };
         if (currentGameStage === GameStages.GAME_ONGOING) {
           console.log("user disconnected while game ongoing", socket.data.id);
+          //check if there are users left to keep playing
+          if (data.userNameList.length < 2) {
+            currentGameStage = GameStages.WAITING_FOR_PLAYERS;
+          }
           socket.broadcast.emit("userDisconnected", socket.data.id);
         } else if (
           currentGameStage === GameStages.MENU_COUNTDOWN ||
@@ -195,14 +206,9 @@ const Websocket = (io) => {
           console.log(
             `A user with ID ${socket.data.id} disconnected on countdown`
           );
-          var conList = await io.fetchSockets();
-          var userList = GetUserlist(conList);
-          let data = {
-            users: GetUsers(conList),
-            userNameList: userList,
-          };
+
           if (data.userNameList.length < 2) {
-            io.to("lobby").emit("resetCountDown", 0);
+            //io.to("lobby").emit("resetCountDown", 0);
             clearTimeout(timeoutId);
             currentGameStage = GameStages.WAITING_FOR_PLAYERS;
           }

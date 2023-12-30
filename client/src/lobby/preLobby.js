@@ -90,6 +90,7 @@ export default class PreLobby {
 
   update(error) {
     this.error = error;
+    console.log(error);
     const newLobby = this.render();
     const patch = this.fw.dom.diff(this.content, newLobby);
     const actualDOMNode = document.getElementById("lobby-container");
