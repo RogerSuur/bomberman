@@ -29,8 +29,6 @@ export default class Lobby {
       children: [header],
     });
 
-    //console.log(this.timer);
-    console.log(stage);
     if (this.timer === 0) {
       var timerStr = `Waiting for other players to join`;
     } else if (!stage) {
@@ -45,7 +43,6 @@ export default class Lobby {
     });
 
     headerRow.children.push(timer);
-    console.log(headerRow.children);
 
     const playerColumn = this.fw.dom.createVirtualNode("div", {
       attrs: { class: "col-4" },
