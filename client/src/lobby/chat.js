@@ -13,7 +13,7 @@ export default class ChatComponent {
 
   createChatElement() {
     const chatDiv = fw.dom.createVirtualNode("div", {
-      attrs: { id: "chat" },
+      attrs: { id: "chat", class: "chat" },
       children: [
         fw.dom.createVirtualNode("div", { attrs: { id: "messages" } }),
         fw.dom.createVirtualNode("div", {

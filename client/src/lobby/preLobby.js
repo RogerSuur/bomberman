@@ -81,16 +81,8 @@ export default class PreLobby {
     });
 
     const preLobby = this.fw.dom.createVirtualNode("div", {
-      attrs: { class: "container", id: "pre-lobby" },
+      attrs: { class: "container", id: "lobby-container" },
       children: [col],
-    });
-
-    const lobbyContainer = this.fw.dom.createVirtualNode("div", {
-      attrs: {
-        class: "d-flex justify-content-center align-items-center",
-        id: "content-container",
-      },
-      children: [preLobby],
     });
 
     return preLobby;

@@ -59,9 +59,10 @@ const App = (attrs = {}, children = []) =>
 const preLobbyInstance = new PreLobby(fw, socket, "");
 const preLobby = preLobbyInstance.render();
 const chatComponent = new ChatComponent(socket);
+const chatElement = chatComponent.createChatElement();
 const lobbyInstance = new Lobby(fw, socket, 0);
 
-export const appNode = App({ id: "app", class: "gameapp" }, [preLobby]);
+export const appNode = App({ id: "app", class: "gameapp" }, [preLobby, chatElement]);
 fw.dom.mount(document.getElementById("app"), appNode);
 
 socket.on("prelobby error", (data) => {
@@ -72,14 +73,14 @@ socket.on("userlist", (data) => {
   const name = GetMyUserName(data.users, socket.id);
   chatComponent.addPlayer(name);
   lobbyInstance.addPlayer(data.userNameList, name);
+  
   const lobby = lobbyInstance.content;
-  const newApp = App({ id: "app", class: "gameapp" }, [
-    lobby,
-    chatComponent.createChatElement(),
-  ]);
-  const patch = fw.dom.diff(appNode, newApp);
-  const actualDOMNode = document.getElementById("app");
-  patch(actualDOMNode);
+  const actualDOMNode = document.getElementById("lobby-container");
+  fw.dom.mount(actualDOMNode, lobby);
+  
+  const chat = document.getElementById("chat");
+  chat.style.display = "block";
+  
   lobbyInstance.update(0, "");
 });
 

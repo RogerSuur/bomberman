@@ -65,7 +65,7 @@ export default class Lobby {
     });
 
     const lobby = this.fw.dom.createVirtualNode("div", {
-      attrs: { class: "container", id: "lobby" },
+      attrs: { class: "container", id: "lobby-container" },
       children: [headerRow, contentRow],
     });
 
@@ -77,7 +77,7 @@ export default class Lobby {
 
     const newLobby = this.render(stage);
     const patch = this.fw.dom.diff(this.content, newLobby);
-    const actualDOMNode = document.getElementById("lobby");
+    const actualDOMNode = document.getElementById("lobby-container");
     patch(actualDOMNode);
   }
 }

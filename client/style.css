@@ -59,9 +59,8 @@ body {
 .grid-row {
   display: flex;
 }
-.container {
-  /* width: 620px;
-  height: 408px; */
+.chat {
+  display: none;
 }
 .grid-cell {
   width: var(--cell-size);
