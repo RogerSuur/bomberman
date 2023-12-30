@@ -92,7 +92,7 @@ export default class PreLobby {
     this.error = error;
     const newLobby = this.render();
     const patch = this.fw.dom.diff(this.content, newLobby);
-    const actualDOMNode = document.getElementById("pre-lobby");
+    const actualDOMNode = document.getElementById("lobby-container");
     patch(actualDOMNode);
   }
 }
