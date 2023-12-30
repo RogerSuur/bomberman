@@ -83,7 +83,6 @@ socket.on("userlist", (data) => {
 
   const chat = document.getElementById("chat");
   chat.style.display = "block";
-  console.log(data);
   lobbyInstance.update(0, "");
 });
 
@@ -96,7 +95,6 @@ socket.on("tickGame", (data) => {
 });
 
 socket.on("resetCountDown", (data) => {
-  console.log(data);
   lobbyInstance.update(data, "");
 });
 
