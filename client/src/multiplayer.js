@@ -43,7 +43,11 @@ export default class Multiplayer {
   }
 
   updatePlayerBombsPlaced(playerId) {
-    this.players[playerId].bombsPlaced--;
+    if (this.players[playerId]) {
+      this.players[playerId].bombsPlaced--;
+    } else {
+      console.log("this.players[playerId] doesnt exist");
+    }
   }
 
   updatePlayerHit(playerId) {
@@ -60,7 +64,7 @@ export default class Multiplayer {
       const player = this.players[playerId];
 
       if (!player.isLocalPlayer()) return;
-      
+
       const playerPosition = player.currentPosition;
 
       Object.keys(bombsData).forEach((bombId) => {

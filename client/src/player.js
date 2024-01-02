@@ -334,6 +334,11 @@ export default class Player {
       winText.innerHTML = "YOU WIN!";
       winText.style.display = "block";
       restartBtn.style.display = "block";
+      console.log("game finished for winner");
+      setTimeout(() => {
+        console.log("emitting game finished");
+        this.socket.emit("gameReset", {});
+      }, 5000);
     }
   }
 }

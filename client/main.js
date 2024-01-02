@@ -98,10 +98,22 @@ socket.on("resetCountDown", (data) => {
   lobbyInstance.update(data, "");
 });
 
-// socket.on("gameInProgress", () => {
-//   io.to(socket.id).emit("username taken");
-//   //alert("Game is already in progress. Please try again later.");
-// });
+socket.on("resetToLobby", (data) => {
+  const chatElement = chatComponent.createChatElement();
+
+  const name = GetMyUserName(data.users, socket.id);
+  chatComponent.addPlayer(name);
+  lobbyInstance.addPlayer(data.userNameList, name);
+  const lobby = lobbyInstance.content;
+
+  const lobbyApp = App({ id: "app", class: "gameapp" }, [lobby, chatElement]);
+
+  fw.dom.mount(document.getElementById("app"), lobbyApp);
+
+  const chat = document.getElementById("chat");
+  chat.style.display = "block";
+  lobbyInstance.update(0, "");
+});
 
 const GetMyUserName = (userList, id) => {
   const user = userList.find((user) => user.id === id);

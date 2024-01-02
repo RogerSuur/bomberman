@@ -20,7 +20,11 @@ export default class ChatComponent {
           attrs: { id: "messageInputContainer" },
           children: [
             fw.dom.createVirtualNode("input", {
-              attrs: { id: "messageInput", autocomplete: "off", placeholder: "Type a message..." },
+              attrs: {
+                id: "messageInput",
+                autocomplete: "off",
+                placeholder: "Type a message...",
+              },
               listeners: { keydown: this.handleKeyDown.bind(this) },
               props: { disabled: true },
             }),
@@ -33,18 +37,17 @@ export default class ChatComponent {
         }),
       ],
     });
-  
+
     return chatDiv;
   }
-
 
   sendMessage() {
     if (this.username) {
       const messageInput = document.getElementById("messageInput");
       const message = messageInput.value.trim();
       if (message) {
-        this.socket.emit('chatMessage', { username: this.username, message });
-        messageInput.value = '';
+        this.socket.emit("chatMessage", { username: this.username, message });
+        messageInput.value = "";
       }
     }
   }
@@ -57,15 +60,15 @@ export default class ChatComponent {
   }
 
   attachEventListeners() {
-    this.socket.on('chatMessage', (data) => {
-      const messagesContainer = document.getElementById('messages');
+    this.socket.on("chatMessage", (data) => {
+      const messagesContainer = document.getElementById("messages");
       const messageWithUsername = `${data.username}: ${data.message}`;
       const li = fw.dom.createVirtualNode("li", { text: messageWithUsername });
       const realDOM = fw.dom.render(li);
       const textNode = document.createTextNode(messageWithUsername);
       realDOM.appendChild(textNode);
       messagesContainer.appendChild(realDOM);
-      const messages = document.getElementById('messages');
+      const messages = document.getElementById("messages");
       messages.scrollTop = messages.scrollHeight;
     });
   }

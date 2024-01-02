@@ -2,8 +2,8 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
-const LOBBY_COUNTDOWN_SECONDS = 20;
-const PRE_GAME_WAITING_SECONDS = 10;
+const LOBBY_COUNTDOWN_SECONDS = 10;
+const PRE_GAME_WAITING_SECONDS = 4;
 
 const GameStages = {
   WAITING_FOR_PLAYERS: "waitingForPlayers",
@@ -92,7 +92,7 @@ const gameCountdown = (io) => {
 
 const connectionsCount = async (io, conns) => {
   console.log("conns", conns);
-  if (conns === 2) {
+  if (conns >= 2) {
     await menuCountdown(io);
   }
 };
@@ -154,10 +154,13 @@ const Websocket = (io) => {
         console.log("Resetting game in backend");
         currentGameStage = GameStages.WAITING_FOR_PLAYERS;
         // socket.broadcast.emit("gameReset", data);
-        socket.join("lobby");
+        const gameRoomSockets = await io.in("gameRoom").fetchSockets();
+        for (const socket of gameRoomSockets) {
+          socket.leave("gameRoom");
+          socket.join("lobby");
+        }
 
-        const roomUsers = await io.in("lobby").allSockets();
-        await connectionsCount(io, roomUsers.size);
+        //await connectionsCount(io, roomUsers.size);
 
         var conList = await io.fetchSockets();
         var userList = GetUserlist(conList);
@@ -166,23 +169,27 @@ const Websocket = (io) => {
           userNameList: userList,
         };
 
-        io.to("lobby").emit("userlist", data);
+        if (data.userNameList.length >= 2) {
+          await connectionsCount(io, gameRoomSockets.size);
+        }
+        console.log(data);
+        io.to("lobby").emit("resetToLobby", data);
       });
 
       socket.on("move", (data) => {
-        socket.broadcast.emit("broadcastMovement", data);
+        socket.broadcast.to("gameRoom").emit("broadcastMovement", data);
       });
 
       socket.on("placeBomb", (data) => {
-        socket.broadcast.emit("broadcastBomb", data);
+        socket.broadcast.to("gameRoom").emit("broadcastBomb", data);
       });
 
       socket.on("powerUp", (data) => {
-        socket.broadcast.emit("broadcastPowerUp", data);
+        socket.broadcast.to("gameRoom").emit("broadcastPowerUp", data);
       });
 
       socket.on("playerHit", (data) => {
-        socket.broadcast.emit("broadcastPlayerHit", data);
+        socket.broadcast.to("gameRoom").emit("broadcastPlayerHit", data);
       });
 
       socket.on("disconnect", async () => {
@@ -198,7 +205,9 @@ const Websocket = (io) => {
           if (data.userNameList.length < 2) {
             currentGameStage = GameStages.WAITING_FOR_PLAYERS;
           }
-          socket.broadcast.emit("userDisconnected", socket.data.id);
+          socket.broadcast
+            .to("gameRoom")
+            .emit("userDisconnected", socket.data.id);
         } else if (
           currentGameStage === GameStages.MENU_COUNTDOWN ||
           currentGameStage === GameStages.GAME_COUNTDOWN
@@ -248,6 +257,9 @@ const GameStart = async (io) => {
         positions[index]
       );
       players.push(player);
+
+      conn.leave("lobby");
+      conn.join("gameRoom");
     }
   });
 
@@ -257,7 +269,8 @@ const GameStart = async (io) => {
   );
   console.log("Start game with", players.length, "players.");
   console.log(randomizedMap);
-  io.emit("startGame", randomizedMap, players);
+  clearTimeout(timeoutId);
+  io.in("gameRoom").emit("startGame", randomizedMap, players);
 };
 
 export default Websocket;
