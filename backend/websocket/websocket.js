@@ -2,8 +2,8 @@ import { templateMap } from "../game/tilemap.js";
 import { populateMapWithWallsAndPowerUps } from "../game/init.js";
 import Player from "../game/player.js";
 
-const LOBBY_COUNTDOWN_SECONDS = 10;
-const PRE_GAME_WAITING_SECONDS = 4;
+const LOBBY_COUNTDOWN_SECONDS = 20;
+const PRE_GAME_WAITING_SECONDS = 10;
 
 const GameStages = {
   WAITING_FOR_PLAYERS: "waitingForPlayers",

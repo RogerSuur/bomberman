@@ -334,7 +334,7 @@ export default class Player {
       winText.style.display = "block";
       setTimeout(() => {
         this.socket.emit("gameReset", {});
-      }, 5000);
+      }, 3000);
     }
   }
 }
