@@ -51,8 +51,9 @@ export default class Multiplayer {
   }
 
   updatePlayerHit(playerId) {
-    // update broadcasted player
-    this.players[playerId].handlePlayerHit(this.players[playerId]);
+    if (this.players[playerId]) {
+      this.players[playerId].handlePlayerHit(this.players[playerId]);
+    }
   }
 
   resetPlayerPowerUps(playerId) {
