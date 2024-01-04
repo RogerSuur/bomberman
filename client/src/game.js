@@ -26,25 +26,13 @@ export default class BombermanGame {
           attrs: { id: "gameover-text", class: "game-over-text" },
           children: ["GAME OVER!"],
         }),
-        this.fw.dom.createVirtualNode("button", {
-          attrs: { id: "restart-btn", class: "restart-btn" },
-          children: ["Restart game"],
-          listeners: { click: this.restartGame.bind(this) },
-          props: { disabled: true },
-        }),
       ],
     });
     const gameLayout = this.fw.dom.createVirtualNode("div", {
       attrs: { id: "gameapp" },
       children: [hudNode, gameGridNode, gameOverNode],
     });
-    // console.log(gameLayout);
     return gameLayout;
-  }
-
-  restartGame() {
-    console.log("restarting game");
-    this.socket.emit("gameReset", {});
   }
 
   render() {

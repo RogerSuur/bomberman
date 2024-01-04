@@ -170,7 +170,7 @@ const Websocket = (io) => {
         };
 
         if (data.userNameList.length >= 2) {
-          await connectionsCount(io, gameRoomSockets.size);
+          await connectionsCount(io, data.userNameList.length);
         }
         console.log(data);
         io.to("lobby").emit("resetToLobby", data);
