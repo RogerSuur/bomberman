@@ -149,18 +149,14 @@ const Websocket = (io) => {
         }
       });
 
-      //TODO: handle game reset
       socket.on("gameReset", async () => {
         console.log("Resetting game in backend");
         currentGameStage = GameStages.WAITING_FOR_PLAYERS;
-        // socket.broadcast.emit("gameReset", data);
         const gameRoomSockets = await io.in("gameRoom").fetchSockets();
         for (const socket of gameRoomSockets) {
           socket.leave("gameRoom");
           socket.join("lobby");
         }
-
-        //await connectionsCount(io, roomUsers.size);
 
         var conList = await io.fetchSockets();
         var userList = GetUserlist(conList);
@@ -201,7 +197,6 @@ const Websocket = (io) => {
         };
         if (currentGameStage === GameStages.GAME_ONGOING) {
           console.log("user disconnected while game ongoing", socket.data.id);
-          //check if there are users left to keep playing
           if (data.userNameList.length < 2) {
             currentGameStage = GameStages.WAITING_FOR_PLAYERS;
           }
@@ -217,21 +212,16 @@ const Websocket = (io) => {
           );
 
           if (data.userNameList.length < 2) {
-            //io.to("lobby").emit("resetCountDown", 0);
             clearTimeout(timeoutId);
             currentGameStage = GameStages.WAITING_FOR_PLAYERS;
           }
           io.to("lobby").emit("userlist", data);
         } else {
           console.log("user disconnected while gamestage", currentGameStage);
-          // socket.broadcast.emit("userDisconnected", socket.data.id);
         }
       });
     } else {
       console.log("else");
-      // console.log("Connection denied: Maximum clients reached");
-      // io.emit("game full");
-      // socket.disconnect(true);
     }
   });
 };

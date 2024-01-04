@@ -75,7 +75,6 @@ export default class Lobby {
     this.timer = seconds;
 
     const newLobby = this.render(stage);
-    //console.log(newLobby.children[0].children[1].children);
     const patch = this.fw.dom.diff(this.content, newLobby);
     const actualDOMNode = document.getElementById("lobby-container");
     patch(actualDOMNode);

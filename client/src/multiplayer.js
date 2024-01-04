@@ -18,8 +18,6 @@ export default class Multiplayer {
         player.parentNode.removeChild(player);
       }
       delete this.players[playerId];
-    } else {
-      console.log("this.players[playerId] doesnt exist");
     }
 
     const remainingPlayers = Object.values(this.players);

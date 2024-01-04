@@ -256,15 +256,12 @@ export default class Player {
         });
       }
     }
-
-    // this.actionQueue.push("placeBomb"); // Add to action queue
   }
 
   applyPowerUp(powerUp) {
     switch (powerUp) {
       case "speed":
         this.speed += 3;
-        // console.log("speed", this.speed);
         break;
       case "flames":
         this.flames += 1;
@@ -299,7 +296,6 @@ export default class Player {
     );
 
     if (this.lives <= 0) {
-      console.log("game over for player", player.userName);
       this.handlePlayerDeath(player.playerId);
     } else {
       this.startingPosition(player.playerId, this.spawnPosition);
@@ -307,7 +303,6 @@ export default class Player {
       this.resetPowerUps();
     }
     //TODO:make player dies animation
-    console.log("player", player.userName, "has", this.lives, "lives left");
   }
 
   handlePlayerDeath(playerId) {
