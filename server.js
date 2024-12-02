@@ -22,7 +22,10 @@ console.info("HTTP and WebSocket servers created...");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, "client")));
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+console.info("Static files middleware added...");
+
+app.use('/css', express.static(path.join(__dirname + '/node_modules/bootstrap/dist/css')));
+console.info("Bootstrap CSS middleware added...");
 
 app.get('/health', (_, res) => {
     console.info('Health check endpoint hit');
