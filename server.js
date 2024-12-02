@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 try {
     
 
+    console.info("Starting the server setup...");
 const port = process.env.PORT || 3000;
 const app = express();
 const httpServer = createServer(app);
@@ -20,11 +21,14 @@ app.use(express.static(path.join(__dirname, "client")));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 app.get("/", (_, res) => {
+    console.info("Received request to /, serving index.html");
     res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
 try {
+    console.info("Initializing WebSocket...");
     Websocket(io);
+    console.info("WebSocket initialized successfully.");
 } catch (err) {
     console.error("WebSocket initialization error:", err);
 }
