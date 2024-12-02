@@ -29,7 +29,6 @@ try {
     console.error("WebSocket initialization error:", err);
 }
 
-httpServer.listen(port);
 
 httpServer.listen(port, "0.0.0.0", () => {
     console.debug(`Server listening on port ${port}`);
