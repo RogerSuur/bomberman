@@ -37,13 +37,13 @@ app.get("/", (_, res) => {
     res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-// try {
-//     console.info("Initializing WebSocket...");
-//     Websocket(io);
-//     console.info("WebSocket initialized successfully.");
-// } catch (err) {
-//     console.error("WebSocket initialization error:", err);
-// }
+try {
+    console.info("Initializing WebSocket...");
+    Websocket(io);
+    console.info("WebSocket initialized successfully.");
+} catch (err) {
+    console.error("WebSocket initialization error:", err);
+}
 
 
 httpServer.listen(port, "0.0.0.0", () => {
