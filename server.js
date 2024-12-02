@@ -24,4 +24,6 @@ Websocket(io);
 
 httpServer.listen(port);
 
-console.debug(`Server listening on ${port}/`);
+httpServer.listen(port, "0.0.0.0", () => {
+    console.debug(`Server listening on port ${port}`);
+  });
