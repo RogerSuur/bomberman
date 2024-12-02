@@ -24,4 +24,4 @@ Websocket(io);
 
 httpServer.listen(port);
 
-console.debug(`Server listening on http://localhost:${port}/`);
+console.debug(`Server listening on ${port}/`);

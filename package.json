@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://01.kood.tech/git/jrms/bomberman-dom.git"
+    "url": "https://github.com/RogerSuur/bomberman.git"
   },
   "keywords": [
     "multiplayer"
   ],
-  "author": "kood/Jõhvi",
+  "author": "RogerSuur",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^5.3.2",
