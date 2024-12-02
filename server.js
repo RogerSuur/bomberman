@@ -12,13 +12,21 @@ try {
     console.info("Starting the server setup...");
 const port = process.env.PORT || 3000;
 const app = express();
+console.info("Express app created...");
 const httpServer = createServer(app);
 const io = new Server(httpServer);
+
+
+console.info("HTTP and WebSocket servers created...");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, "client")));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
+app.get('/health', (_, res) => {
+    res.status(200).send('OK');
+});
 
 app.get("/", (_, res) => {
     console.info("Received request to /, serving index.html");
