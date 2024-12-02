@@ -54,29 +54,3 @@ httpServer.listen(port, "0.0.0.0", () => {
     console.error("An error occurred while starting the server:", error);
     process.exit(1); // Exit gracefully with error code
 }
-
-process.on('SIGTERM', () => {
-    console.info("SIGTERM signal received. Shutting down gracefully...");
-    httpServer.close(() => {
-        console.log("Closed out remaining connections.");
-        process.exit(0);
-    });
-});
-
-process.on('SIGINT', () => {
-    console.info("SIGINT signal received. Shutting down gracefully...");
-    httpServer.close(() => {
-        console.log("Closed out remaining connections.");
-        process.exit(0);
-    });
-});
-
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    process.exit(1);
-});
