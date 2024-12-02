@@ -6,6 +6,9 @@ import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
 
+try {
+    
+
 const port = process.env.PORT || 3000;
 const app = express();
 const httpServer = createServer(app);
@@ -27,3 +30,8 @@ httpServer.listen(port);
 httpServer.listen(port, "0.0.0.0", () => {
     console.debug(`Server listening on port ${port}`);
   });
+
+} catch (error) {
+    console.error("An error occurred while starting the server:", err);
+    process.exit(1); // Exit gracefully with error code
+}
