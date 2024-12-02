@@ -12,7 +12,7 @@ try {
     console.info("Starting the server setup...");
 const port = process.env.PORT || 3000;
 const app = express();
-console.info("Express app created...");
+console.info("Express app created on port:", port);
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
