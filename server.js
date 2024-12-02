@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, "client")));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 app.get('/health', (_, res) => {
+    console.info('Health check endpoint hit');
     res.status(200).send('OK');
 });
 
