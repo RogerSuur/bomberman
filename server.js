@@ -36,7 +36,7 @@ httpServer.listen(port, "0.0.0.0", () => {
   });
 
 } catch (error) {
-    console.error("An error occurred while starting the server:", err);
+    console.error("An error occurred while starting the server:", error);
     process.exit(1); // Exit gracefully with error code
 }
 
